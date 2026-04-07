@@ -31,6 +31,22 @@ The Playground installs the plugin from the latest GitHub Release zip artifact.
 |---|---|---|
 | ![](.wordpress-org/screenshot-1.png) | ![](.wordpress-org/screenshot-2.png) | ![](.wordpress-org/screenshot-3.png) |
 
+## External Services
+
+This plugin connects to the [CrossRef REST API](https://api.crossref.org/) when you paste a DOI to resolve citation metadata. No account or API key is required. Requests are made only when you explicitly add a DOI in the block editor — no data is sent automatically or in the background.
+
+- [CrossRef](https://www.crossref.org/)
+- [CrossRef REST API documentation](https://api.crossref.org/swagger-ui/index.html)
+- [CrossRef privacy policy](https://www.crossref.org/privacy/)
+- [CrossRef terms of service](https://www.crossref.org/terms/)
+
+## Installation
+
+1. Upload the plugin files to `/wp-content/plugins/scholarly-bibliography/`, or install directly through the WordPress plugin screen.
+2. Activate the plugin through the **Plugins** screen in WordPress.
+3. Add the **Bibliography** block to any post or page.
+4. Paste DOI(s), BibTeX entries, or supported citations.
+
 ## Features
 
 - **Multiple input paths** — add bare DOIs, DOI URLs, BibTeX entries, and supported formatted citations
@@ -182,7 +198,7 @@ scholarly-bibliography/
 
 ## Compatibility
 
-- **WordPress** 6.4+ (block.json v3 requires 6.4+)
+- **WordPress** 6.4–7.0 (block.json v3 requires 6.4+)
 - **PHP** 7.4+ (minimal PHP runtime — the plugin registers a block and REST endpoints only)
 - **Multisite** — expected to work (block registration is site-local by default), but not yet tested
 

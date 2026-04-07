@@ -2,7 +2,7 @@
 Contributors: danknauss
 Tags: bibliography, citation, doi, bibtex, academic
 Requires at least: 6.4
-Tested up to: 6.9
+Tested up to: 7.0
 Stable tag: 1.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -24,9 +24,18 @@ The only all-in-one scholarly bibliography block. Paste a DOI or BibTeX entry â€
 
 Project URL: https://dan.knauss.ca/
 
+== External Services ==
+
+This plugin connects to the **CrossRef REST API** (https://api.crossref.org/) when you paste a DOI to resolve citation metadata. No account or API key is required. Requests are made only when you explicitly add a DOI in the block editor â€” no data is sent automatically or in the background.
+
+* CrossRef service: https://www.crossref.org/
+* CrossRef REST API documentation: https://api.crossref.org/swagger-ui/index.html
+* CrossRef privacy policy: https://www.crossref.org/privacy/
+* CrossRef terms of service: https://www.crossref.org/terms/
+
 == Installation ==
 
-1. Upload the plugin files to `/wp-content/plugins/scholarly-bibliography/`.
+1. Upload the plugin files to `/wp-content/plugins/scholarly-bibliography/`, or install directly through the WordPress plugin screen.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Add the "Bibliography" block to any post or page.
 4. Paste DOI(s), BibTeX entries, or supported citations for books, articles, chapters, and webpages.

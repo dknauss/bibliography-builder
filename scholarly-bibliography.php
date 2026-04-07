@@ -1,11 +1,13 @@
 <?php
 /**
  * Plugin Name:       Bibliography
+ * Plugin URI:        https://dan.knauss.ca/
  * Description:       A block that transforms pasted scholarly citations
  *                    (DOIs, BibTeX) into a semantically rich, auto-sorted
  *                    bibliography list.
  * Version:           1.0.0
  * Requires at least: 6.4
+ * Tested up to:      7.0
  * Requires PHP:      7.4
  * Author:            Dan Knauss
  * Author URI:        https://dan.knauss.ca/

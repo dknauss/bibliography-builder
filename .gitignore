@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build output
+build/
+output/
+
+# Test output
+test-results/
+coverage/
+artifacts/
+
+# Temporary files
+.tmp/
+*.log
