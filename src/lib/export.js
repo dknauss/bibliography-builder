@@ -60,6 +60,14 @@ function splitPageRange(page = '') {
 	};
 }
 
+function getPrimaryIdentifierValue(value) {
+	if (Array.isArray(value)) {
+		return value.find((item) => typeof item === 'string' && item) || '';
+	}
+
+	return value;
+}
+
 function formatRisAuthor(author) {
 	if (author.literal) {
 		return author.literal;
@@ -82,8 +90,16 @@ function cslToRisEntry(csl) {
 		appendRisLine(lines, 'AU', formatRisAuthor(author));
 	}
 
+	for (const editor of csl.editor || []) {
+		appendRisLine(lines, 'A2', formatRisAuthor(editor));
+	}
+
 	appendRisLine(lines, 'TI', csl.title);
-	appendRisLine(lines, 'T2', csl['container-title']);
+	appendRisLine(
+		lines,
+		csl.type === 'book' ? 'BT' : 'T2',
+		csl['container-title']
+	);
 	appendRisLine(lines, 'PB', csl.publisher);
 	appendRisLine(lines, 'PY', getYear(csl));
 	appendRisLine(lines, 'DA', getYear(csl));
@@ -94,6 +110,12 @@ function cslToRisEntry(csl) {
 	appendRisLine(lines, 'DO', csl.DOI);
 	appendRisLine(lines, 'UR', csl.URL);
 	appendRisLine(lines, 'LA', csl.language);
+	appendRisLine(
+		lines,
+		'SN',
+		getPrimaryIdentifierValue(csl.ISBN) ||
+			getPrimaryIdentifierValue(csl.ISSN)
+	);
 
 	lines.push('ER  - ');
 
@@ -142,7 +164,7 @@ export function downloadTextExport(
 	link.remove();
 	urlRef.revokeObjectURL?.(downloadUrl);
 
-	return downloadUrl;
+	return undefined;
 }
 
 export function downloadCslJsonExport(citations, citationStyle, dependencies) {

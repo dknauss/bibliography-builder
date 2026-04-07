@@ -1,11 +1,27 @@
 # Scholarly Bibliography Block
 
 [![License: GPL v2+](https://img.shields.io/badge/License-GPLv2%2B-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![WordPress: 6.4+](https://img.shields.io/badge/WordPress-6.4%2B-21759b.svg)](https://wordpress.org/)
+[![WordPress tested](https://img.shields.io/badge/WordPress-6.4%E2%80%93latest-21759b.svg?logo=wordpress&logoColor=white)](https://github.com/dknauss/wp-bibliography-block/actions/workflows/runtime-matrix.yml)
+[![PHP tested](https://img.shields.io/badge/PHP-7.4%E2%80%938.4-777bb4.svg?logo=php&logoColor=white)](https://github.com/dknauss/wp-bibliography-block/actions/workflows/runtime-matrix.yml)
+[![CI](https://github.com/dknauss/wp-bibliography-block/actions/workflows/ci.yml/badge.svg)](https://github.com/dknauss/wp-bibliography-block/actions/workflows/ci.yml)
+[![Runtime matrix](https://github.com/dknauss/wp-bibliography-block/actions/workflows/runtime-matrix.yml/badge.svg)](https://github.com/dknauss/wp-bibliography-block/actions/workflows/runtime-matrix.yml)
+[![WordPress Playground](https://img.shields.io/badge/WordPress%20Playground-Try%20it-3858e9.svg?logo=wordpress&logoColor=white)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/wp-bibliography-block/main/playground/blueprint.json)
 
 A WordPress block plugin that transforms pasted scholarly references into a semantically rich, auto-sorted bibliography block with static saved output.
 
 No shortcodes. Static HTML output survives plugin deactivation.
+
+## Try it in WordPress Playground
+
+Launch a disposable WordPress instance with the plugin preinstalled:
+
+- [Open Scholarly Bibliography Block in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/wp-bibliography-block/main/playground/blueprint.json)
+
+The Playground setup lives in:
+
+- `/Users/danknauss/Developer/GitHub/wp-bibliography-block/playground/blueprint.json`
+
+It installs the plugin straight from this GitHub repository using a Playground `git:directory` blueprint step.
 
 ## Features
 

@@ -23,7 +23,8 @@
 			"^.+\\.[jt]sx?$": "babel-jest"
 		},
 		"testPathIgnorePatterns": [
-			"<rootDir>/tests/e2e/"
+			"<rootDir>/tests/e2e/",
+			"<rootDir>/.tmp/"
 		]
 	},
 	"dependencies": {

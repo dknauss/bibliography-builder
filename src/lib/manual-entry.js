@@ -1,3 +1,6 @@
+import { validateAndSanitizeCsl } from './parser';
+import { createCitationId } from './citation-id';
+
 export const MANUAL_ENTRY_TYPE_OPTIONS = [
 	{
 		label: 'Book',
@@ -79,19 +82,6 @@ export function validateIdentifierFields(fields) {
 	}
 
 	return null;
-}
-
-function createCitationId() {
-	if (
-		typeof crypto !== 'undefined' &&
-		typeof crypto.randomUUID === 'function'
-	) {
-		return crypto.randomUUID();
-	}
-
-	return `citation-${Date.now().toString(36)}-${Math.random()
-		.toString(36)
-		.slice(2, 8)}`;
 }
 
 function parseAuthorFieldEntry(value) {
@@ -203,7 +193,7 @@ export function buildManualCsl(fields) {
 		};
 	}
 
-	return csl;
+	return validateAndSanitizeCsl(csl);
 }
 
 export async function createManualCitation(fields, styleKey) {

@@ -90,6 +90,22 @@ describe('manual-entry', () => {
 		});
 	});
 
+	it('returns sanitized manual CSL output', () => {
+		const csl = buildManualCsl({
+			type: 'collection',
+			title: 'Edited Volume',
+			authors: 'Scholar, Jane',
+			doi: '10.1234/edited-volume',
+		});
+
+		expect(csl).toEqual({
+			type: 'collection',
+			title: 'Edited Volume',
+			editor: [{ family: 'Scholar', given: 'Jane' }],
+			DOI: '10.1234/edited-volume',
+		});
+	});
+
 	it('ignores invalid years and maps DOI/URL/page fields when present', () => {
 		const csl = buildManualCsl({
 			type: 'article-journal',

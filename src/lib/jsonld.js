@@ -16,6 +16,14 @@ function isLikelyOrganizationAuthor(author) {
 	return Boolean(author?.literal && !author.family && !author.given);
 }
 
+function getPrimaryIdentifierValue(value) {
+	if (Array.isArray(value)) {
+		return value.find((item) => typeof item === 'string' && item) || '';
+	}
+
+	return typeof value === 'string' ? value : '';
+}
+
 /**
  * Map a single CSL-JSON object to a Schema.org JSON-LD object.
  *
@@ -105,11 +113,12 @@ export function cslToJsonLd(csl) {
 			propertyID: 'DOI',
 			value: csl.DOI,
 		};
-		result.url = 'https://doi.org/' + csl.DOI;
+		result.url = 'https://doi.org/' + encodeURIComponent(csl.DOI);
 	}
 
-	if (csl.ISBN) {
-		result.isbn = csl.ISBN;
+	const isbn = getPrimaryIdentifierValue(csl.ISBN);
+	if (isbn) {
+		result.isbn = isbn;
 	}
 
 	if (csl.URL && !result.url) {

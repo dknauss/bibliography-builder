@@ -113,7 +113,7 @@ function scholarly_bibliography_build_plain_text( $bibliography ) {
 	$lines = array();
 
 	foreach ( $bibliography['citations'] as $citation ) {
-		$lines[] = scholarly_bibliography_get_citation_display_text( $citation );
+		$lines[] = wp_strip_all_tags( scholarly_bibliography_get_citation_display_text( $citation ), false );
 	}
 
 	return implode( "\n", $lines ) . "\n";
@@ -336,7 +336,7 @@ function scholarly_bibliography_rest_pre_serve_request( $served, $result, $reque
 		$server->send_header( $key, $value );
 	}
 
-	echo $data; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Plain-text REST response is intentionally prebuilt server output.
+	echo wp_strip_all_tags( $data, false ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Plain-text REST response is intentionally stripped to plain text at send time.
 	return true;
 }
 

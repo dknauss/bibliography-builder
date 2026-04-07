@@ -34,7 +34,7 @@ $attrs = array(
 	'citations'     => array(
 		array(
 			'id'            => 'alpha-1',
-			'formattedText' => 'Alpha citation.',
+			'formattedText' => '<strong>Alpha</strong> citation.',
 			'csl'           => array(
 				'type'   => 'book',
 				'title'  => 'Alpha Book',
@@ -99,7 +99,7 @@ try {
 
 	$text = scholarly_bibliography_test_request( "/scholarly-bibliography/v1/posts/{$published_post_id}/bibliographies/0?format=text" );
 	scholarly_bibliography_test_assert( 200 === $text->get_status(), 'Plain-text format should return 200.' );
-	scholarly_bibliography_test_assert( "Alpha citation.\n" === $text->get_data(), 'Plain-text format should return plain citation text.' );
+	scholarly_bibliography_test_assert( "Alpha citation.\n" === $text->get_data(), 'Plain-text format should return sanitized plain citation text.' );
 
 	$csl_json = scholarly_bibliography_test_request( "/scholarly-bibliography/v1/posts/{$published_post_id}/bibliographies/0?format=csl-json" );
 	scholarly_bibliography_test_assert( 200 === $csl_json->get_status(), 'CSL-JSON format should return 200.' );

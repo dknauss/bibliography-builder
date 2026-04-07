@@ -80,6 +80,9 @@ describe('EditorCanvasNotices', () => {
 		render(<EditorCanvasNotices currentNotice={null} noticeRef={null} />);
 
 		expect(screen.queryByRole('status')).not.toBeInTheDocument();
+		expect(
+			document.querySelector('.scholarly-bibliography-editor-notices')
+		).not.toHaveAttribute('tabindex');
 	});
 
 	it('renders the current notice inline', () => {
@@ -107,6 +110,9 @@ describe('EditorCanvasNotices', () => {
 		expect(
 			screen.getByRole('button', { name: 'Dismiss' })
 		).toBeInTheDocument();
+		expect(
+			document.querySelector('.scholarly-bibliography-editor-notices')
+		).toHaveAttribute('tabindex', '-1');
 	});
 
 	it('renders snackbar-style notices for pure success messages', () => {

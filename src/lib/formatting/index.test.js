@@ -30,6 +30,19 @@ describe('formatting helpers', () => {
 		expect(getDisplayText(citation)).toBe('Auto formatted citation');
 	});
 
+	it('returns an empty non-italic segment when no display text exists', () => {
+		expect(
+			getDisplaySegments(
+				createCitation({
+					formattedText: '',
+					csl: {
+						title: '',
+					},
+				})
+			)
+		).toEqual([{ text: '', italic: false }]);
+	});
+
 	it('keeps a quoted article title plain and italicizes the journal title', () => {
 		const citation = createCitation();
 
@@ -124,6 +137,49 @@ describe('formatting helpers', () => {
 			{
 				text: '.',
 				link: false,
+			},
+		]);
+	});
+
+	it('splits multiple visible URLs independently', () => {
+		expect(
+			splitTextIntoLinkParts(
+				'See https://example.com/one and https://example.com/two.'
+			)
+		).toEqual([
+			{ text: 'See ', link: false },
+			{
+				text: 'https://example.com/one',
+				href: 'https://example.com/one',
+				link: true,
+			},
+			{ text: ' and ', link: false },
+			{
+				text: 'https://example.com/two',
+				href: 'https://example.com/two',
+				link: true,
+			},
+			{ text: '.', link: false },
+		]);
+	});
+
+	it('italicizes motion picture titles as monographic works', () => {
+		const citation = createCitation({
+			csl: {
+				type: 'motion_picture',
+				title: 'Example Film',
+			},
+			formattedText: 'Example Film. 2024.',
+		});
+
+		expect(getDisplaySegments(citation)).toEqual([
+			{
+				text: 'Example Film',
+				italic: true,
+			},
+			{
+				text: '. 2024.',
+				italic: false,
 			},
 		]);
 	});

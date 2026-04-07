@@ -40,80 +40,8 @@ jest.mock(
 
 jest.mock(
 	'@wordpress/data',
-	() => {
-		const ReactLocal = require('react');
-		let notices = [];
-		const listeners = new Set();
-
-		const emit = () => {
-			listeners.forEach((listener) => listener());
-		};
-
-		const subscribe = (listener) => {
-			listeners.add(listener);
-			return () => listeners.delete(listener);
-		};
-
-		const getSelectApi = () => ({
-			getNotices: (context) =>
-				notices.filter((notice) => notice.context === context),
-		});
-
-		return {
-			useDispatch: () => ({
-				createNotice: (status, content, options = {}) => {
-					notices = [
-						...notices.filter(
-							(notice) => notice.context !== options.context
-						),
-						{
-							id: options.id || `notice-${notices.length + 1}`,
-							status,
-							content,
-							context: options.context,
-							type: options.type || 'default',
-						},
-					];
-					emit();
-				},
-				removeAllNotices: (_type, context) => {
-					notices = notices.filter(
-						(notice) => notice.context !== context
-					);
-					emit();
-				},
-				removeNotice: (id, context) => {
-					notices = notices.filter(
-						(notice) =>
-							!(
-								notice.id === id &&
-								(!context || notice.context === context)
-							)
-					);
-					emit();
-				},
-			}),
-			useSelect: (mapSelect) => {
-				const [selected, setSelected] = ReactLocal.useState(() =>
-					mapSelect(() => getSelectApi())
-				);
-
-				ReactLocal.useEffect(
-					() =>
-						subscribe(() => {
-							setSelected(mapSelect(() => getSelectApi()));
-						}),
-					[]
-				);
-
-				return selected;
-			},
-			__unstableResetNotices: () => {
-				notices = [];
-				emit();
-			},
-		};
-	},
+	() =>
+		require('./test-utils/wordpress-data-notices-mock').createWordpressDataNoticesMock(),
 	{ virtual: true }
 );
 
@@ -348,6 +276,7 @@ jest.mock(
 
 jest.mock('./lib/parser', () => ({
 	parsePastedInput: jest.fn(),
+	validateAndSanitizeCsl: jest.fn((csl) => csl),
 }));
 
 jest.mock('./lib/export', () => ({
@@ -1762,6 +1691,42 @@ describe('Edit focus management', () => {
 		expect(
 			screen.queryAllByText('Editing citation. Press Escape to cancel.')
 		).toHaveLength(0);
+	});
+
+	it('does not blank the citation when Escape is followed by blur during inline editing', async () => {
+		render(
+			<EditHarness
+				initialCitations={[
+					createCitation({
+						id: 'entry-a',
+						family: 'Alpha',
+						year: 2024,
+						title: 'Alpha citation',
+					}),
+				]}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', { name: 'Edit citation: Alpha 2024' })
+		);
+
+		const input = screen.getByLabelText('Editing citation: Alpha 2024');
+		fireEvent.change(input, {
+			target: {
+				value: '',
+			},
+		});
+		fireEvent.keyDown(input, { key: 'Escape' });
+		fireEvent.blur(input);
+
+		await waitFor(() => {
+			expect(screen.getByText('Alpha citation')).toBeInTheDocument();
+		});
+
+		expect(
+			screen.queryByRole('button', { name: 'Reset edits' })
+		).not.toBeInTheDocument();
 	});
 
 	it('restores focus to the entry after confirming or cancelling structured field edits', async () => {

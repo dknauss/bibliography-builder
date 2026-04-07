@@ -26,7 +26,7 @@ export function buildCoins(csl) {
 
 		addParam(params, 'rft.pub', csl.publisher);
 		addParam(params, 'rft.place', csl['publisher-place']);
-		addParam(params, 'rft.isbn', csl.ISBN);
+		addParam(params, 'rft.isbn', getPrimaryIdentifierValue(csl.ISBN));
 	} else {
 		// Default to journal article format.
 		const pageBounds = getPageBounds(csl.page);
@@ -52,7 +52,15 @@ export function buildCoins(csl) {
 	// Date.
 	if (csl.issued && csl.issued['date-parts'] && csl.issued['date-parts'][0]) {
 		const parts = csl.issued['date-parts'][0];
-		addParam(params, 'rft.date', parts.join('-'));
+		addParam(
+			params,
+			'rft.date',
+			parts
+				.map((part, index) =>
+					index === 0 ? String(part) : String(part).padStart(2, '0')
+				)
+				.join('-')
+		);
 	}
 
 	// DOI as identifier.
@@ -74,6 +82,14 @@ function addParam(params, key, value) {
 	if (value !== undefined && value !== null && value !== '') {
 		params.push(key + '=' + encodeURIComponent(String(value)));
 	}
+}
+
+function getPrimaryIdentifierValue(value) {
+	if (Array.isArray(value)) {
+		return value.find((item) => typeof item === 'string' && item) || '';
+	}
+
+	return value;
 }
 
 function getPageBounds(pageValue) {

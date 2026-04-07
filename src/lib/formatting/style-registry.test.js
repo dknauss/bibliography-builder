@@ -7,9 +7,20 @@ import {
 } from './style-registry';
 
 describe('style registry', () => {
+	afterEach(() => {
+		jest.restoreAllMocks();
+	});
+
 	it('returns the default Chicago definition for unknown style keys', () => {
+		const warnSpy = jest
+			.spyOn(console, 'warn')
+			.mockImplementation(() => {});
+
 		expect(getStyleDefinition('unknown-style').key).toBe(
 			DEFAULT_CITATION_STYLE
+		);
+		expect(warnSpy).toHaveBeenCalledWith(
+			`Unknown citation style "unknown-style". Falling back to ${DEFAULT_CITATION_STYLE}.`
 		);
 	});
 

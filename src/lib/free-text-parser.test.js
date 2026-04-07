@@ -1,6 +1,11 @@
 import { parseFreeTextCitation } from './free-text-parser';
 
 describe('parseFreeTextCitation', () => {
+	it('returns null for empty or whitespace-only input', () => {
+		expect(parseFreeTextCitation('')).toBeNull();
+		expect(parseFreeTextCitation('   \n\t')).toBeNull();
+	});
+
 	it('parses supported free-text book citations into CSL-JSON', () => {
 		const citation = parseFreeTextCitation(
 			'Amy J. Binder and Jeffrey L. Kidder, The Channels of Student Activism: How the Left and Right Are Winning (and Losing) in Campus Politics Today (University of Chicago Press, 2022), 117–18.'

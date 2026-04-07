@@ -15,80 +15,8 @@ jest.mock(
 
 jest.mock(
 	'@wordpress/data',
-	() => {
-		const ReactLocal = require('react');
-		let notices = [];
-		const listeners = new Set();
-
-		const emit = () => {
-			listeners.forEach((listener) => listener());
-		};
-
-		const subscribe = (listener) => {
-			listeners.add(listener);
-			return () => listeners.delete(listener);
-		};
-
-		const getSelectApi = () => ({
-			getNotices: (context) =>
-				notices.filter((notice) => notice.context === context),
-		});
-
-		return {
-			useDispatch: () => ({
-				createNotice: (status, content, options = {}) => {
-					notices = [
-						...notices.filter(
-							(notice) => notice.context !== options.context
-						),
-						{
-							id: options.id || `notice-${notices.length + 1}`,
-							status,
-							content,
-							context: options.context,
-							type: options.type || 'default',
-						},
-					];
-					emit();
-				},
-				removeAllNotices: (_type, context) => {
-					notices = notices.filter(
-						(notice) => notice.context !== context
-					);
-					emit();
-				},
-				removeNotice: (id, context) => {
-					notices = notices.filter(
-						(notice) =>
-							!(
-								notice.id === id &&
-								(!context || notice.context === context)
-							)
-					);
-					emit();
-				},
-			}),
-			useSelect: (mapSelect) => {
-				const [selected, setSelected] = ReactLocal.useState(() =>
-					mapSelect(() => getSelectApi())
-				);
-
-				ReactLocal.useEffect(
-					() =>
-						subscribe(() => {
-							setSelected(mapSelect(() => getSelectApi()));
-						}),
-					[]
-				);
-
-				return selected;
-			},
-			__unstableResetNotices: () => {
-				notices = [];
-				emit();
-			},
-		};
-	},
+	() =>
+		require('../test-utils/wordpress-data-notices-mock').createWordpressDataNoticesMock(),
 	{ virtual: true }
 );
 
@@ -167,5 +95,18 @@ describe('useBlockNotices', () => {
 		});
 
 		expect(screen.getByText('Warning notice')).toBeInTheDocument();
+	});
+
+	it('clears both default and snackbar notice buckets before announcing', () => {
+		render(<NoticeHarness />);
+
+		screen.getByRole('button', { name: 'Show info' }).click();
+
+		expect(
+			require('@wordpress/data').__unstableGetRemoveAllCalls()
+		).toEqual([
+			['default', 'scholarly-bibliography/editor'],
+			['snackbar', 'scholarly-bibliography/editor'],
+		]);
 	});
 });

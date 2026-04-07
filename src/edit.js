@@ -137,7 +137,8 @@ export default function Edit({ attributes, setAttributes }) {
 		outputCoins = false,
 		outputCslJson = false,
 	} = attributes;
-	const selectableStyles = getSelectableStyles();
+	const selectableStyles = useMemo(() => getSelectableStyles(), []);
+	const manualTypeOptions = useMemo(() => MANUAL_ENTRY_TYPE_OPTIONS, []);
 	const blockProps = useBlockProps();
 	const headingPlaceholder = getHeadingPlaceholder(citationStyle);
 	const listStyleDefinition = getStyleDefinition(citationStyle);
@@ -347,6 +348,7 @@ export default function Edit({ attributes, setAttributes }) {
 		announce,
 		clearNotice,
 		queueFocus,
+		updatePasteInput,
 	]);
 
 	const handleDelete = useCallback(
@@ -392,7 +394,7 @@ export default function Edit({ attributes, setAttributes }) {
 				clearNotice();
 			}
 		},
-		[clearNotice, currentNotice, updatePasteInput]
+		[clearNotice, currentNotice]
 	);
 
 	const handleInputFocus = useCallback(() => {
@@ -716,7 +718,7 @@ export default function Edit({ attributes, setAttributes }) {
 					onCancelLabel={__('Clear', 'scholarly-bibliography')}
 					showTypeSelector
 					submitLabel={__('Add', 'scholarly-bibliography')}
-					typeOptions={MANUAL_ENTRY_TYPE_OPTIONS}
+					typeOptions={manualTypeOptions}
 					onTypeChange={(value) =>
 						handleManualFieldChange('type', value)
 					}

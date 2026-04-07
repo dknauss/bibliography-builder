@@ -1,4 +1,4 @@
-import { useCallback, useState } from '@wordpress/element';
+import { useCallback, useRef, useState } from '@wordpress/element';
 import {
 	getAutoFormattedText,
 	getDisplayText,
@@ -86,6 +86,8 @@ export function useCitationEditorState({
 	const [editText, setEditText] = useState('');
 	const [structuredEditingId, setStructuredEditingId] = useState(null);
 	const [structuredFields, setStructuredFields] = useState({});
+	const isEscapingEditRef = useRef(false);
+	const structuredEditingIdRef = useRef(null);
 
 	const getEntryLabel = useCallback((citation) => {
 		const author = citation.csl.author?.[0];
@@ -109,6 +111,7 @@ export function useCitationEditorState({
 				return;
 			}
 
+			isEscapingEditRef.current = false;
 			setEditingId(id);
 			setEditText(getDisplayText(entry));
 			announce('info', 'Editing citation. Press Escape to cancel.');
@@ -124,6 +127,11 @@ export function useCitationEditorState({
 	}, []);
 
 	const handleEditConfirm = useCallback(() => {
+		if (isEscapingEditRef.current) {
+			isEscapingEditRef.current = false;
+			return;
+		}
+
 		if (!editingId) {
 			return;
 		}
@@ -146,6 +154,7 @@ export function useCitationEditorState({
 		setAttributes({ citations: updated });
 		clearNotice();
 		queueFocus({ type: 'entry', id: editingId });
+		isEscapingEditRef.current = false;
 		setEditingId(null);
 		setEditText('');
 	}, [
@@ -159,6 +168,7 @@ export function useCitationEditorState({
 
 	const handleEditCancel = useCallback(() => {
 		if (editingId) {
+			isEscapingEditRef.current = true;
 			clearNotice();
 			queueFocus({ type: 'entry', id: editingId });
 		}
@@ -190,6 +200,7 @@ export function useCitationEditorState({
 				return;
 			}
 
+			structuredEditingIdRef.current = id;
 			setStructuredEditingId(id);
 			setStructuredFields({
 				authors: formatAuthorListForField(entry.csl.author),
@@ -221,17 +232,21 @@ export function useCitationEditorState({
 			queueFocus({ type: 'entry', id: structuredEditingId });
 		}
 
+		structuredEditingIdRef.current = null;
 		setStructuredEditingId(null);
 		setStructuredFields({});
 	}, [clearNotice, queueFocus, structuredEditingId]);
 
 	const handleStructuredEditSave = useCallback(async () => {
-		if (!structuredEditingId) {
+		const activeStructuredEditingId =
+			structuredEditingIdRef.current || structuredEditingId;
+
+		if (!activeStructuredEditingId) {
 			return;
 		}
 
 		const citation = citationsRef.current.find(
-			(entry) => entry.id === structuredEditingId
+			(entry) => entry.id === activeStructuredEditingId
 		);
 
 		if (!citation) {
@@ -301,9 +316,25 @@ export function useCitationEditorState({
 		const { formatBibliographyEntry } = await import(
 			'../lib/formatting/csl'
 		);
+
+		if (structuredEditingIdRef.current !== activeStructuredEditingId) {
+			return;
+		}
+
+		if (
+			!citationsRef.current.some(
+				(entry) => entry.id === activeStructuredEditingId
+			)
+		) {
+			structuredEditingIdRef.current = null;
+			setStructuredEditingId(null);
+			setStructuredFields({});
+			return;
+		}
+
 		const updated = sortCitations(
 			citationsRef.current.map((entry) =>
-				entry.id === structuredEditingId
+				entry.id === activeStructuredEditingId
 					? {
 							...entry,
 							csl: updatedCsl,
@@ -322,7 +353,8 @@ export function useCitationEditorState({
 		citationsRef.current = updated;
 		setAttributes({ citations: updated });
 		announce('success', 'Fields updated.', { type: 'snackbar' });
-		queueFocus({ type: 'entry', id: structuredEditingId });
+		queueFocus({ type: 'entry', id: activeStructuredEditingId });
+		structuredEditingIdRef.current = null;
 		setStructuredEditingId(null);
 		setStructuredFields({});
 	}, [
@@ -407,7 +439,6 @@ export function useCitationEditorState({
 			citationStyle,
 			citationsRef,
 			clearNotice,
-			queueFocus,
 			resetEditingState,
 			setAttributes,
 		]

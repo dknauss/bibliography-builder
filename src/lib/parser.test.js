@@ -108,6 +108,28 @@ describe('validateAndSanitizeCsl', () => {
 			},
 		});
 	});
+
+	it('sanitizes reviewed-author as a CSL name list', () => {
+		const sanitized = validateAndSanitizeCsl({
+			type: 'review-book',
+			title: 'Review title',
+			'reviewed-author': [
+				{
+					family: 'Gabriel',
+					given: 'Mary',
+				},
+			],
+		});
+
+		expect(sanitized).toMatchObject({
+			'reviewed-author': [
+				{
+					family: 'Gabriel',
+					given: 'Mary',
+				},
+			],
+		});
+	});
 });
 
 describe('parsePastedInput', () => {
@@ -135,6 +157,42 @@ describe('parsePastedInput', () => {
 		expect(result.entries).toHaveLength(0);
 		expect(result.errors).toHaveLength(1);
 		expect(result.errors[0]).toMatch(/Invalid CSL type/);
+	});
+
+	it('preserves suspicious BibTeX title text as inert data', async () => {
+		Cite.async.mockResolvedValue({
+			get: () => [
+				{
+					type: 'book',
+					title: '<script>alert(1)</script>',
+				},
+			],
+		});
+
+		const result = await parsePastedInput(
+			'@book{safe,title={<script>alert(1)</script>}}'
+		);
+
+		expect(result.errors).toEqual([]);
+		expect(result.entries[0].csl.title).toBe('<script>alert(1)</script>');
+	});
+
+	it('does not throw when review-title cleanup sees regex metacharacters in names', async () => {
+		Cite.async.mockResolvedValue({
+			get: () => [
+				{
+					type: 'article-journal',
+					title: 'John Smith (Jr.). Reviewed Book Smith (Jr.)A. 100 pp.',
+					'container-title': 'Example Review Journal',
+				},
+			],
+		});
+
+		const result = await parsePastedInput('10.1234/review-metacharacters');
+
+		expect(result.errors).toEqual([]);
+		expect(result.entries).toHaveLength(1);
+		expect(result.entries[0].csl.title).toContain('John Smith (Jr.).');
 	});
 
 	it('passes the requested style key through the formatting boundary', async () => {
@@ -181,6 +239,19 @@ describe('parsePastedInput', () => {
 		expect(formatBibliographyEntries).not.toHaveBeenCalled();
 		expect(result.entries).toHaveLength(1);
 		expect(result.entries[0].formattedText).toBeNull();
+	});
+
+	it('returns no entries for empty or whitespace-only pasted input', async () => {
+		await expect(parsePastedInput('')).resolves.toMatchObject({
+			entries: [],
+			errors: [],
+			remainingInput: '',
+		});
+		await expect(parsePastedInput('   \n\t  ')).resolves.toMatchObject({
+			entries: [],
+			errors: [],
+			remainingInput: '',
+		});
 	});
 
 	it('can still opt in to parser-owned formatting explicitly', async () => {
@@ -288,6 +359,37 @@ describe('parsePastedInput', () => {
 		expect(result.entries[0].id).toMatch(/^citation-/u);
 
 		global.crypto = originalCrypto;
+	});
+
+	it('enforces the 50-entry paste cap and preserves overflow input for retry', async () => {
+		Cite.async.mockImplementation(async (value) => ({
+			get: () => [
+				{
+					type: 'article-journal',
+					title: String(value),
+				},
+			],
+		}));
+
+		const input = Array.from(
+			{ length: 55 },
+			(_, index) => `10.1234/example-${index + 1}`
+		).join('\n');
+		const result = await parsePastedInput(input);
+
+		expect(result.entries).toHaveLength(50);
+		expect(result.truncated).toBe(true);
+		expect(result.remainingInput).toContain('10.1234/example-51');
+		expect(result.remainingInput).toContain('10.1234/example-55');
+	});
+
+	it('rejects input larger than 1MB', async () => {
+		const result = await parsePastedInput('a'.repeat(1024 * 1024 + 1));
+
+		expect(result.entries).toEqual([]);
+		expect(result.errors).toEqual([
+			'The pasted input is too large. Maximum size is 1 MB.',
+		]);
 	});
 
 	it('processes DOI batches with bounded concurrency while preserving order', async () => {

@@ -39,4 +39,26 @@ describe('copyTextToClipboard', () => {
 		expect(documentRef.execCommand).toHaveBeenCalledWith('copy');
 		expect(remove).toHaveBeenCalled();
 	});
+
+	it('rejects when the fallback copy command fails', async () => {
+		const remove = jest.fn();
+		const documentRef = {
+			createElement: jest.fn(() => ({
+				setAttribute: jest.fn(),
+				style: {},
+				select: jest.fn(),
+				remove,
+			})),
+			body: { appendChild: jest.fn() },
+			execCommand: jest.fn(() => false),
+		};
+
+		await expect(
+			copyTextToClipboard('Gamma citation', {
+				navigatorRef: {},
+				documentRef,
+			})
+		).rejects.toThrow('Clipboard copy command failed');
+		expect(remove).toHaveBeenCalled();
+	});
 });

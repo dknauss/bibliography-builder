@@ -289,6 +289,72 @@ describe('save', () => {
 		expect(markup).not.toContain('<script>alert("citation")</script>');
 	});
 
+	it('escapes HTML and event-handler payloads in visible citation text safely', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-author-date',
+					citations: [
+						createCitation({
+							displayOverride:
+								'<img src=x onerror=alert(1)><svg onload=alert(1)></svg><div onmouseover=alert(1)>hover</div>',
+						}),
+					],
+				},
+			})
+		);
+
+		expect(markup).toContain(
+			'&lt;img src=x onerror=alert(1)&gt;&lt;svg onload=alert(1)&gt;&lt;/svg&gt;&lt;div onmouseover=alert(1)&gt;hover&lt;/div&gt;'
+		);
+		expect(markup).not.toContain('<img');
+		expect(markup).not.toContain('<svg');
+		expect(markup).not.toContain('<div onmouseover=');
+	});
+
+	it('escapes displayOverride script payloads without executing or preserving HTML', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-author-date',
+					citations: [
+						createCitation({
+							displayOverride:
+								'<script>alert("override")</script>',
+						}),
+					],
+				},
+			})
+		);
+
+		expect(markup).toContain(
+			'&lt;script&gt;alert(&quot;override&quot;)&lt;/script&gt;'
+		);
+		expect(markup).not.toContain('<script>alert("override")</script>');
+	});
+
+	it('escapes img and svg payloads in auto-formatted citation text safely', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-author-date',
+					citations: [
+						createCitation({
+							formattedText:
+								'<img src=x onerror=alert(1)><svg onload=alert(1)></svg>',
+						}),
+					],
+				},
+			})
+		);
+
+		expect(markup).toContain(
+			'&lt;img src=x onerror=alert(1)&gt;&lt;svg onload=alert(1)&gt;&lt;/svg&gt;'
+		);
+		expect(markup).not.toContain('<img');
+		expect(markup).not.toContain('<svg');
+	});
+
 	it('renders visible frontend URLs as safe clickable links', () => {
 		const markup = renderToStaticMarkup(
 			save({

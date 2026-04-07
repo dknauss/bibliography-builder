@@ -1,5 +1,6 @@
 import { Cite, plugins } from '@citation-js/core';
 import '@citation-js/plugin-csl';
+import builtinStyles from '@citation-js/plugin-csl/lib/styles.json';
 import { getStyleDefinition } from './style-registry';
 import chicagoAuthorDateTemplate from './styles/chicago-author-date';
 import chicagoNotesBibliographyTemplate from './styles/chicago-notes-bibliography';
@@ -11,6 +12,12 @@ import abntTemplate from './styles/abnt';
 let templatesRegistered = false;
 const FORMAT_CACHE = new Map();
 const MAX_FORMAT_CACHE_ENTRIES = 500;
+const BUILTIN_TEMPLATE_NAMES = ['apa', 'harvard1', 'vancouver'];
+
+function emitFormattingWarning(...args) {
+	// eslint-disable-next-line no-console
+	console?.warn?.(...args);
+}
 
 function ensureBuiltinTemplatesRegistered() {
 	if (templatesRegistered) {
@@ -47,6 +54,20 @@ function ensureBuiltinTemplatesRegistered() {
 
 	if (!cslConfig.templates.has('abnt')) {
 		cslConfig.templates.add('abnt', abntTemplate);
+	}
+
+	for (const templateName of BUILTIN_TEMPLATE_NAMES) {
+		if (!cslConfig.templates.has(templateName)) {
+			const builtinTemplate = builtinStyles?.[templateName];
+
+			if (builtinTemplate) {
+				cslConfig.templates.add(templateName, builtinTemplate);
+			} else {
+				emitFormattingWarning(
+					`citation-js template "${templateName}" is unavailable.`
+				);
+			}
+		}
 	}
 
 	templatesRegistered = true;
@@ -106,12 +127,16 @@ function normalizeReviewOutput(output, csl) {
 }
 
 function getFormatCacheKey(csl, styleKey) {
-	return `${styleKey}::${JSON.stringify(csl)}`;
+	return `${styleKey}::${stableStringify(csl)}`;
 }
 
 function setCachedFormat(cacheKey, formatted) {
 	if (FORMAT_CACHE.size >= MAX_FORMAT_CACHE_ENTRIES) {
-		FORMAT_CACHE.clear();
+		const oldestCacheKey = FORMAT_CACHE.keys().next().value;
+
+		if (oldestCacheKey) {
+			FORMAT_CACHE.delete(oldestCacheKey);
+		}
 	}
 
 	FORMAT_CACHE.set(cacheKey, formatted);
@@ -119,12 +144,22 @@ function setCachedFormat(cacheKey, formatted) {
 }
 
 function formatBibliographyEntryUncached(csl, style, cacheKey) {
-	const cite = new Cite(csl);
-	const output = cite.format('bibliography', {
-		format: 'text',
-		template: style.cslTemplate,
-		lang: 'en-US',
-	});
+	const fallbackText = csl?.title || csl?.['container-title'] || '';
+	let output = fallbackText;
+
+	try {
+		const cite = new Cite(csl);
+		output = cite.format('bibliography', {
+			format: 'text',
+			template: style.cslTemplate,
+			lang: style.locale || 'en-US',
+		});
+	} catch (error) {
+		emitFormattingWarning(
+			`Falling back to raw citation text for style "${style.key}".`,
+			error
+		);
+	}
 
 	return setCachedFormat(
 		cacheKey,
@@ -191,4 +226,25 @@ export function formatBibliographyEntries(cslItems, styleKey) {
 
 export function formatBibliographyEntry(csl, styleKey) {
 	return formatBibliographyEntries([csl], styleKey)[0];
+}
+
+function stableStringify(value) {
+	return JSON.stringify(sortObjectKeys(value));
+}
+
+function sortObjectKeys(value) {
+	if (Array.isArray(value)) {
+		return value.map(sortObjectKeys);
+	}
+
+	if (value && typeof value === 'object') {
+		return Object.keys(value)
+			.sort()
+			.reduce((accumulator, key) => {
+				accumulator[key] = sortObjectKeys(value[key]);
+				return accumulator;
+			}, {});
+	}
+
+	return value;
 }

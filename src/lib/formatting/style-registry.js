@@ -10,6 +10,7 @@ export const STYLE_DEFINITIONS = {
 		cslTemplate: 'chicago-notes-bibliography',
 		listType: 'ul',
 		family: 'notes',
+		locale: 'en-US',
 		inlineCitationMode: 'note',
 		headingPlaceholder: 'Bibliography',
 	},
@@ -21,6 +22,7 @@ export const STYLE_DEFINITIONS = {
 		cslTemplate: 'chicago-author-date',
 		listType: 'ul',
 		family: 'author-date',
+		locale: 'en-US',
 		inlineCitationMode: 'parenthetical',
 		headingPlaceholder: 'References',
 	},
@@ -32,6 +34,7 @@ export const STYLE_DEFINITIONS = {
 		cslTemplate: 'apa',
 		listType: 'ul',
 		family: 'author-date',
+		locale: 'en-US',
 		inlineCitationMode: 'parenthetical',
 		headingPlaceholder: 'References',
 	},
@@ -43,6 +46,7 @@ export const STYLE_DEFINITIONS = {
 		cslTemplate: 'modern-language-association',
 		listType: 'ul',
 		family: 'author-date',
+		locale: 'en-US',
 		inlineCitationMode: 'parenthetical',
 		headingPlaceholder: 'Works Cited',
 	},
@@ -54,6 +58,7 @@ export const STYLE_DEFINITIONS = {
 		cslTemplate: 'harvard1',
 		listType: 'ul',
 		family: 'author-date',
+		locale: 'en-US',
 		inlineCitationMode: 'parenthetical',
 		headingPlaceholder: 'References',
 	},
@@ -65,6 +70,7 @@ export const STYLE_DEFINITIONS = {
 		cslTemplate: 'ieee',
 		listType: 'ol',
 		family: 'numeric',
+		locale: 'en-US',
 		inlineCitationMode: 'numeric',
 		headingPlaceholder: 'References',
 	},
@@ -76,6 +82,7 @@ export const STYLE_DEFINITIONS = {
 		cslTemplate: 'vancouver',
 		listType: 'ol',
 		family: 'numeric',
+		locale: 'en-US',
 		inlineCitationMode: 'numeric',
 		headingPlaceholder: 'References',
 	},
@@ -87,6 +94,7 @@ export const STYLE_DEFINITIONS = {
 		cslTemplate: 'oscola',
 		listType: 'ul',
 		family: 'notes',
+		locale: 'en-GB',
 		inlineCitationMode: 'note',
 		headingPlaceholder: 'Bibliography',
 	},
@@ -98,12 +106,24 @@ export const STYLE_DEFINITIONS = {
 		cslTemplate: 'abnt',
 		listType: 'ul',
 		family: 'author-date',
+		locale: 'pt-BR',
 		inlineCitationMode: 'parenthetical',
 		headingPlaceholder: 'Referências',
 	},
 };
 
+function emitStyleRegistryWarning(message) {
+	// eslint-disable-next-line no-console
+	console?.warn?.(message);
+}
+
 export function getStyleDefinition(styleKey = DEFAULT_CITATION_STYLE) {
+	if (styleKey && !STYLE_DEFINITIONS[styleKey]) {
+		emitStyleRegistryWarning(
+			`Unknown citation style "${styleKey}". Falling back to ${DEFAULT_CITATION_STYLE}.`
+		);
+	}
+
 	return (
 		STYLE_DEFINITIONS[styleKey] || STYLE_DEFINITIONS[DEFAULT_CITATION_STYLE]
 	);

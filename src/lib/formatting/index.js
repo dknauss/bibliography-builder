@@ -92,7 +92,7 @@ export function splitTextIntoLinkParts(text) {
 		});
 	}
 
-	return parts.length ? parts : [{ text, link: false }];
+	return parts;
 }
 
 function isOpeningQuote(character) {
@@ -145,7 +145,20 @@ function addRange(ranges, text, value) {
 function getItalicizedFields(citation) {
 	const type = citation.csl.type;
 
-	if (['book', 'collection', 'report', 'thesis'].includes(type)) {
+	if (
+		[
+			'book',
+			'collection',
+			'dataset',
+			'manuscript',
+			'motion_picture',
+			'patent',
+			'report',
+			'software',
+			'thesis',
+			'webpage',
+		].includes(type)
+	) {
 		return [citation.csl.title];
 	}
 
@@ -169,7 +182,7 @@ export function getDisplaySegments(citation) {
 	const displayText = getDisplayText(citation);
 
 	if (!displayText || citation.displayOverride) {
-		return [{ text: displayText, italic: false }];
+		return [{ text: displayText || '', italic: false }];
 	}
 
 	const italicRanges = [];

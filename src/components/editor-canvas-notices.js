@@ -32,7 +32,7 @@ export function EditorCanvasNotices({ currentNotice, noticeRef, onDismiss }) {
 			className={`scholarly-bibliography-editor-notices${
 				currentNotice ? ' has-notice' : ''
 			}`}
-			tabIndex={-1}
+			tabIndex={currentNotice ? -1 : undefined}
 		>
 			{noticeContent}
 		</div>

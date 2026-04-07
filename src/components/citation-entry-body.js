@@ -80,12 +80,12 @@ export function CitationEntryBody({
 						)}
 					</span>
 					{citationWarnings.map((warningMessage) => (
-						<p
+						<span
 							key={`${citation.id}-${warningMessage}`}
 							className="scholarly-bibliography-entry-warning"
 						>
 							{warningMessage}
-						</p>
+						</span>
 					))}
 				</div>
 			</button>

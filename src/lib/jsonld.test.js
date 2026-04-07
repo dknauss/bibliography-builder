@@ -42,7 +42,7 @@ describe('cslToJsonLd', () => {
 				propertyID: 'DOI',
 				value: '10.1234/example-doi',
 			},
-			url: 'https://doi.org/10.1234/example-doi',
+			url: 'https://doi.org/10.1234%2Fexample-doi',
 		});
 	});
 
@@ -93,6 +93,20 @@ describe('cslToJsonLd', () => {
 				name: 'University of Chicago Press',
 			},
 			isbn: '9780226819909',
+		});
+	});
+
+	it('uses the first ISBN string and URL-encodes DOI URLs', () => {
+		expect(
+			cslToJsonLd({
+				type: 'book',
+				title: 'Encoded DOI Example',
+				ISBN: ['9780226819909', '9780226819916'],
+				DOI: '10.1234/example doi/with spaces',
+			})
+		).toMatchObject({
+			isbn: '9780226819909',
+			url: 'https://doi.org/10.1234%2Fexample%20doi%2Fwith%20spaces',
 		});
 	});
 
@@ -147,6 +161,52 @@ describe('cslToJsonLd', () => {
 			],
 		});
 	});
+
+	it('falls back to CreativeWork for unknown types and omits sameAs when ORCID is absent', () => {
+		expect(
+			cslToJsonLd({
+				type: 'map',
+				title: 'Unknown Type Example',
+				author: [
+					{
+						given: 'Ada',
+						family: 'Smith',
+					},
+				],
+			})
+		).toEqual({
+			'@context': 'https://schema.org',
+			'@type': 'CreativeWork',
+			name: 'Unknown Type Example',
+			author: [
+				{
+					'@type': 'Person',
+					name: 'Ada Smith',
+					familyName: 'Smith',
+					givenName: 'Ada',
+				},
+			],
+		});
+	});
+
+	it('produces valid JSON-LD for multiple authors and quote-heavy titles', () => {
+		const json = buildJsonLdString([
+			{
+				type: 'report',
+				title: '"Quoted" title',
+				author: [
+					{ given: 'Ada', family: 'Smith' },
+					{ given: 'Grace', family: 'Hopper' },
+				],
+			},
+		]);
+
+		expect(() => JSON.parse(json)).not.toThrow();
+		expect(JSON.parse(json)[0]).toMatchObject({
+			'@type': 'Report',
+			author: [{ name: 'Ada Smith' }, { name: 'Grace Hopper' }],
+		});
+	});
 });
 
 describe('buildJsonLdString', () => {
@@ -162,6 +222,33 @@ describe('buildJsonLdString', () => {
 			'\\u003c/script>\\u003cscript>alert(1)\\u003c/script>'
 		);
 		expect(json).not.toContain('</script><script>');
+	});
+
+	it('keeps quote-breakout payloads inside the title string instead of creating sibling properties', () => {
+		const json = buildJsonLdString([
+			{
+				type: 'webpage',
+				title: '"}, "malicious": "payload"',
+			},
+		]);
+		const parsed = JSON.parse(json);
+
+		expect(parsed[0].name).toBe('"}, "malicious": "payload"');
+		expect(parsed[0].malicious).toBeUndefined();
+	});
+
+	it('escapes control characters in JSON-LD without breaking parsing', () => {
+		const json = buildJsonLdString([
+			{
+				type: 'webpage',
+				title: 'Control \u0000 value \u0008 test',
+			},
+		]);
+
+		expect(json).toContain('\\u0000');
+		expect(json).toContain('\\b');
+		expect(() => JSON.parse(json)).not.toThrow();
+		expect(JSON.parse(json)[0].name).toBe('Control \u0000 value \b test');
 	});
 });
 

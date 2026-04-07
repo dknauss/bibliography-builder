@@ -47,7 +47,8 @@ export function useBlockNotices() {
 		(status, message, options = {}) => {
 			nextNoticeIdRef.current += 1;
 
-			removeAllNotices(undefined, NOTICE_CONTEXT);
+			removeAllNotices('default', NOTICE_CONTEXT);
+			removeAllNotices('snackbar', NOTICE_CONTEXT);
 			createNotice(status, message, {
 				id:
 					options.id ||

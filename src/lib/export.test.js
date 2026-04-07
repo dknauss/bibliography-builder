@@ -2,13 +2,17 @@ import {
 	buildPlainTextBibliographyContent,
 	buildCslJsonExportContent,
 	buildBibtexExportContent,
+	buildRisExportContent,
 	downloadTextExport,
 	downloadCslJsonExport,
 	downloadBibtexExport,
+	downloadRisExport,
 	CSL_JSON_EXPORT_FILENAME,
 	CSL_JSON_EXPORT_MIME_TYPE,
 	BIBTEX_EXPORT_FILENAME,
 	BIBTEX_EXPORT_MIME_TYPE,
+	RIS_EXPORT_FILENAME,
+	RIS_EXPORT_MIME_TYPE,
 } from './export';
 
 describe('export helpers', () => {
@@ -96,18 +100,20 @@ describe('export helpers', () => {
 			this.options = options;
 		});
 
-		downloadTextExport(
-			{
-				content: '{"ok":true}',
-				filename: 'citations.json',
-				mimeType: 'application/json',
-			},
-			{
-				documentRef,
-				urlRef: { createObjectURL, revokeObjectURL },
-				BlobCtor,
-			}
-		);
+		expect(
+			downloadTextExport(
+				{
+					content: '{"ok":true}',
+					filename: 'citations.json',
+					mimeType: 'application/json',
+				},
+				{
+					documentRef,
+					urlRef: { createObjectURL, revokeObjectURL },
+					BlobCtor,
+				}
+			)
+		).toBeUndefined();
 
 		expect(BlobCtor).toHaveBeenCalledWith(['{"ok":true}'], {
 			type: 'application/json',
@@ -254,6 +260,88 @@ describe('export helpers', () => {
 		});
 		expect(documentRef.createElement.mock.results[0].value.download).toBe(
 			BIBTEX_EXPORT_FILENAME
+		);
+	});
+
+	it('builds RIS output with practical core fields', () => {
+		const content = buildRisExportContent(
+			[
+				{
+					id: 'citation-1',
+					csl: {
+						type: 'chapter',
+						title: 'A Chapter',
+						'container-title': 'Collected Volume',
+						publisher: 'Example Press',
+						editor: [{ family: 'Reyes', given: 'Carla' }],
+						ISBN: '9780226819909',
+						page: '117-134',
+						author: [{ family: 'Alpha', given: 'Ada' }],
+						issued: { 'date-parts': [[2024]] },
+					},
+				},
+			],
+			'apa-7'
+		);
+
+		expect(content).toContain('TY  - CHAP');
+		expect(content).toContain('AU  - Alpha, Ada');
+		expect(content).toContain('TI  - A Chapter');
+		expect(content).toContain('T2  - Collected Volume');
+		expect(content).toContain('A2  - Reyes, Carla');
+		expect(content).toContain('PB  - Example Press');
+		expect(content).toContain('SN  - 9780226819909');
+		expect(content).toContain('SP  - 117');
+		expect(content).toContain('EP  - 134');
+		expect(content).toContain('ER  - ');
+	});
+
+	it('downloads RIS with the expected filename and MIME type', () => {
+		const click = jest.fn();
+		const remove = jest.fn();
+		const appendChild = jest.fn();
+		const createObjectURL = jest.fn(() => 'blob:ris');
+		const revokeObjectURL = jest.fn();
+		const documentRef = {
+			createElement: jest.fn(() => ({
+				click,
+				remove,
+			})),
+			body: {
+				appendChild,
+			},
+		};
+		const BlobCtor = jest.fn(function MockBlob(parts, options) {
+			this.parts = parts;
+			this.options = options;
+		});
+
+		downloadRisExport(
+			[
+				{
+					id: 'citation-1',
+					csl: {
+						type: 'webpage',
+						title: 'Test RIS',
+					},
+				},
+			],
+			'apa-7',
+			{
+				documentRef,
+				urlRef: { createObjectURL, revokeObjectURL },
+				BlobCtor,
+			}
+		);
+
+		expect(BlobCtor).toHaveBeenCalledWith(
+			[expect.stringContaining('TY  - ELEC')],
+			{
+				type: RIS_EXPORT_MIME_TYPE,
+			}
+		);
+		expect(documentRef.createElement.mock.results[0].value.download).toBe(
+			RIS_EXPORT_FILENAME
 		);
 	});
 });

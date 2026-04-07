@@ -1,4 +1,5 @@
 import { renderToStaticMarkup } from 'react-dom/server';
+import metadata from '../block.json';
 import { deprecated } from './deprecated';
 
 jest.mock(
@@ -27,6 +28,16 @@ function createCitation({ id, family, title }) {
 }
 
 describe('deprecated block versions', () => {
+	it('pins the current attribute schema on every deprecated definition', () => {
+		expect(deprecated).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					attributes: metadata.attributes,
+				}),
+			])
+		);
+	});
+
 	it('supports the immediate prior save markup variant without linked visible URLs', () => {
 		const markup = renderToStaticMarkup(
 			deprecated[0].save({

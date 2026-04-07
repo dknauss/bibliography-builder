@@ -9,6 +9,7 @@ import { Cite } from '@citation-js/core';
 import '@citation-js/plugin-doi';
 import '@citation-js/plugin-bibtex';
 import '@citation-js/plugin-csl';
+import { createCitationId } from './citation-id';
 import { DEFAULT_CITATION_STYLE } from './formatting';
 import { parseFreeTextCitation } from './free-text-parser';
 import { SUPPORTED_INPUT_MESSAGE } from './input-support';
@@ -83,11 +84,8 @@ const STRING_FIELDS = new Set([
 	'event-place',
 	'reviewed-title',
 ]);
-const STRING_OR_STRING_ARRAY_FIELDS = new Set([
-	'ISBN',
-	'ISSN',
-	'reviewed-author',
-]);
+const STRING_OR_STRING_ARRAY_FIELDS = new Set(['ISBN', 'ISSN']);
+const NAME_LIST_FIELDS = new Set(['author', 'editor', 'reviewed-author']);
 
 function normalizeDoiInput(value) {
 	return value
@@ -298,12 +296,16 @@ function getReviewedAuthorFamilyNames(reviewedAuthors) {
 		.filter(Boolean);
 }
 
+function escapeRegExp(value) {
+	return String(value).replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+}
+
 function stripDuplicatedReviewAuthorMarkers(title, reviewedAuthors) {
 	const familyNames = getReviewedAuthorFamilyNames(reviewedAuthors);
 
 	for (const familyName of familyNames) {
 		const duplicateMarkerMatch = title.match(
-			new RegExp(`\\s+${familyName}[A-Z]`, 'u')
+			new RegExp(`\\s+${escapeRegExp(familyName)}[A-Z]`, 'u')
 		);
 
 		if (duplicateMarkerMatch?.index) {
@@ -395,19 +397,10 @@ export function validateAndSanitizeCsl(csl) {
 		throw new Error('Invalid CSL title.');
 	}
 
-	if (
-		Object.prototype.hasOwnProperty.call(sanitizedCsl, 'author') &&
-		!Array.isArray(sanitizedCsl.author)
-	) {
-		throw new Error('Invalid CSL author list.');
-	}
-
-	if (Array.isArray(sanitizedCsl.author)) {
-		sanitizedCsl.author = sanitizedCsl.author.map(sanitizeAuthor);
-	}
-
-	if (Object.prototype.hasOwnProperty.call(sanitizedCsl, 'editor')) {
-		sanitizedCsl.editor = sanitizeNameList(sanitizedCsl.editor, 'editor');
+	for (const field of NAME_LIST_FIELDS) {
+		if (Object.prototype.hasOwnProperty.call(sanitizedCsl, field)) {
+			sanitizedCsl[field] = sanitizeNameList(sanitizedCsl[field], field);
+		}
 	}
 
 	if (Object.prototype.hasOwnProperty.call(sanitizedCsl, 'issued')) {
@@ -576,19 +569,6 @@ function normalizeBibtexInput(value) {
 			return `${leadingWhitespace}@${normalizedEntryType}{`;
 		}
 	);
-}
-
-function createCitationId() {
-	if (
-		typeof crypto !== 'undefined' &&
-		typeof crypto.randomUUID === 'function'
-	) {
-		return crypto.randomUUID();
-	}
-
-	return `citation-${Date.now().toString(36)}-${Math.random()
-		.toString(36)
-		.slice(2, 10)}`;
 }
 
 async function mapWithConcurrency(items, concurrency, mapper) {

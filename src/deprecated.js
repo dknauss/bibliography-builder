@@ -1,5 +1,8 @@
+import metadata from '../block.json';
 import { sortCitations } from './lib/sorter';
 import { renderBibliographySave } from './save-markup';
+
+const deprecatedAttributes = metadata.attributes;
 
 function migrateSortedAttributes(attributes) {
 	return {
@@ -13,6 +16,7 @@ function migrateSortedAttributes(attributes) {
 
 export const deprecated = [
 	{
+		attributes: deprecatedAttributes,
 		save: ({ attributes }) =>
 			renderBibliographySave(attributes, {
 				sortEntries: true,
@@ -22,6 +26,7 @@ export const deprecated = [
 			}),
 	},
 	{
+		attributes: deprecatedAttributes,
 		migrate: migrateSortedAttributes,
 		save: ({ attributes }) =>
 			renderBibliographySave(attributes, {
@@ -32,6 +37,7 @@ export const deprecated = [
 			}),
 	},
 	{
+		attributes: deprecatedAttributes,
 		migrate: migrateSortedAttributes,
 		save: ({ attributes }) =>
 			renderBibliographySave(attributes, {

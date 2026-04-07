@@ -301,225 +301,249 @@ describe('formatBibliographyEntry', () => {
 	});
 });
 
-it('formats journal citations in Harvard style', () => {
-	expect(
-		formatBibliographyEntry(
-			{
-				type: 'article-journal',
-				title: 'Learning Blocks',
-				'container-title': 'Journal of WordPress Studies',
-				volume: '12',
-				issue: '3',
-				page: '117-134',
-				DOI: '10.1234/example-doi',
-				issued: {
-					'date-parts': [[2024]],
-				},
-				author: [
-					{
-						given: 'Ada',
-						family: 'Smith',
+describe('additional citation styles', () => {
+	it('formats journal citations in Harvard style', () => {
+		expect(
+			formatBibliographyEntry(
+				{
+					type: 'article-journal',
+					title: 'Learning Blocks',
+					'container-title': 'Journal of WordPress Studies',
+					volume: '12',
+					issue: '3',
+					page: '117-134',
+					DOI: '10.1234/example-doi',
+					issued: {
+						'date-parts': [[2024]],
 					},
-				],
-			},
-			'harvard'
-		)
-	).toBe(
-		'Smith, A. (2024) “Learning Blocks,” Journal of WordPress Studies, 12(3), pp. 117–134. doi:10.1234/example-doi.'
-	);
-});
-
-it('formats journal citations in IEEE style', () => {
-	expect(
-		formatBibliographyEntry(
-			{
-				type: 'article-journal',
-				title: 'Learning Blocks',
-				'container-title': 'Journal of WordPress Studies',
-				volume: '12',
-				issue: '3',
-				page: '117-134',
-				DOI: '10.1234/example-doi',
-				issued: {
-					'date-parts': [[2024]],
+					author: [
+						{
+							given: 'Ada',
+							family: 'Smith',
+						},
+					],
 				},
-				author: [
-					{
-						given: 'Ada',
-						family: 'Smith',
-					},
-				],
-			},
-			'ieee'
-		)
-	).toBe(
-		'A. Smith, “Learning Blocks,” Journal of WordPress Studies, vol. 12, no. 3, pp. 117–134, 2024, doi: 10.1234/example-doi.'
-	);
-});
+				'harvard'
+			)
+		).toBe(
+			'Smith, A. (2024) “Learning Blocks,” Journal of WordPress Studies, 12(3), pp. 117–134. doi:10.1234/example-doi.'
+		);
+	});
 
-it('formats journal citations in Vancouver style', () => {
-	expect(
-		formatBibliographyEntry(
-			{
-				type: 'article-journal',
-				title: 'Learning Blocks',
-				'container-title': 'Journal of WordPress Studies',
-				volume: '12',
-				issue: '3',
-				page: '117-134',
-				issued: {
-					'date-parts': [[2024]],
+	it('formats journal citations in IEEE style', () => {
+		expect(
+			formatBibliographyEntry(
+				{
+					type: 'article-journal',
+					title: 'Learning Blocks',
+					'container-title': 'Journal of WordPress Studies',
+					volume: '12',
+					issue: '3',
+					page: '117-134',
+					DOI: '10.1234/example-doi',
+					issued: {
+						'date-parts': [[2024]],
+					},
+					author: [
+						{
+							given: 'Ada',
+							family: 'Smith',
+						},
+					],
 				},
-				author: [
-					{
-						given: 'Ada',
-						family: 'Smith',
-					},
-				],
-			},
-			'vancouver'
-		)
-	).toBe(
-		'Smith A. Learning Blocks. Journal of WordPress Studies. 2024;12(3):117–34.'
-	);
-});
+				'ieee'
+			)
+		).toBe(
+			'A. Smith, “Learning Blocks,” Journal of WordPress Studies, vol. 12, no. 3, pp. 117–134, 2024, doi: 10.1234/example-doi.'
+		);
+	});
 
-it('formats book citations in MLA 9 style', () => {
-	expect(
-		formatBibliographyEntry(
+	it('formats journal citations in Vancouver style', () => {
+		expect(
+			formatBibliographyEntry(
+				{
+					type: 'article-journal',
+					title: 'Learning Blocks',
+					'container-title': 'Journal of WordPress Studies',
+					volume: '12',
+					issue: '3',
+					page: '117-134',
+					issued: {
+						'date-parts': [[2024]],
+					},
+					author: [
+						{
+							given: 'Ada',
+							family: 'Smith',
+						},
+					],
+				},
+				'vancouver'
+			)
+		).toBe(
+			'Smith A. Learning Blocks. Journal of WordPress Studies. 2024;12(3):117–34.'
+		);
+	});
+
+	it('formats book citations in MLA 9 style', () => {
+		expect(
+			formatBibliographyEntry(
+				{
+					type: 'book',
+					title: "The War Comes Home: Washington's Battle against America's Veterans",
+					publisher: 'University of California Press',
+					issued: {
+						'date-parts': [[2009]],
+					},
+					author: [
+						{
+							given: 'Alexandra',
+							family: 'Glantz',
+						},
+					],
+				},
+				'mla-9'
+			)
+		).toBe(
+			'Glantz, Alexandra. The War Comes Home: Washington’s Battle against America’s Veterans. University of California Press, 2009.'
+		);
+	});
+
+	it('formats book citations in OSCOLA style', () => {
+		expect(
+			formatBibliographyEntry(
+				{
+					type: 'book',
+					title: 'The Channels of Student Activism: How the Left and Right Are Winning (and Losing) in Campus Politics Today',
+					publisher: 'University of Chicago Press',
+					issued: {
+						'date-parts': [[2022]],
+					},
+					author: [
+						{
+							given: 'Amy J.',
+							family: 'Binder',
+						},
+						{
+							given: 'Jeffrey L.',
+							family: 'Kidder',
+						},
+					],
+				},
+				'oscola'
+			)
+		).toBe(
+			'Binder AJ and Kidder JL, The Channels of Student Activism: How the Left and Right Are Winning (and Losing) in Campus Politics Today (University of Chicago Press 2022)'
+		);
+	});
+
+	it('formats webpage citations in OSCOLA style', () => {
+		expect(
+			formatBibliographyEntry(
+				{
+					type: 'webpage',
+					title: 'Responses API',
+					URL: 'https://platform.openai.com/docs/api-reference/responses',
+					accessed: {
+						'date-parts': [[2026, 4, 5]],
+					},
+					author: [
+						{
+							literal: 'OpenAI',
+						},
+					],
+				},
+				'oscola'
+			)
+		).toBe(
+			'OpenAI, “Responses API” <https://platform.openai.com/docs/api-reference/responses> accessed April 5, 2026'
+		);
+	});
+
+	it('formats book citations in ABNT style', () => {
+		expect(
+			formatBibliographyEntry(
+				{
+					type: 'book',
+					title: 'The Channels of Student Activism: How the Left and Right Are Winning (and Losing) in Campus Politics Today',
+					publisher: 'University of Chicago Press',
+					issued: {
+						'date-parts': [[2022]],
+					},
+					author: [
+						{
+							given: 'Amy J.',
+							family: 'Binder',
+						},
+						{
+							given: 'Jeffrey L.',
+							family: 'Kidder',
+						},
+					],
+				},
+				'abnt'
+			)
+		).toBe(
+			'BINDER, Amy J.; KIDDER, Jeffrey L. The Channels of Student Activism: How the Left and Right Are Winning (and Losing) in Campus Politics Today. [S.l.]: University of Chicago Press, 2022.'
+		);
+	});
+
+	it('formats webpage citations in ABNT style', () => {
+		expect(
+			formatBibliographyEntry(
+				{
+					type: 'webpage',
+					title: 'Responses API',
+					URL: 'https://platform.openai.com/docs/api-reference/responses',
+					accessed: {
+						'date-parts': [[2026, 4, 5]],
+					},
+					author: [
+						{
+							literal: 'OpenAI',
+						},
+					],
+				},
+				'abnt'
+			)
+		).toBe(
+			'OPENAI. Responses API. Disponível em: <https://platform.openai.com/docs/api-reference/responses>. Acesso em: 5 abr. 2026.'
+		);
+	});
+
+	it('normalizes duplicated volume, issue, and page labels in ABNT style', () => {
+		expect(
+			formatBibliographyEntry(
+				{
+					type: 'article-journal',
+					title: 'Learning Blocks',
+					'container-title': 'Journal of WordPress Studies',
+					volume: '12',
+					issue: '3',
+					page: '117-134',
+					issued: {
+						'date-parts': [[2024]],
+					},
+					author: [
+						{
+							given: 'Ada',
+							family: 'Smith',
+						},
+					],
+				},
+				'abnt'
+			)
+		).toBe(
+			'SMITH, Ada. Learning Blocks. Journal of WordPress Studies, v. 12, n. 3, p. 117-134, 2024.'
+		);
+	});
+
+	it('formats batches while preserving duplicate results and order', () => {
+		const cslItems = [
 			{
 				type: 'book',
-				title: "The War Comes Home: Washington's Battle against America's Veterans",
-				publisher: 'University of California Press',
-				issued: {
-					'date-parts': [[2009]],
-				},
-				author: [
-					{
-						given: 'Alexandra',
-						family: 'Glantz',
-					},
-				],
-			},
-			'mla-9'
-		)
-	).toBe(
-		'Glantz, Alexandra. The War Comes Home: Washington’s Battle against America’s Veterans. University of California Press, 2009.'
-	);
-});
-
-it('formats book citations in OSCOLA style', () => {
-	expect(
-		formatBibliographyEntry(
-			{
-				type: 'book',
-				title: 'The Channels of Student Activism: How the Left and Right Are Winning (and Losing) in Campus Politics Today',
-				publisher: 'University of Chicago Press',
-				issued: {
-					'date-parts': [[2022]],
-				},
-				author: [
-					{
-						given: 'Amy J.',
-						family: 'Binder',
-					},
-					{
-						given: 'Jeffrey L.',
-						family: 'Kidder',
-					},
-				],
-			},
-			'oscola'
-		)
-	).toBe(
-		'Binder AJ and Kidder JL, The Channels of Student Activism: How the Left and Right Are Winning (and Losing) in Campus Politics Today (University of Chicago Press 2022)'
-	);
-});
-
-it('formats webpage citations in OSCOLA style', () => {
-	expect(
-		formatBibliographyEntry(
-			{
-				type: 'webpage',
-				title: 'Responses API',
-				URL: 'https://platform.openai.com/docs/api-reference/responses',
-				accessed: {
-					'date-parts': [[2026, 4, 5]],
-				},
-				author: [
-					{
-						literal: 'OpenAI',
-					},
-				],
-			},
-			'oscola'
-		)
-	).toBe(
-		'OpenAI, “Responses API” <https://platform.openai.com/docs/api-reference/responses> accessed April 5, 2026'
-	);
-});
-
-it('formats book citations in ABNT style', () => {
-	expect(
-		formatBibliographyEntry(
-			{
-				type: 'book',
-				title: 'The Channels of Student Activism: How the Left and Right Are Winning (and Losing) in Campus Politics Today',
-				publisher: 'University of Chicago Press',
-				issued: {
-					'date-parts': [[2022]],
-				},
-				author: [
-					{
-						given: 'Amy J.',
-						family: 'Binder',
-					},
-					{
-						given: 'Jeffrey L.',
-						family: 'Kidder',
-					},
-				],
-			},
-			'abnt'
-		)
-	).toBe(
-		'BINDER, Amy J.; KIDDER, Jeffrey L. The Channels of Student Activism: How the Left and Right Are Winning (and Losing) in Campus Politics Today. [S.l.]: University of Chicago Press, 2022.'
-	);
-});
-
-it('formats webpage citations in ABNT style', () => {
-	expect(
-		formatBibliographyEntry(
-			{
-				type: 'webpage',
-				title: 'Responses API',
-				URL: 'https://platform.openai.com/docs/api-reference/responses',
-				accessed: {
-					'date-parts': [[2026, 4, 5]],
-				},
-				author: [
-					{
-						literal: 'OpenAI',
-					},
-				],
-			},
-			'abnt'
-		)
-	).toBe(
-		'OPENAI. Responses API. Disponível em: <https://platform.openai.com/docs/api-reference/responses>. Acesso em: 5 apr. 2026.'
-	);
-});
-
-it('normalizes duplicated volume, issue, and page labels in ABNT style', () => {
-	expect(
-		formatBibliographyEntry(
-			{
-				type: 'article-journal',
-				title: 'Learning Blocks',
-				'container-title': 'Journal of WordPress Studies',
-				volume: '12',
-				issue: '3',
-				page: '117-134',
+				title: 'Duplicate Example',
+				publisher: 'Example Press',
 				issued: {
 					'date-parts': [[2024]],
 				},
@@ -530,64 +554,42 @@ it('normalizes duplicated volume, issue, and page labels in ABNT style', () => {
 					},
 				],
 			},
-			'abnt'
-		)
-	).toBe(
-		'SMITH, Ada. Learning Blocks. Journal of WordPress Studies, v. 12, n. 3, p. 117–134, 2024.'
-	);
-});
+			{
+				type: 'book',
+				title: 'Unique Example',
+				publisher: 'Example Press',
+				issued: {
+					'date-parts': [[2025]],
+				},
+				author: [
+					{
+						given: 'Grace',
+						family: 'Hopper',
+					},
+				],
+			},
+			{
+				type: 'book',
+				title: 'Duplicate Example',
+				publisher: 'Example Press',
+				issued: {
+					'date-parts': [[2024]],
+				},
+				author: [
+					{
+						given: 'Ada',
+						family: 'Smith',
+					},
+				],
+			},
+		];
 
-it('formats batches while preserving duplicate results and order', () => {
-	const cslItems = [
-		{
-			type: 'book',
-			title: 'Duplicate Example',
-			publisher: 'Example Press',
-			issued: {
-				'date-parts': [[2024]],
-			},
-			author: [
-				{
-					given: 'Ada',
-					family: 'Smith',
-				},
-			],
-		},
-		{
-			type: 'book',
-			title: 'Unique Example',
-			publisher: 'Example Press',
-			issued: {
-				'date-parts': [[2025]],
-			},
-			author: [
-				{
-					given: 'Grace',
-					family: 'Hopper',
-				},
-			],
-		},
-		{
-			type: 'book',
-			title: 'Duplicate Example',
-			publisher: 'Example Press',
-			issued: {
-				'date-parts': [[2024]],
-			},
-			author: [
-				{
-					given: 'Ada',
-					family: 'Smith',
-				},
-			],
-		},
-	];
-
-	expect(
-		formatBibliographyEntries(cslItems, 'chicago-notes-bibliography')
-	).toEqual([
-		'Smith, Ada. Duplicate Example. Example Press, 2024.',
-		'Hopper, Grace. Unique Example. Example Press, 2025.',
-		'Smith, Ada. Duplicate Example. Example Press, 2024.',
-	]);
+		expect(
+			formatBibliographyEntries(cslItems, 'chicago-notes-bibliography')
+		).toEqual([
+			'Smith, Ada. Duplicate Example. Example Press, 2024.',
+			'Hopper, Grace. Unique Example. Example Press, 2025.',
+			'Smith, Ada. Duplicate Example. Example Press, 2024.',
+		]);
+	});
 });
