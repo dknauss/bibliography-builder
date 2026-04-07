@@ -9,9 +9,9 @@
 [![Codecov](https://codecov.io/gh/dknauss/wp-bibliography-block/branch/main/graph/badge.svg)](https://codecov.io/gh/dknauss/wp-bibliography-block)
 [![WordPress Playground](https://img.shields.io/badge/WordPress%20Playground-Try%20it-3858e9.svg?logo=wordpress&logoColor=white)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/wp-bibliography-block/main/playground/blueprint.json)
 
-A WordPress block plugin that transforms pasted scholarly references into a semantically rich, auto-sorted bibliography block with static saved output.
+The only all-in-one bibliography block for the WordPress editor that transforms pasted scholarly references — DOI(s), BibTeX entries, and supported formatted citations — into a semantically rich, auto-sorted bibliography with static saved output. Export your work as CSL-JSON, BibTeX, and RIS.
 
-No shortcodes. Static HTML output survives plugin deactivation.
+No shortcodes. No database storage. Static HTML output survives plugin deactivation.
 
 ## Try it in WordPress Playground
 
