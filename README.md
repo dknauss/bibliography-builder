@@ -1,3 +1,5 @@
+![](.wordpress-org/banner-1544x500.png)
+
 # Bibliography Block
 
 [![License: GPL v2+](https://img.shields.io/badge/License-GPLv2%2B-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
