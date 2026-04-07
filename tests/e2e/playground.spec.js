@@ -80,8 +80,16 @@ test('bibliography block is discoverable in the editor inserter', async ({
 		editorFrame.getByRole('textbox', { name: /Add title/i })
 	).toBeVisible();
 	await page
-		.getByRole('button', { name: 'Block Inserter' })
+		.getByRole('button', { name: /Block Inserter|Toggle block inserter/i })
 		.click({ force: true });
-	await page.getByRole('searchbox').fill('Bibliography');
-	await expect(page.getByText('Bibliography')).toBeVisible();
+
+	const inserterSearch = page
+		.locator(
+			'input[placeholder*="Search" i], input[aria-label*="Search" i], [role="searchbox"], .block-editor-inserter__search input'
+		)
+		.first();
+
+	await expect(inserterSearch).toBeVisible();
+	await inserterSearch.fill('Bibliography');
+	await expect(page.getByText('Bibliography').first()).toBeVisible();
 });

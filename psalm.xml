@@ -8,7 +8,6 @@
 	<projectFiles>
 		<file name="scholarly-bibliography.php" />
 		<ignoreFiles>
-			<directory name="build" />
 			<directory name="node_modules" />
 			<directory name="tests" />
 		</ignoreFiles>

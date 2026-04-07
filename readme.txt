@@ -1,6 +1,6 @@
 === Bibliography ===
 Contributors: danknauss
-Tags: bibliography, citation, academic, scholarly, DOI, Chicago, MLA, APA, IEEE, BibTex, OSCOLA, ABNT
+Tags: bibliography, citation, doi, bibtex, academic
 Requires at least: 6.4
 Tested up to: 6.9
 Stable tag: 0.1.0
