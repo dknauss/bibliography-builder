@@ -141,6 +141,16 @@ Investigation outcome on 2026-04-05:
 -   caller-owned / opt-in formatting responsibility has now landed in `parsePastedInput()` as the default behavior
 -   deeper formatter architecture changes are not justified yet
 
+## WordPress.org asset follow-up
+
+Completed:
+
+-   added WordPress.org banner assets from the approved banner image in `.wordpress-org/`
+
+Planned next:
+
+-   generate editor/frontend screenshots in a browser-capable session for the plugin directory listing
+
 ## Compatibility and runtime coverage backlog
 
 Completed:

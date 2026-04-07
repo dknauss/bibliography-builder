@@ -76,4 +76,5 @@ In practice, the near-term execution order is:
 
 -   backlog architecture work
 -   follow-on multisite runtime coverage
+-   WordPress.org asset follow-up: generate plugin screenshots in a browser-capable session
 -   future API/interoperability work

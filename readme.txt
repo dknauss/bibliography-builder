@@ -63,6 +63,15 @@ Yes. The editor currently includes Download CSL-JSON, Download BibTeX, Download 
 
 Yes. The plugin exposes read-only REST endpoints at `/wp-json/scholarly-bibliography/v1/posts/<post_id>/bibliographies` and `/wp-json/scholarly-bibliography/v1/posts/<post_id>/bibliographies/<index>`. Published posts are readable publicly; non-public posts require permission to edit the post. The single-bibliography route also supports `format=json`, `format=text`, and `format=csl-json`.
 
+
+== Screenshots ==
+
+1. Discover the Bibliography block in the inserter.
+2. Paste DOI, BibTeX, or supported citation text into the default import form.
+3. Use Manual Entry to build a citation with Publication Type and structured fields.
+4. Configure citation style, metadata output, and export actions in the block settings sidebar.
+5. View the rendered bibliography on the site front end with linked URLs and semantic output.
+
 == Changelog ==
 
 = 0.1.0 =
