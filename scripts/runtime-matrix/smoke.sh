@@ -107,11 +107,11 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
-    ports:
 EOF
 
 if [ "$SERVER" = "apache" ]; then
 	cat >> "$COMPOSE_FILE" <<EOF
+    ports:
       - "${HTTP_PORT}:80"
 EOF
 fi
@@ -170,7 +170,7 @@ capture_http() {
 	url="$2"
 	body_file="$ARTIFACT_RESPONSE_DIR/${name}.body"
 	headers_file="$ARTIFACT_RESPONSE_DIR/${name}.headers"
-	curl -fsS -D "$headers_file" "$url" -o "$body_file"
+	curl -fsSL -D "$headers_file" "$url" -o "$body_file"
 }
 
 wait_for_http

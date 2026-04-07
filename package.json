@@ -21,7 +21,10 @@
 		"testEnvironment": "jsdom",
 		"transform": {
 			"^.+\\.[jt]sx?$": "babel-jest"
-		}
+		},
+		"testPathIgnorePatterns": [
+			"<rootDir>/tests/e2e/"
+		]
 	},
 	"dependencies": {
 		"@citation-js/core": "0.7.18",
