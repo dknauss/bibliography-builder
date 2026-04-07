@@ -1,76 +1,46 @@
 import { Cite, plugins } from '@citation-js/core';
 import '@citation-js/plugin-csl';
-import builtinStyles from '@citation-js/plugin-csl/lib/styles.json';
 import { getStyleDefinition } from './style-registry';
-import chicagoAuthorDateTemplate from './styles/chicago-author-date';
-import chicagoNotesBibliographyTemplate from './styles/chicago-notes-bibliography';
-import ieeeTemplate from './styles/ieee';
-import mla9Template from './styles/mla-9';
-import oscolaTemplate from './styles/oscola';
-import abntTemplate from './styles/abnt';
 
-let templatesRegistered = false;
 const FORMAT_CACHE = new Map();
 const MAX_FORMAT_CACHE_ENTRIES = 500;
-const BUILTIN_TEMPLATE_NAMES = ['apa', 'harvard1', 'vancouver'];
+
+const TEMPLATE_LOADERS = {
+	'chicago-author-date': () =>
+		import('./styles/chicago-author-date').then((m) => m.default),
+	'chicago-notes-bibliography': () =>
+		import('./styles/chicago-notes-bibliography').then((m) => m.default),
+	ieee: () => import('./styles/ieee').then((m) => m.default),
+	'modern-language-association': () =>
+		import('./styles/mla-9').then((m) => m.default),
+	oscola: () => import('./styles/oscola').then((m) => m.default),
+	abnt: () => import('./styles/abnt').then((m) => m.default),
+	apa: () => import('./styles/apa').then((m) => m.default),
+	harvard1: () => import('./styles/harvard1').then((m) => m.default),
+	vancouver: () => import('./styles/vancouver').then((m) => m.default),
+};
 
 function emitFormattingWarning(...args) {
 	// eslint-disable-next-line no-console
 	console?.warn?.(...args);
 }
 
-function ensureBuiltinTemplatesRegistered() {
-	if (templatesRegistered) {
+async function ensureTemplateRegistered(templateName) {
+	const cslConfig = plugins.config.get('@csl');
+
+	if (cslConfig.templates.has(templateName)) {
 		return;
 	}
 
-	const cslConfig = plugins.config.get('@csl');
+	const loader = TEMPLATE_LOADERS[templateName];
 
-	if (!cslConfig.templates.has('chicago-author-date')) {
-		cslConfig.templates.add(
-			'chicago-author-date',
-			chicagoAuthorDateTemplate
-		);
+	if (!loader) {
+		emitFormattingWarning(`No template loader for "${templateName}".`);
+		return;
 	}
 
-	if (!cslConfig.templates.has('chicago-notes-bibliography')) {
-		cslConfig.templates.add(
-			'chicago-notes-bibliography',
-			chicagoNotesBibliographyTemplate
-		);
-	}
-
-	if (!cslConfig.templates.has('ieee')) {
-		cslConfig.templates.add('ieee', ieeeTemplate);
-	}
-
-	if (!cslConfig.templates.has('modern-language-association')) {
-		cslConfig.templates.add('modern-language-association', mla9Template);
-	}
-
-	if (!cslConfig.templates.has('oscola')) {
-		cslConfig.templates.add('oscola', oscolaTemplate);
-	}
-
-	if (!cslConfig.templates.has('abnt')) {
-		cslConfig.templates.add('abnt', abntTemplate);
-	}
-
-	for (const templateName of BUILTIN_TEMPLATE_NAMES) {
-		if (!cslConfig.templates.has(templateName)) {
-			const builtinTemplate = builtinStyles?.[templateName];
-
-			if (builtinTemplate) {
-				cslConfig.templates.add(templateName, builtinTemplate);
-			} else {
-				emitFormattingWarning(
-					`citation-js template "${templateName}" is unavailable.`
-				);
-			}
-		}
-	}
-
-	templatesRegistered = true;
+	const xml = await loader();
+	cslConfig.templates.add(templateName, xml);
 }
 
 function hasTrailingEtAlAuthor(csl) {
@@ -176,11 +146,25 @@ function formatBibliographyEntryUncached(csl, style, cacheKey) {
 	);
 }
 
+/**
+ * Clear the citation formatting cache.
+ *
+ * @since 0.1.0
+ */
 export function clearFormattingCache() {
 	FORMAT_CACHE.clear();
 }
 
-export function formatBibliographyEntries(cslItems, styleKey) {
+/**
+ * Format multiple CSL-JSON items as bibliography entries.
+ *
+ * @param {Array}  cslItems Array of CSL-JSON objects.
+ * @param {string} styleKey Citation style key.
+ * @return {string[]} Array of formatted bibliography strings.
+ *
+ * @since 0.1.0
+ */
+export async function formatBibliographyEntries(cslItems, styleKey) {
 	if (!Array.isArray(cslItems) || !cslItems.length) {
 		return [];
 	}
@@ -190,7 +174,7 @@ export function formatBibliographyEntries(cslItems, styleKey) {
 	const results = new Array(cslItems.length);
 	const uncachedItems = new Map();
 
-	ensureBuiltinTemplatesRegistered();
+	await ensureTemplateRegistered(style.cslTemplate);
 
 	cslItems.forEach((csl, index) => {
 		const cacheKey = getFormatCacheKey(csl, resolvedStyleKey);
@@ -224,8 +208,18 @@ export function formatBibliographyEntries(cslItems, styleKey) {
 	return results;
 }
 
-export function formatBibliographyEntry(csl, styleKey) {
-	return formatBibliographyEntries([csl], styleKey)[0];
+/**
+ * Format a single CSL-JSON item as a bibliography entry.
+ *
+ * @param {Object} csl      CSL-JSON object.
+ * @param {string} styleKey Citation style key.
+ * @return {string} Formatted bibliography string.
+ *
+ * @since 0.1.0
+ */
+export async function formatBibliographyEntry(csl, styleKey) {
+	const results = await formatBibliographyEntries([csl], styleKey);
+	return results[0];
 }
 
 function stableStringify(value) {

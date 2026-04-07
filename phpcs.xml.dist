@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<ruleset name="Scholarly Bibliography">
+	<description>WordPress Coding Standards for Scholarly Bibliography plugin</description>
+
+	<!-- Files to check -->
+	<file>scholarly-bibliography.php</file>
+
+	<!-- Exclude vendor, node_modules, and tests -->
+	<exclude-pattern>vendor/*</exclude-pattern>
+	<exclude-pattern>node_modules/*</exclude-pattern>
+	<exclude-pattern>tests/*</exclude-pattern>
+
+	<!-- Use WordPress-Core as base -->
+	<rule ref="WordPress-Core"/>
+
+	<!-- WordPress-Docs -->
+	<rule ref="WordPress-Docs"/>
+
+	<!-- WordPress-Extra -->
+	<rule ref="WordPress-Extra"/>
+
+	<!-- Allow uppercase constants (WP conventions use globals) -->
+	<rule ref="WordPress.WP.GlobalVariablesOverride"/>
+
+	<!-- Line length -->
+	<rule ref="Generic.Files.LineLength">
+		<properties>
+			<property name="lineLimit" value="120"/>
+			<property name="absoluteLineLimit" value="120"/>
+		</properties>
+	</rule>
+
+	<!-- Custom prefix for globals -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="scholarly_bibliography"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

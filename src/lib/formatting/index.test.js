@@ -183,4 +183,73 @@ describe('formatting helpers', () => {
 			},
 		]);
 	});
+
+	it.each([
+		'broadcast',
+		'entry-dictionary',
+		'entry-encyclopedia',
+		'graphic',
+		'interview',
+		'legal_case',
+		'legislation',
+		'map',
+		'musical_score',
+		'pamphlet',
+		'performance',
+		'periodical',
+		'regulation',
+		'song',
+		'speech',
+		'standard',
+		'treaty',
+	])('italicizes the title for standalone type "%s"', (type) => {
+		const citation = createCitation({
+			csl: {
+				type,
+				title: 'Standalone Work',
+			},
+			formattedText: 'Author. Standalone Work. Publisher, 2024.',
+		});
+
+		const segments = getDisplaySegments(citation);
+		const italicSegment = segments.find((s) => s.italic);
+
+		expect(italicSegment).toBeDefined();
+		expect(italicSegment.text).toBe('Standalone Work');
+	});
+
+	it.each(['entry', 'paper-conference', 'post', 'post-weblog'])(
+		'italicizes the container-title for type "%s"',
+		(type) => {
+			const citation = createCitation({
+				csl: {
+					type,
+					title: 'Contained Work',
+					'container-title': 'Parent Collection',
+				},
+				formattedText:
+					'Author. "Contained Work." Parent Collection. Publisher, 2024.',
+			});
+
+			const segments = getDisplaySegments(citation);
+			const italicSegment = segments.find((s) => s.italic);
+
+			expect(italicSegment).toBeDefined();
+			expect(italicSegment.text).toBe('Parent Collection');
+		}
+	);
+
+	it('returns no italic segments for an unrecognized CSL type', () => {
+		const citation = createCitation({
+			csl: {
+				type: 'personal_communication',
+				title: 'Private Note',
+			},
+			formattedText: 'Author. Private Note. 2024.',
+		});
+
+		const segments = getDisplaySegments(citation);
+
+		expect(segments.every((s) => !s.italic)).toBe(true);
+	});
 });

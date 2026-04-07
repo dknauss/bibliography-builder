@@ -75,6 +75,15 @@ function citationsMatch(candidate, existing) {
 	);
 }
 
+/**
+ * Find a duplicate citation in an existing list.
+ *
+ * @param {Object} candidate         Citation object to check.
+ * @param {Array}  existingCitations List of existing citations.
+ * @return {Object|null} The duplicate citation or null.
+ *
+ * @since 0.1.0
+ */
 export function findDuplicateCitation(candidate, existingCitations) {
 	return (
 		existingCitations.find((existing) =>
@@ -83,6 +92,15 @@ export function findDuplicateCitation(candidate, existingCitations) {
 	);
 }
 
+/**
+ * Partition incoming entries into unique and duplicate lists.
+ *
+ * @param {Array} incomingEntries   New entries to check.
+ * @param {Array} existingCitations Existing citations.
+ * @return {{uniqueEntries: Array, duplicateEntries: Array}} Partitioned results.
+ *
+ * @since 0.1.0
+ */
 export function partitionDuplicateCitations(
 	incomingEntries,
 	existingCitations

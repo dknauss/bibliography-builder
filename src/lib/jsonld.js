@@ -29,6 +29,8 @@ function getPrimaryIdentifierValue(value) {
  *
  * @param {Object} csl CSL-JSON object.
  * @return {Object} Schema.org typed object.
+ *
+ * @since 0.1.0
  */
 export function cslToJsonLd(csl) {
 	const schemaType = TYPE_MAP[csl.type] || 'CreativeWork';
@@ -113,6 +115,8 @@ export function cslToJsonLd(csl) {
 			propertyID: 'DOI',
 			value: csl.DOI,
 		};
+		// Note: Uses https://doi.org/ for Schema.org JSON-LD compatibility.
+		// COinS output (coins.js) uses info:doi/ per OpenURL convention.
 		result.url = 'https://doi.org/' + encodeURIComponent(csl.DOI);
 	}
 
@@ -134,6 +138,8 @@ export function cslToJsonLd(csl) {
  *
  * @param {Array} cslArray Array of CSL-JSON objects.
  * @return {string} Safe JSON string for embedding in a <script> tag.
+ *
+ * @since 0.1.0
  */
 export function buildJsonLdString(cslArray) {
 	const data = cslArray.map(cslToJsonLd);
@@ -146,6 +152,8 @@ export function buildJsonLdString(cslArray) {
  *
  * @param {Array} cslArray Array of CSL-JSON objects.
  * @return {string} Safe JSON string.
+ *
+ * @since 0.1.0
  */
 export function buildCslJsonString(cslArray) {
 	return JSON.stringify(cslArray).replace(/</g, '\\u003c');

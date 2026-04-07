@@ -1,8 +1,10 @@
 <?php
 /**
  * Plugin Name:       Bibliography
- * Description:       A block that transforms pasted scholarly citations (DOIs, BibTeX) into a semantically rich, auto-sorted bibliography list.
- * Version:           0.1.0
+ * Description:       A block that transforms pasted scholarly citations
+ *                    (DOIs, BibTeX) into a semantically rich, auto-sorted
+ *                    bibliography list.
+ * Version:           1.0.0
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            Dan Knauss
@@ -31,12 +33,21 @@ function scholarly_bibliography_collect_blocks( $blocks, $results = array() ) {
 			$attrs = isset( $block['attrs'] ) && is_array( $block['attrs'] ) ? $block['attrs'] : array();
 
 			$results[] = array(
-				'citationStyle' => isset( $attrs['citationStyle'] ) ? (string) $attrs['citationStyle'] : 'chicago-notes-bibliography',
-				'headingText'   => isset( $attrs['headingText'] ) ? (string) $attrs['headingText'] : '',
+				'citationStyle' => isset( $attrs['citationStyle'] )
+					? (string) $attrs['citationStyle']
+					: 'chicago-notes-bibliography',
+				'headingText'   => isset( $attrs['headingText'] )
+					? (string) $attrs['headingText']
+					: '',
 				'outputJsonLd'  => ! empty( $attrs['outputJsonLd'] ),
 				'outputCoins'   => ! empty( $attrs['outputCoins'] ),
 				'outputCslJson' => ! empty( $attrs['outputCslJson'] ),
-				'citations'     => isset( $attrs['citations'] ) && is_array( $attrs['citations'] ) ? array_values( array_filter( $attrs['citations'], 'is_array' ) ) : array(),
+				'citations'     => isset( $attrs['citations'] )
+					&& is_array( $attrs['citations'] )
+						? array_values(
+							array_filter( $attrs['citations'], 'is_array' )
+						)
+						: array(),
 			);
 		}
 
@@ -278,7 +289,10 @@ function scholarly_bibliography_register_rest_routes() {
 				$common_args,
 				array(
 					'index'  => array(
-						'description'       => __( 'Zero-based bibliography block index within the post.', 'scholarly-bibliography' ),
+						'description'       => __(
+							'Zero-based bibliography block index within the post.',
+							'scholarly-bibliography'
+						),
 						'type'              => 'integer',
 						'sanitize_callback' => 'absint',
 						'validate_callback' => static function ( $value ) {
@@ -286,14 +300,21 @@ function scholarly_bibliography_register_rest_routes() {
 						},
 					),
 					'format' => array(
-						'description'       => __( 'Response format: json, text, or csl-json.', 'scholarly-bibliography' ),
+						'description'       => __(
+							'Response format: json, text, or csl-json.',
+							'scholarly-bibliography'
+						),
 						'type'              => 'string',
 						'default'           => 'json',
 						'sanitize_callback' => static function ( $value ) {
 							return sanitize_key( $value );
 						},
 						'validate_callback' => static function ( $value ) {
-							return in_array( $value, array( 'json', 'text', 'csl-json' ), true );
+							return in_array(
+								$value,
+								array( 'json', 'text', 'csl-json' ),
+								true
+							);
 						},
 					),
 				)
@@ -337,7 +358,8 @@ function scholarly_bibliography_rest_pre_serve_request( $served, $result, $reque
 		$server->send_header( $key, $value );
 	}
 
-	echo wp_strip_all_tags( $data, false ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Plain-text REST response is intentionally stripped to plain text at send time.
+	// Plain-text REST response is intentionally stripped to plain text at send time.
+	echo wp_strip_all_tags( $data, false ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	return true;
 }
 

@@ -122,6 +122,15 @@ function cslToRisEntry(csl) {
 	return lines.join('\n');
 }
 
+/**
+ * Build plain-text bibliography content.
+ *
+ * @param {Array}  citations     Array of citation objects.
+ * @param {string} citationStyle Citation style key.
+ * @return {string} Plain-text bibliography.
+ *
+ * @since 0.1.0
+ */
 export function buildPlainTextBibliographyContent(citations, citationStyle) {
 	const sortedCitations = sortCitations(citations, citationStyle);
 
@@ -130,6 +139,15 @@ export function buildPlainTextBibliographyContent(citations, citationStyle) {
 		.join('\n')}\n`;
 }
 
+/**
+ * Build CSL-JSON export content.
+ *
+ * @param {Array}  citations     Array of citation objects.
+ * @param {string} citationStyle Citation style key.
+ * @return {string} JSON string of CSL-JSON array.
+ *
+ * @since 0.1.0
+ */
 export function buildCslJsonExportContent(citations, citationStyle) {
 	const sortedCitations = sortCitations(citations, citationStyle);
 	const cslArray = sortedCitations.map((citation) => citation.csl);
@@ -167,6 +185,16 @@ export function downloadTextExport(
 	return undefined;
 }
 
+/**
+ * Trigger download of CSL-JSON export file.
+ *
+ * @param {Array}  citations      Array of citation objects.
+ * @param {string} citationStyle  Citation style key.
+ * @param {Object} [dependencies] Test injection for dependencies.
+ * @return {void}
+ *
+ * @since 0.1.0
+ */
 export function downloadCslJsonExport(citations, citationStyle, dependencies) {
 	return downloadTextExport(
 		{
@@ -178,6 +206,17 @@ export function downloadCslJsonExport(citations, citationStyle, dependencies) {
 	);
 }
 
+/**
+ * Build BibTeX export content.
+ *
+ * @param {Array}  citations          Array of citation objects.
+ * @param {string} citationStyle      Citation style key.
+ * @param {Object} [options]          Options.
+ * @param {Object} [options.CiteCtor] Test injection for Cite constructor.
+ * @return {Promise<string>} BibTeX formatted string.
+ *
+ * @since 0.1.0
+ */
 export async function buildBibtexExportContent(
 	citations,
 	citationStyle,
@@ -191,6 +230,16 @@ export async function buildBibtexExportContent(
 	return `${cite.format('bibtex')}\n`;
 }
 
+/**
+ * Trigger download of BibTeX export file.
+ *
+ * @param {Array}  citations      Array of citation objects.
+ * @param {string} citationStyle  Citation style key.
+ * @param {Object} [dependencies] Test injection for dependencies.
+ * @return {Promise<void>}
+ *
+ * @since 0.1.0
+ */
 export async function downloadBibtexExport(
 	citations,
 	citationStyle,
@@ -210,6 +259,15 @@ export async function downloadBibtexExport(
 	);
 }
 
+/**
+ * Build RIS export content.
+ *
+ * @param {Array}  citations     Array of citation objects.
+ * @param {string} citationStyle Citation style key.
+ * @return {string} RIS formatted string.
+ *
+ * @since 0.1.0
+ */
 export function buildRisExportContent(citations, citationStyle) {
 	const sortedCitations = sortCitations(citations, citationStyle);
 	const cslArray = sortedCitations.map((citation) => citation.csl);
@@ -217,6 +275,16 @@ export function buildRisExportContent(citations, citationStyle) {
 	return `${cslArray.map(cslToRisEntry).join('\n\n')}\n`;
 }
 
+/**
+ * Trigger download of RIS export file.
+ *
+ * @param {Array}  citations      Array of citation objects.
+ * @param {string} citationStyle  Citation style key.
+ * @param {Object} [dependencies] Test injection for dependencies.
+ * @return {void}
+ *
+ * @since 0.1.0
+ */
 export function downloadRisExport(citations, citationStyle, dependencies) {
 	return downloadTextExport(
 		{

@@ -379,6 +379,15 @@ function normalizeResolvedCsl(csl, inputFormat) {
 	};
 }
 
+/**
+ * Validate and sanitize a CSL-JSON object for safe storage and rendering.
+ *
+ * @param {Object} csl CSL-JSON object.
+ * @return {Object} Sanitized CSL-JSON object.
+ * @throws {Error} If the CSL object is invalid.
+ *
+ * @since 0.1.0
+ */
 export function validateAndSanitizeCsl(csl) {
 	if (!isPlainObject(csl)) {
 		throw new Error('Invalid CSL object.');
@@ -635,6 +644,8 @@ function formatBackendParseError(format, err) {
  *                                            the parser for legacy/explicit
  *                                            call sites.
  * @return {Promise<Object>} { entries: Array, errors: Array, truncated: boolean }
+ *
+ * @since 0.1.0
  */
 export async function parsePastedInput(
 	input,
@@ -740,7 +751,7 @@ export async function parsePastedInput(
 
 	if (!deferFormatting && entries.length) {
 		const { formatBibliographyEntries } = await import('./formatting/csl');
-		const formattedTexts = formatBibliographyEntries(
+		const formattedTexts = await formatBibliographyEntries(
 			entries.map((entry) => entry.csl),
 			styleKey
 		);
@@ -758,5 +769,15 @@ export async function parsePastedInput(
 	};
 }
 
+/**
+ * Maximum number of entries allowed per paste operation.
+ *
+ * @since 0.1.0
+ */
 export { MAX_ENTRIES_PER_PASTE };
+/**
+ * User-facing message for unsupported input types.
+ *
+ * @since 0.1.0
+ */
 export { SUPPORTED_INPUT_MESSAGE };

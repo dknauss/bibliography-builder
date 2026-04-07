@@ -3,24 +3,22 @@ import { Cite } from '@citation-js/core';
 import { parsePastedInput } from './lib/parser';
 import save from './save';
 
-jest.mock('@citation-js/core', () => ({
-	Cite: {
-		async: jest.fn(),
-	},
-}));
+jest.mock('@citation-js/core', () =>
+	require('./__test-utils__/citation-js-mocks').citationJsCoreMock()
+);
 
-jest.mock('@citation-js/plugin-doi', () => ({}));
-jest.mock('@citation-js/plugin-bibtex', () => ({}));
-jest.mock('@citation-js/plugin-csl', () => ({}));
-jest.mock('./lib/formatting/csl', () => ({
-	formatBibliographyEntries: jest.fn((cslItems) =>
-		cslItems.map((item) =>
-			`${item.author?.[0]?.family || 'Unknown'}. ${item.title}. ${
-				item.URL || ''
-			}`.trim()
-		)
-	),
-}));
+jest.mock('@citation-js/plugin-doi', () =>
+	require('./__test-utils__/citation-js-mocks').citationJsPluginMock()
+);
+jest.mock('@citation-js/plugin-bibtex', () =>
+	require('./__test-utils__/citation-js-mocks').citationJsPluginMock()
+);
+jest.mock('@citation-js/plugin-csl', () =>
+	require('./__test-utils__/citation-js-mocks').citationJsPluginMock()
+);
+jest.mock('./lib/formatting/csl', () =>
+	require('./__test-utils__/citation-js-mocks').descriptiveFormattingFactory()
+);
 
 jest.mock(
 	'@wordpress/block-editor',

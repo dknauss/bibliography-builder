@@ -1,17 +1,19 @@
-jest.mock('@citation-js/core', () => ({
-	Cite: {
-		async: jest.fn(),
-	},
-}));
+jest.mock('@citation-js/core', () =>
+	require('../__test-utils__/citation-js-mocks').citationJsCoreMock()
+);
 
-jest.mock('@citation-js/plugin-doi', () => ({}));
-jest.mock('@citation-js/plugin-bibtex', () => ({}));
-jest.mock('@citation-js/plugin-csl', () => ({}));
-jest.mock('./formatting/csl', () => ({
-	formatBibliographyEntries: jest.fn((cslItems) =>
-		cslItems.map(() => 'Formatted bibliography entry')
-	),
-}));
+jest.mock('@citation-js/plugin-doi', () =>
+	require('../__test-utils__/citation-js-mocks').citationJsPluginMock()
+);
+jest.mock('@citation-js/plugin-bibtex', () =>
+	require('../__test-utils__/citation-js-mocks').citationJsPluginMock()
+);
+jest.mock('@citation-js/plugin-csl', () =>
+	require('../__test-utils__/citation-js-mocks').citationJsPluginMock()
+);
+jest.mock('./formatting/csl', () =>
+	require('../__test-utils__/citation-js-mocks').stubFormattingFactory()
+);
 
 import { Cite } from '@citation-js/core';
 import { parsePastedInput, validateAndSanitizeCsl } from './parser';

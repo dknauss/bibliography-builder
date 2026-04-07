@@ -31,7 +31,7 @@ describe('formatting runtime behavior', () => {
 		return formattingModule;
 	}
 
-	it('falls back to raw title and continues the batch when citation-js throws', () => {
+	it('falls back to raw title and continues the batch when citation-js throws', async () => {
 		const mockCite = jest
 			.fn()
 			.mockImplementationOnce(() => ({
@@ -45,7 +45,7 @@ describe('formatting runtime behavior', () => {
 			.mockImplementation(() => {});
 		const { formatBibliographyEntries } = loadFormattingModule(mockCite);
 
-		const results = formatBibliographyEntries(
+		const results = await formatBibliographyEntries(
 			[
 				{
 					type: 'book',
@@ -63,7 +63,7 @@ describe('formatting runtime behavior', () => {
 		expect(warnSpy).toHaveBeenCalled();
 	});
 
-	it('uses a stable cache key for equivalent CSL objects with different key order', () => {
+	it('uses a stable cache key for equivalent CSL objects with different key order', async () => {
 		const mockCite = jest.fn().mockImplementation(() => ({
 			format: () => 'Stable cache output',
 		}));
@@ -71,7 +71,7 @@ describe('formatting runtime behavior', () => {
 			loadFormattingModule(mockCite);
 
 		clearFormattingCache();
-		formatBibliographyEntry(
+		await formatBibliographyEntry(
 			{
 				type: 'book',
 				title: 'Stable object',
@@ -79,7 +79,7 @@ describe('formatting runtime behavior', () => {
 			},
 			'apa-7'
 		);
-		formatBibliographyEntry(
+		await formatBibliographyEntry(
 			{
 				issued: { 'date-parts': [[2024]] },
 				title: 'Stable object',
@@ -91,7 +91,7 @@ describe('formatting runtime behavior', () => {
 		expect(mockCite).toHaveBeenCalledTimes(1);
 	});
 
-	it('evicts the oldest cache entry instead of clearing the entire cache', () => {
+	it('evicts the oldest cache entry instead of clearing the entire cache', async () => {
 		const mockCite = jest.fn().mockImplementation((csl) => ({
 			format: () => csl.title,
 		}));
@@ -101,7 +101,7 @@ describe('formatting runtime behavior', () => {
 		clearFormattingCache();
 
 		for (let index = 0; index < 501; index += 1) {
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'book',
 					title: `Title ${index}`,
@@ -112,7 +112,7 @@ describe('formatting runtime behavior', () => {
 
 		expect(mockCite).toHaveBeenCalledTimes(501);
 
-		formatBibliographyEntry(
+		await formatBibliographyEntry(
 			{
 				type: 'book',
 				title: 'Title 500',
@@ -123,14 +123,14 @@ describe('formatting runtime behavior', () => {
 		expect(mockCite).toHaveBeenCalledTimes(501);
 	});
 
-	it('uses the style locale when formatting ABNT citations', () => {
+	it('uses the style locale when formatting ABNT citations', async () => {
 		const formatSpy = jest.fn(() => 'ABNT output');
 		const mockCite = jest.fn().mockImplementation(() => ({
 			format: formatSpy,
 		}));
 		const { formatBibliographyEntry } = loadFormattingModule(mockCite);
 
-		formatBibliographyEntry(
+		await formatBibliographyEntry(
 			{
 				type: 'book',
 				title: 'Referências',

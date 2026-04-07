@@ -250,7 +250,7 @@ export default function Edit({ attributes, setAttributes }) {
 				const { formatBibliographyEntries } = await import(
 					'./lib/formatting/csl'
 				);
-				const formattedTexts = formatBibliographyEntries(
+				const formattedTexts = await formatBibliographyEntries(
 					uniqueEntries.map((citation) => citation.csl),
 					citationStyle
 				);

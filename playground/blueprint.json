@@ -1,8 +1,8 @@
 {
   "$schema": "https://playground.wordpress.net/blueprint-schema.json",
   "meta": {
-    "title": "Scholarly Bibliography Block",
-    "description": "Launch WordPress Playground with the Scholarly Bibliography Block plugin installed for quick evaluation.",
+    "title": "Bibliography Block",
+    "description": "Launch WordPress Playground with the Bibliography Block plugin installed for quick evaluation.",
     "author": "danknauss",
     "categories": ["plugin", "bibliography", "block-editor"]
   },
@@ -16,10 +16,8 @@
     {
       "step": "installPlugin",
       "pluginData": {
-        "resource": "git:directory",
-        "url": "https://github.com/dknauss/wp-bibliography-block",
-        "ref": "main",
-        "refType": "branch"
+        "resource": "url",
+        "url": "https://github.com/dknauss/wp-bibliography-block/releases/latest/download/scholarly-bibliography.zip"
       },
       "options": {
         "activate": true,

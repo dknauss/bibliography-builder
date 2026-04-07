@@ -1,9 +1,9 @@
 import { formatBibliographyEntries, formatBibliographyEntry } from './csl';
 
 describe('formatBibliographyEntry', () => {
-	it('formats book citations in Chicago notes-bibliography style by default', () => {
+	it('formats book citations in Chicago notes-bibliography style by default', async () => {
 		expect(
-			formatBibliographyEntry({
+			await formatBibliographyEntry({
 				type: 'book',
 				title: 'The Channels of Student Activism: How the Left and Right Are Winning (and Losing) in Campus Politics Today',
 				publisher: 'University of Chicago Press',
@@ -26,9 +26,9 @@ describe('formatBibliographyEntry', () => {
 		);
 	});
 
-	it('formats book citations in Chicago author-date style', () => {
+	it('formats book citations in Chicago author-date style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'book',
 					title: 'The Channels of Student Activism: How the Left and Right Are Winning (and Losing) in Campus Politics Today',
@@ -54,9 +54,9 @@ describe('formatBibliographyEntry', () => {
 		);
 	});
 
-	it('formats journal citations in Chicago author-date style', () => {
+	it('formats journal citations in Chicago author-date style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'article-journal',
 					title: 'Learning Blocks',
@@ -82,9 +82,9 @@ describe('formatBibliographyEntry', () => {
 		);
 	});
 
-	it('formats cleaned review records in Chicago author-date style', () => {
+	it('formats cleaned review records in Chicago author-date style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'article-journal',
 					title: 'Amy J. Binder and Jeffrey L. Kidder. The Channels of Student Activism: How the Left and Right Are Winning (and Losing) in Campus Politics Today',
@@ -109,9 +109,9 @@ describe('formatBibliographyEntry', () => {
 		);
 	});
 
-	it('formats book review citations in Chicago notes-bibliography style', () => {
+	it('formats book review citations in Chicago notes-bibliography style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'review-book',
 					title: 'The Muchness of Madonna',
@@ -140,9 +140,9 @@ describe('formatBibliographyEntry', () => {
 		);
 	});
 
-	it('formats chapter citations in Chicago author-date style', () => {
+	it('formats chapter citations in Chicago author-date style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'chapter',
 					title: 'The Queen Mary Psalter',
@@ -176,9 +176,9 @@ describe('formatBibliographyEntry', () => {
 		);
 	});
 
-	it('formats chapter citations in Chicago notes-bibliography style', () => {
+	it('formats chapter citations in Chicago notes-bibliography style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'chapter',
 					title: 'The Queen Mary Psalter',
@@ -212,9 +212,9 @@ describe('formatBibliographyEntry', () => {
 		);
 	});
 
-	it('formats edited books in Chicago notes-bibliography style with editors as the lead names', () => {
+	it('formats edited books in Chicago notes-bibliography style with editors as the lead names', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'collection',
 					title: 'The Book by Design: The Remarkable Story of the World’s Greatest Invention',
@@ -240,9 +240,9 @@ describe('formatBibliographyEntry', () => {
 		);
 	});
 
-	it('does not label low-information journal-like heuristics as preprints in Chicago notes-bibliography style', () => {
+	it('does not label low-information journal-like heuristics as preprints in Chicago notes-bibliography style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'article-journal',
 					title: 'the true about tree',
@@ -263,9 +263,9 @@ describe('formatBibliographyEntry', () => {
 		).not.toMatch(/preprint/iu);
 	});
 
-	it('preserves et al. without inserting "and" before it', () => {
+	it('preserves et al. without inserting "and" before it', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'article-journal',
 					title: 'Extant Life Detection Using Label-Free Video Microscopy in Analog Aquatic Environments',
@@ -302,9 +302,9 @@ describe('formatBibliographyEntry', () => {
 });
 
 describe('additional citation styles', () => {
-	it('formats journal citations in Harvard style', () => {
+	it('formats journal citations in Harvard style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'article-journal',
 					title: 'Learning Blocks',
@@ -330,9 +330,9 @@ describe('additional citation styles', () => {
 		);
 	});
 
-	it('formats journal citations in IEEE style', () => {
+	it('formats journal citations in IEEE style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'article-journal',
 					title: 'Learning Blocks',
@@ -358,9 +358,9 @@ describe('additional citation styles', () => {
 		);
 	});
 
-	it('formats journal citations in Vancouver style', () => {
+	it('formats journal citations in Vancouver style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'article-journal',
 					title: 'Learning Blocks',
@@ -385,9 +385,9 @@ describe('additional citation styles', () => {
 		);
 	});
 
-	it('formats book citations in MLA 9 style', () => {
+	it('formats book citations in MLA 9 style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'book',
 					title: "The War Comes Home: Washington's Battle against America's Veterans",
@@ -409,9 +409,9 @@ describe('additional citation styles', () => {
 		);
 	});
 
-	it('formats book citations in OSCOLA style', () => {
+	it('formats book citations in OSCOLA style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'book',
 					title: 'The Channels of Student Activism: How the Left and Right Are Winning (and Losing) in Campus Politics Today',
@@ -437,9 +437,9 @@ describe('additional citation styles', () => {
 		);
 	});
 
-	it('formats webpage citations in OSCOLA style', () => {
+	it('formats webpage citations in OSCOLA style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'webpage',
 					title: 'Responses API',
@@ -460,9 +460,9 @@ describe('additional citation styles', () => {
 		);
 	});
 
-	it('formats book citations in ABNT style', () => {
+	it('formats book citations in ABNT style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'book',
 					title: 'The Channels of Student Activism: How the Left and Right Are Winning (and Losing) in Campus Politics Today',
@@ -488,9 +488,9 @@ describe('additional citation styles', () => {
 		);
 	});
 
-	it('formats webpage citations in ABNT style', () => {
+	it('formats webpage citations in ABNT style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'webpage',
 					title: 'Responses API',
@@ -511,9 +511,9 @@ describe('additional citation styles', () => {
 		);
 	});
 
-	it('normalizes duplicated volume, issue, and page labels in ABNT style', () => {
+	it('normalizes duplicated volume, issue, and page labels in ABNT style', async () => {
 		expect(
-			formatBibliographyEntry(
+			await formatBibliographyEntry(
 				{
 					type: 'article-journal',
 					title: 'Learning Blocks',
@@ -538,7 +538,7 @@ describe('additional citation styles', () => {
 		);
 	});
 
-	it('formats batches while preserving duplicate results and order', () => {
+	it('formats batches while preserving duplicate results and order', async () => {
 		const cslItems = [
 			{
 				type: 'book',
@@ -585,7 +585,10 @@ describe('additional citation styles', () => {
 		];
 
 		expect(
-			formatBibliographyEntries(cslItems, 'chicago-notes-bibliography')
+			await formatBibliographyEntries(
+				cslItems,
+				'chicago-notes-bibliography'
+			)
 		).toEqual([
 			'Smith, Ada. Duplicate Example. Example Press, 2024.',
 			'Hopper, Grace. Unique Example. Example Press, 2025.',

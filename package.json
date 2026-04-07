@@ -1,6 +1,6 @@
 {
 	"name": "scholarly-bibliography",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "A WordPress block plugin that transforms pasted scholarly citations (DOIs, BibTeX) into a semantically rich, auto-sorted bibliography list.",
 	"author": "Dan Knauss",
 	"license": "GPL-2.0-or-later",
@@ -10,6 +10,7 @@
 		"start": "wp-scripts start",
 		"lint:js": "wp-scripts lint-js",
 		"lint:css": "wp-scripts lint-style",
+		"lint:php": "composer lint:php",
 		"test": "wp-scripts test-unit-js",
 		"test:js:coverage": "wp-scripts test-unit-js --runInBand --coverage --coverageReporters=clover --coverageReporters=text-summary --silent",
 		"benchmark:perf": "RUN_PERF_BENCHMARK=1 wp-scripts test-unit-js --runInBand --runTestsByPath src/benchmarks/performance-benchmark.test.js",

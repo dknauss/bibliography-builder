@@ -203,7 +203,7 @@ export async function createManualCitation(fields, styleKey) {
 	return {
 		id: createCitationId(),
 		csl,
-		formattedText: formatBibliographyEntry(csl, styleKey),
+		formattedText: await formatBibliographyEntry(csl, styleKey),
 		displayOverride: null,
 		inputFormat: 'manual',
 		parseWarnings: [],

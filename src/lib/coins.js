@@ -7,6 +7,8 @@
  *
  * @param {Object} csl CSL-JSON object.
  * @return {string} URL-encoded OpenURL key-value string.
+ *
+ * @since 0.1.0
  */
 export function buildCoins(csl) {
 	const params = ['ctx_ver=Z39.88-2004'];

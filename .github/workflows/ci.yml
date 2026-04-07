@@ -1,204 +1,205 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
-      - master
-      - 'codex/**'
-  pull_request:
+    push:
+        branches:
+            - main
+            - master
+            - 'codex/**'
+    pull_request:
 
 jobs:
-  quality:
-    name: Quality (Node ${{ matrix.node }})
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        node: [20, 22]
+    quality:
+        name: Quality (Node ${{ matrix.node }})
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                node: [20, 22]
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v5
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: ${{ matrix.node }}
-          cache: npm
+            - name: Set up Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: ${{ matrix.node }}
+                  cache: npm
 
-      - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+            - name: Install dependencies
+              run: npm ci --legacy-peer-deps
 
-      - name: Lint JavaScript
-        run: npm run lint:js
+            - name: Lint JavaScript
+              run: npm run lint:js
 
-      - name: Lint CSS
-        run: npm run lint:css
+            - name: Lint CSS
+              run: npm run lint:css
 
-      - name: Run unit tests
-        run: npm test -- --runInBand --silent
+            - name: Run unit tests
+              run: npm test -- --runInBand --silent
 
-      - name: Build
-        run: npm run build
+            - name: Build
+              run: npm run build
 
-  phpunit:
-    name: PHPUnit
-    runs-on: ubuntu-latest
+    phpunit:
+        name: PHPUnit
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v5
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          coverage: none
+            - name: Set up PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.3'
+                  coverage: none
 
-      - name: Validate Composer files
-        run: composer validate --strict
+            - name: Validate Composer files
+              run: composer validate --strict
 
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist
+            - name: Install Composer dependencies
+              run: composer install --no-interaction --prefer-dist
 
-      - name: Run PHPUnit
-        run: composer test:php
+            - name: Run PHPCS
+              run: composer lint:php
 
-  playwright-playground:
-    name: Playwright Playground smoke
-    runs-on: ubuntu-latest
-    needs: quality
+            - name: Run PHPUnit
+              run: composer test:php
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+    playwright-playground:
+        name: Playwright Playground smoke
+        runs-on: ubuntu-latest
+        needs: quality
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 22
-          cache: npm
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v5
 
-      - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+            - name: Set up Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 22
+                  cache: npm
 
-      - name: Build
-        run: npm run build
+            - name: Install dependencies
+              run: npm ci --legacy-peer-deps
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+            - name: Build
+              run: npm run build
 
-      - name: Run Playground Playwright smoke
-        run: npm run test:e2e:playground
+            - name: Install Playwright browsers
+              run: npx playwright install --with-deps chromium
 
-      - name: Upload Playwright results
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: playwright-results
-          path: |
-            test-results
-            .tmp/playground-e2e
-          if-no-files-found: warn
+            - name: Run Playground Playwright smoke
+              run: npm run test:e2e:playground
 
-  psalm:
-    name: Psalm
-    runs-on: ubuntu-latest
-    needs: phpunit
-    continue-on-error: true
+            - name: Upload Playwright results
+              if: always()
+              uses: actions/upload-artifact@v6
+              with:
+                  name: playwright-results
+                  path: |
+                      test-results
+                      .tmp/playground-e2e
+                  if-no-files-found: warn
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+    psalm:
+        name: Psalm
+        runs-on: ubuntu-latest
+        needs: phpunit
+        continue-on-error: true
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          coverage: none
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v5
 
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist
+            - name: Set up PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.3'
+                  coverage: none
 
-      - name: Run Psalm
-        run: composer analyze:php
+            - name: Install Composer dependencies
+              run: composer install --no-interaction --prefer-dist
 
-  coverage:
-    name: Coverage upload
-    runs-on: ubuntu-latest
-    needs:
-      - quality
-      - phpunit
-    continue-on-error: true
+            - name: Run Psalm
+              run: composer analyze:php
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+    coverage:
+        name: Coverage upload
+        runs-on: ubuntu-latest
+        needs:
+            - quality
+            - phpunit
+        continue-on-error: true
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 22
-          cache: npm
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v5
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          coverage: xdebug
+            - name: Set up Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 22
+                  cache: npm
 
-      - name: Install JS dependencies
-        run: npm ci --legacy-peer-deps
+            - name: Set up PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.3'
+                  coverage: xdebug
 
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist
+            - name: Install JS dependencies
+              run: npm ci --legacy-peer-deps
 
-      - name: Generate JS coverage
-        run: npm run test:js:coverage
+            - name: Install Composer dependencies
+              run: composer install --no-interaction --prefer-dist
 
-      - name: Generate PHP coverage
-        run: composer test:php:coverage
+            - name: Generate JS coverage
+              run: npm run test:js:coverage
 
-      - name: Upload to Codecov
-        if: ${{ env.CODECOV_TOKEN != '' }}
-        uses: codecov/codecov-action@v5
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        with:
-          files: ./coverage/clover.xml,./build/logs/phpunit-clover.xml
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: false
+            - name: Generate PHP coverage
+              run: composer test:php:coverage
 
-  package-release:
-    name: Package release artifact
-    runs-on: ubuntu-latest
-    needs:
-      - quality
-      - phpunit
+            - name: Upload to Codecov
+              if: ${{ secrets.CODECOV_TOKEN != '' }}
+              uses: codecov/codecov-action@v5
+              with:
+                  files: ./coverage/clover.xml,./build/logs/phpunit-clover.xml
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  fail_ci_if_error: false
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+    package-release:
+        name: Package release artifact
+        runs-on: ubuntu-latest
+        needs:
+            - quality
+            - phpunit
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 20
-          cache: npm
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v5
 
-      - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+            - name: Set up Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 20
+                  cache: npm
 
-      - name: Build
-        run: npm run build
+            - name: Install dependencies
+              run: npm ci --legacy-peer-deps
 
-      - name: Package plugin
-        run: npm run package:release
+            - name: Build
+              run: npm run build
 
-      - name: Upload packaged plugin artifact
-        uses: actions/upload-artifact@v6
-        with:
-          name: scholarly-bibliography-release
-          path: output/release/scholarly-bibliography.zip
-          if-no-files-found: error
+            - name: Package plugin
+              run: npm run package:release
+
+            - name: Upload packaged plugin artifact
+              uses: actions/upload-artifact@v6
+              with:
+                  name: scholarly-bibliography-release
+                  path: output/release/scholarly-bibliography.zip
+                  if-no-files-found: error

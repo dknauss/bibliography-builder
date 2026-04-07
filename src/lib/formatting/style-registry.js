@@ -117,6 +117,14 @@ function emitStyleRegistryWarning(message) {
 	console?.warn?.(message);
 }
 
+/**
+ * Get the style definition for a given style key.
+ *
+ * @param {string} [styleKey=DEFAULT_CITATION_STYLE] Style key.
+ * @return {Object} Style definition object.
+ *
+ * @since 0.1.0
+ */
 export function getStyleDefinition(styleKey = DEFAULT_CITATION_STYLE) {
 	if (styleKey && !STYLE_DEFINITIONS[styleKey]) {
 		emitStyleRegistryWarning(
@@ -129,14 +137,39 @@ export function getStyleDefinition(styleKey = DEFAULT_CITATION_STYLE) {
 	);
 }
 
+/**
+ * Get the list semantics (ol/ul) for a citation style.
+ *
+ * @param {string} [styleKey=DEFAULT_CITATION_STYLE] Style key.
+ * @return {string} 'ol' or 'ul'.
+ *
+ * @since 0.1.0
+ */
 export function getListSemantics(styleKey = DEFAULT_CITATION_STYLE) {
 	return getStyleDefinition(styleKey).listType;
 }
 
+/**
+ * Get the heading placeholder text for a citation style.
+ *
+ * @param {string} [styleKey=DEFAULT_CITATION_STYLE] Style key.
+ * @return {string} Heading placeholder text.
+ *
+ * @since 0.1.0
+ */
 export function getHeadingPlaceholder(styleKey = DEFAULT_CITATION_STYLE) {
 	return getStyleDefinition(styleKey).headingPlaceholder || 'Bibliography';
 }
 
+/**
+ * Get selectable styles for the inspector dropdown.
+ *
+ * @param {Object}  [options={}]                        Options.
+ * @param {boolean} [options.includeExperimental=false] Include experimental styles.
+ * @return {Array<{label: string, value: string}>} Selectable style options.
+ *
+ * @since 0.1.0
+ */
 export function getSelectableStyles({
 	includeExperimental = EXPERIMENTAL_STYLE_PICKER,
 } = {}) {

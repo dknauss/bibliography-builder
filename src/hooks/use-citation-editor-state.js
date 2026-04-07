@@ -332,16 +332,18 @@ export function useCitationEditorState({
 			return;
 		}
 
+		const formattedText = await formatBibliographyEntry(
+			updatedCsl,
+			citationStyle
+		);
+
 		const updated = sortCitations(
 			citationsRef.current.map((entry) =>
 				entry.id === activeStructuredEditingId
 					? {
 							...entry,
 							csl: updatedCsl,
-							formattedText: formatBibliographyEntry(
-								updatedCsl,
-								citationStyle
-							),
+							formattedText,
 							displayOverride: null,
 							parseWarnings: [],
 					  }
@@ -407,7 +409,7 @@ export function useCitationEditorState({
 			const { formatBibliographyEntries } = await import(
 				'../lib/formatting/csl'
 			);
-			const formattedTexts = formatBibliographyEntries(
+			const formattedTexts = await formatBibliographyEntries(
 				citationsRef.current.map((citation) => citation.csl),
 				nextStyle
 			);

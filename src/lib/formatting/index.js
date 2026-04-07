@@ -12,6 +12,14 @@ export function getAutoFormattedText(citation) {
 	return citation.formattedText || citation.csl.title || '';
 }
 
+/**
+ * Get the display text for a citation, preferring displayOverride if set.
+ *
+ * @param {Object} citation Citation object.
+ * @return {string} Display text for the citation.
+ *
+ * @since 0.1.0
+ */
 export function getDisplayText(citation) {
 	return citation.displayOverride || getAutoFormattedText(citation);
 }
@@ -48,6 +56,14 @@ function splitTrailingUrlPunctuation(url) {
 	return { href, trailing };
 }
 
+/**
+ * Split text into segments with URL detection for linking.
+ *
+ * @param {string} text Text to parse.
+ * @return {Array<{text: string, href?: string, link: boolean}>} Segments.
+ *
+ * @since 0.1.0
+ */
 export function splitTextIntoLinkParts(text) {
 	if (!text) {
 		return [{ text: '', link: false }];
@@ -148,14 +164,31 @@ function getItalicizedFields(citation) {
 	if (
 		[
 			'book',
+			'broadcast',
 			'collection',
 			'dataset',
+			'entry-dictionary',
+			'entry-encyclopedia',
+			'graphic',
+			'interview',
+			'legal_case',
+			'legislation',
 			'manuscript',
+			'map',
 			'motion_picture',
+			'musical_score',
+			'pamphlet',
 			'patent',
+			'performance',
+			'periodical',
+			'regulation',
 			'report',
 			'software',
+			'song',
+			'speech',
+			'standard',
 			'thesis',
+			'treaty',
 			'webpage',
 		].includes(type)
 	) {
@@ -168,6 +201,10 @@ function getItalicizedFields(citation) {
 			'article-magazine',
 			'article-newspaper',
 			'chapter',
+			'entry',
+			'paper-conference',
+			'post',
+			'post-weblog',
 			'review',
 			'review-book',
 		].includes(type)
@@ -178,6 +215,20 @@ function getItalicizedFields(citation) {
 	return [];
 }
 
+/**
+ * @typedef {Object} DisplaySegment
+ * @property {string}  text   The text content of the segment.
+ * @property {boolean} italic Whether the segment should be italicized.
+ */
+
+/**
+ * Get display segments for a citation with italic formatting.
+ *
+ * @param {Object} citation Citation object.
+ * @return {DisplaySegment[]} Array of text segments with italic flags.
+ *
+ * @since 0.1.0
+ */
 export function getDisplaySegments(citation) {
 	const displayText = getDisplayText(citation);
 

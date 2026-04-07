@@ -72,7 +72,15 @@ function getTitleSort(csl) {
 	return stripArticles(csl.title || '').toLowerCase();
 }
 
-// Sort an array of citation objects by style family rules.
+/**
+ * Sort an array of citation objects by style family rules.
+ *
+ * @param {Array}  citations Array of citation objects.
+ * @param {string} styleKey  Citation style key.
+ * @return {Array} Sorted citation array.
+ *
+ * @since 0.1.0
+ */
 export function sortCitations(citations, styleKey) {
 	const style = getStyleDefinition(styleKey);
 	const titleBeforeYear = style.family === 'notes';

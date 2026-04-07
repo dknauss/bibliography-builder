@@ -3,32 +3,24 @@ Contributors: danknauss
 Tags: bibliography, citation, doi, bibtex, academic
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 0.1.0
+Stable tag: 1.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A block editor plugin that transforms DOI(s), BibTeX entries, and supported formatted citations into a semantically rich, auto-sorted bibliography.
+The only all-in-one scholarly bibliography block. Paste a DOI or BibTeX entry — get a perfectly formatted reference in your chosen academic citation style.
 
 == Description ==
 
-Bibliography is a WordPress block plugin for building reference lists. Add DOI(s), BibTeX entries, and supported citations in common scholarly styles to get a properly formatted, semantically rich bibliography with:
+**Bibliography** transforms pasted DOI(s), BibTeX entries, and citations into a semantically rich, auto-sorted reference list.
 
-* Chicago Notes-Bibliography formatting by default
-* Chicago Author-Date, APA 7, Harvard, Vancouver, IEEE, MLA 9, OSCOLA, and ABNT as selectable styles today
-* Automatic alphabetical sorting
-* Schema.org JSON-LD structured data by default
-* Optional COinS metadata for citation manager detection (Zotero, Mendeley)
-* Optional CSL-JSON machine-readable output
-* Downloadable CSL-JSON export from the editor
-* Downloadable BibTeX export from the editor
-* Downloadable RIS export from the editor
-* DPUB-ARIA semantic roles for accessibility
-* Static HTML output that survives plugin deactivation
-* Structured field editing for heuristic/warning-marked imports
-* Manual Entry fallback for unsupported formats
+**One-click import.** Paste a DOI and CrossRef resolves the metadata instantly. Paste BibTeX or formatted citations for books, articles, chapters, webpages, reviews, and theses.
 
-No shortcodes. No database tables. No server-side rendering. Clean, portable HTML.
+**Nine citation styles.** Choose from Chicago Notes-Bibliography, Chicago Author-Date, APA 7, MLA 9, Harvard, Vancouver, IEEE, OSCOLA, and ABNT — all with automatic alphabetical sorting per style rules.
+
+**Portable.** Static HTML output survives plugin deactivation. No shortcodes. No database tables.
+
+**Zotero-ready.** Schema.org JSON-LD by default. Optional COinS metadata for citation manager detection. Download CSL-JSON, BibTeX, or RIS for reuse in reference managers and scripts.
 
 Project URL: https://dan.knauss.ca/
 
@@ -76,10 +68,15 @@ Yes. The plugin exposes read-only REST endpoints at `/wp-json/scholarly-bibliogr
 
 == Changelog ==
 
-= 0.1.0 =
+= 1.0.0 =
 * Initial release.
 * DOI, BibTeX, and supported formatted citation input.
 * Chicago Notes-Bibliography default formatting.
 * Chicago Author-Date, APA 7, Harvard, Vancouver, IEEE, MLA 9, OSCOLA, and ABNT selectable styles.
 * JSON-LD output by default, with optional COinS and CSL-JSON layers.
 * Accessible editor with keyboard navigation.
+* Manual entry with structured fields and validation.
+* Duplicate detection across paste and manual entry.
+* Export: Download CSL-JSON, BibTeX, RIS; copy per-entry or full bibliography.
+* REST API for programmatic bibliography access.
+* Static HTML output survives plugin deactivation.
