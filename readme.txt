@@ -1,5 +1,6 @@
 === Bibliography ===
-Contributors: danknauss
+Contributors: dpknauss
+Donate link: https://www.paypal.com/paypalme/DanKnauss
 Tags: bibliography, citation, doi, bibtex, academic
 Requires at least: 6.4
 Tested up to: 7.0
@@ -8,7 +9,7 @@ Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The only all-in-one scholarly bibliography block. Paste a DOI or BibTeX entry — get a perfectly formatted reference in your chosen academic citation style.
+Paste a DOI or BibTeX entry — get a formatted, auto-sorted bibliography in any of nine academic citation styles.
 
 == Description ==
 
@@ -96,3 +97,8 @@ This plugin connects to the **CrossRef REST API** (https://api.crossref.org/) wh
 * Export: Download CSL-JSON, BibTeX, RIS; copy per-entry or full bibliography.
 * REST API for programmatic bibliography access.
 * Static HTML output survives plugin deactivation.
+
+== Upgrade Notice ==
+
+= 1.0.0 =
+Initial release.
