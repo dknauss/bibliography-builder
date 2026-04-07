@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Bibliography
- * Plugin URI:        https://dan.knauss.ca/
+ * Plugin URI:        https://github.com/dknauss/wp-bibliography-block/
  * Description:       A block that transforms pasted scholarly citations
  *                    (DOIs, BibTeX) into a semantically rich, auto-sorted
  *                    bibliography list.
