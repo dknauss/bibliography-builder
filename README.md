@@ -76,9 +76,9 @@ The free-text parser currently supports a growing set of formatted citations for
 - books
 - journal articles
 - chapters
-- webpages / social posts
+- webpages and social media posts
 - reviews
-- theses / dissertations
+- theses and dissertations
 
 Support is heuristic rather than universal. Unsupported inputs fail closed with a block-local inline Gutenberg notice. Manual entry is now available as a fallback for unsupported formats.
 
@@ -110,23 +110,23 @@ This plugin connects to the [CrossRef REST API](https://api.crossref.org/) when 
 Requires Node.js 18+, npm 9+, and Composer.
 
 ```bash
-npm install          # Install dependencies
-composer install     # Install PHP tooling
-npm run build        # Production build
-npm run start        # Development mode with file watching
-npm run lint:js          # ESLint
-npm run lint:css         # Stylelint
-npm run lint:php         # WPCS/PHPCS
-npm run test             # Unit tests
-npm run test:js:coverage # JS coverage for Codecov
-npm run test:rest:local  # Local REST endpoint smoke test (Studio site)
-npm run test:e2e         # Playwright smoke suite against local site
-npm run test:e2e:playground # Playground-based Playwright smoke suite
-npm run test:e2e:lifecycle  # Plugin lifecycle e2e tests (activate/deactivate/delete)
-npm run test:runtime:local # Docker-based runtime smoke environment
-composer test:php        # PHPUnit REST and bootstrap tests
-composer test:php:coverage # PHP coverage for Codecov
-composer analyze:php     # Psalm static analysis
+npm install                  # Install dependencies
+composer install             # Install PHP tooling
+npm run build                # Production build
+npm run start                # Development mode with file watching
+npm run lint:js              # ESLint
+npm run lint:css             # Stylelint
+npm run lint:php             # WPCS/PHPCS
+npm run test                 # Unit tests
+npm run test:js:coverage     # JS coverage for Codecov
+npm run test:rest:local      # Local REST endpoint smoke test (Studio site)
+npm run test:e2e             # Playwright smoke suite against local site
+npm run test:e2e:playground  # Playground-based Playwright smoke suite
+npm run test:e2e:lifecycle   # Plugin lifecycle e2e tests (activate/deactivate/delete)
+npm run test:runtime:local   # Docker-based runtime smoke environment
+composer test:php            # PHPUnit REST and bootstrap tests
+composer test:php:coverage   # PHP coverage for Codecov
+composer analyze:php         # Psalm static analysis
 ```
 
 GitHub Actions currently runs:
@@ -150,7 +150,7 @@ The GitHub Actions runtime matrix currently covers:
 - Nginx + PHP 8.2 + latest WordPress
 - Nginx + PHP 8.3 + latest WordPress
 
-Each runtime smoke job uploads artifacts including Docker logs, service status, HTTP responses, and environment summaries under `output/runtime-matrix/<matrix-name>`.
+Each runtime smoke job uploads artifacts, including Docker logs, service status, HTTP responses, and environment summaries under `output/runtime-matrix/<matrix-name>`.
 
 SQLite runtime smoke remains a planned follow-up while the CI bootstrap path is stabilized.
 
