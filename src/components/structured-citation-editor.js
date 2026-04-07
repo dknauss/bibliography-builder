@@ -98,10 +98,6 @@ export function StructuredCitationEditor({
 						value={fields.type || ''}
 						onChange={(event) => onTypeChange(event.target.value)}
 						onKeyDown={handleKeyDown}
-						aria-label={__(
-							'Publication Type',
-							'scholarly-bibliography'
-						)}
 					>
 						<option value="">
 							{__(
@@ -138,7 +134,6 @@ export function StructuredCitationEditor({
 							onFieldChange(key, event.target.value)
 						}
 						onKeyDown={handleKeyDown}
-						aria-label={label}
 					/>
 				</div>
 			))}

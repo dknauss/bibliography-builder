@@ -41,7 +41,13 @@ export function useEntryFocus({ citations, noticeVersion }) {
 			node.focus({ preventScroll: true });
 
 			if (typeof node.scrollIntoView === 'function') {
-				node.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+				const prefersReducedMotion = window.matchMedia(
+					'(prefers-reduced-motion: reduce)'
+				).matches;
+				node.scrollIntoView({
+					block: 'nearest',
+					behavior: prefersReducedMotion ? 'auto' : 'smooth',
+				});
 			}
 
 			pendingFocusRef.current = null;

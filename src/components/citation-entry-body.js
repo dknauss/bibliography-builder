@@ -47,16 +47,25 @@ export function CitationEntryBody({
 
 	if (editingId === citation.id) {
 		return (
-			<input
-				type="text"
-				className="scholarly-bibliography-edit-input"
-				value={editText}
-				onChange={(event) => onEditTextChange(event.target.value)}
-				onKeyDown={handleEditKeyDown}
-				onBlur={handleEditConfirm}
-				aria-label={`Editing citation: ${getEntryLabel(citation)}`}
-				autoFocus // eslint-disable-line jsx-a11y/no-autofocus
-			/>
+			<>
+				<label
+					htmlFor={`scholarly-bibliography-edit-${citation.id}`}
+					className="scholarly-bibliography-edit-label"
+				>
+					{`Editing: ${getEntryLabel(citation)}`}
+				</label>
+				<input
+					id={`scholarly-bibliography-edit-${citation.id}`}
+					type="text"
+					className="scholarly-bibliography-edit-input"
+					value={editText}
+					onChange={(event) => onEditTextChange(event.target.value)}
+					onKeyDown={handleEditKeyDown}
+					onBlur={handleEditConfirm}
+					aria-label={`Editing citation: ${getEntryLabel(citation)}`}
+					autoFocus // eslint-disable-line jsx-a11y/no-autofocus
+				/>
+			</>
 		);
 	}
 
