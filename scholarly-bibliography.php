@@ -1,0 +1,351 @@
+<?php
+/**
+ * Plugin Name:       Scholarly Bibliography
+ * Description:       A block that transforms pasted scholarly citations (DOIs, BibTeX) into a semantically rich, auto-sorted bibliography list.
+ * Version:           0.1.0
+ * Requires at least: 6.4
+ * Requires PHP:      7.4
+ * Author:            Dan Knauss
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       scholarly-bibliography
+ *
+ * @package ScholarlyBibliography
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Recursively gather bibliography block data from parsed blocks.
+ *
+ * @param array $blocks Parsed block tree.
+ * @param array $results Accumulator.
+ * @return array
+ */
+function scholarly_bibliography_collect_blocks( $blocks, $results = array() ) {
+	foreach ( $blocks as $block ) {
+		if ( ! empty( $block['blockName'] ) && 'scholarly/bibliography' === $block['blockName'] ) {
+			$attrs = isset( $block['attrs'] ) && is_array( $block['attrs'] ) ? $block['attrs'] : array();
+
+			$results[] = array(
+				'citationStyle' => isset( $attrs['citationStyle'] ) ? (string) $attrs['citationStyle'] : 'chicago-notes-bibliography',
+				'headingText'   => isset( $attrs['headingText'] ) ? (string) $attrs['headingText'] : '',
+				'outputJsonLd'  => ! empty( $attrs['outputJsonLd'] ),
+				'outputCoins'   => ! empty( $attrs['outputCoins'] ),
+				'outputCslJson' => ! empty( $attrs['outputCslJson'] ),
+				'citations'     => isset( $attrs['citations'] ) && is_array( $attrs['citations'] ) ? array_values( array_filter( $attrs['citations'], 'is_array' ) ) : array(),
+			);
+		}
+
+		if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+			$results = scholarly_bibliography_collect_blocks( $block['innerBlocks'], $results );
+		}
+	}
+
+	return $results;
+}
+
+/**
+ * Normalize bibliography API records with index and counts.
+ *
+ * @param array $bibliographies Raw bibliography arrays.
+ * @return array
+ */
+function scholarly_bibliography_prepare_bibliographies( $bibliographies ) {
+	return array_values(
+		array_map(
+			static function ( $bibliography, $index ) {
+				$bibliography['index']      = $index;
+				$bibliography['entryCount'] = count( $bibliography['citations'] );
+
+				return $bibliography;
+			},
+			$bibliographies,
+			array_keys( $bibliographies )
+		)
+	);
+}
+
+/**
+ * Get normalized bibliography data for a post.
+ *
+ * @param WP_Post $post Post object.
+ * @return array
+ */
+function scholarly_bibliography_get_bibliographies_for_post( $post ) {
+	$parsed_blocks  = parse_blocks( (string) $post->post_content );
+	$bibliographies = scholarly_bibliography_collect_blocks( $parsed_blocks );
+
+	return scholarly_bibliography_prepare_bibliographies( $bibliographies );
+}
+
+/**
+ * Return the visible display text for a citation record.
+ *
+ * @param array $citation Citation record.
+ * @return string
+ */
+function scholarly_bibliography_get_citation_display_text( $citation ) {
+	if ( ! empty( $citation['displayOverride'] ) && is_string( $citation['displayOverride'] ) ) {
+		return $citation['displayOverride'];
+	}
+
+	if ( ! empty( $citation['formattedText'] ) && is_string( $citation['formattedText'] ) ) {
+		return $citation['formattedText'];
+	}
+
+	if ( ! empty( $citation['csl']['title'] ) && is_string( $citation['csl']['title'] ) ) {
+		return $citation['csl']['title'];
+	}
+
+	return '';
+}
+
+/**
+ * Build plain-text bibliography output from stored citation display strings.
+ *
+ * @param array $bibliography Bibliography record.
+ * @return string
+ */
+function scholarly_bibliography_build_plain_text( $bibliography ) {
+	$lines = array();
+
+	foreach ( $bibliography['citations'] as $citation ) {
+		$lines[] = scholarly_bibliography_get_citation_display_text( $citation );
+	}
+
+	return implode( "\n", $lines ) . "\n";
+}
+
+/**
+ * Build a canonical CSL array from bibliography citations.
+ *
+ * @param array $bibliography Bibliography record.
+ * @return array
+ */
+function scholarly_bibliography_build_csl_json( $bibliography ) {
+	return array_values(
+		array_map(
+			static function ( $citation ) {
+				return isset( $citation['csl'] ) && is_array( $citation['csl'] ) ? $citation['csl'] : array();
+			},
+			$bibliography['citations']
+		)
+	);
+}
+
+/**
+ * Whether the current request may read bibliography data for a post.
+ *
+ * @param WP_Post $post Post object.
+ * @return bool
+ */
+function scholarly_bibliography_can_read_post( $post ) {
+	$status = get_post_status( $post );
+
+	if ( 'publish' === $status ) {
+		return true;
+	}
+
+	return current_user_can( 'edit_post', $post->ID );
+}
+
+/**
+ * REST permission callback for bibliography access.
+ *
+ * @param WP_REST_Request $request REST request.
+ * @return true|WP_Error
+ */
+function scholarly_bibliography_rest_permissions_check( WP_REST_Request $request ) {
+	$post_id = absint( $request['post_id'] );
+	$post    = get_post( $post_id );
+
+	if ( ! $post ) {
+		return new WP_Error(
+			'scholarly_bibliography_post_not_found',
+			__( 'Post not found.', 'scholarly-bibliography' ),
+			array( 'status' => 404 )
+		);
+	}
+
+	if ( scholarly_bibliography_can_read_post( $post ) ) {
+		return true;
+	}
+
+	return new WP_Error(
+		'scholarly_bibliography_forbidden',
+		__( 'Sorry, you are not allowed to read this bibliography.', 'scholarly-bibliography' ),
+		array( 'status' => 403 )
+	);
+}
+
+/**
+ * REST callback returning bibliography block data for a post.
+ *
+ * @param WP_REST_Request $request REST request.
+ * @return WP_REST_Response
+ */
+function scholarly_bibliography_rest_get_bibliographies( WP_REST_Request $request ) {
+	$post_id        = absint( $request['post_id'] );
+	$post           = get_post( $post_id );
+	$bibliographies = scholarly_bibliography_get_bibliographies_for_post( $post );
+
+	return rest_ensure_response(
+		array(
+			'postId'         => $post_id,
+			'bibliographies' => $bibliographies,
+		)
+	);
+}
+
+/**
+ * REST callback returning one bibliography block in various formats.
+ *
+ * @param WP_REST_Request $request REST request.
+ * @return WP_REST_Response|WP_Error
+ */
+function scholarly_bibliography_rest_get_bibliography( WP_REST_Request $request ) {
+	$post_id        = absint( $request['post_id'] );
+	$index          = absint( $request['index'] );
+	$format         = isset( $request['format'] ) ? (string) $request['format'] : 'json';
+	$post           = get_post( $post_id );
+	$bibliographies = scholarly_bibliography_get_bibliographies_for_post( $post );
+
+	if ( ! isset( $bibliographies[ $index ] ) ) {
+		return new WP_Error(
+			'scholarly_bibliography_not_found',
+			__( 'Bibliography block not found for the requested index.', 'scholarly-bibliography' ),
+			array( 'status' => 404 )
+		);
+	}
+
+	$bibliography = $bibliographies[ $index ];
+
+	if ( 'text' === $format ) {
+		$response = new WP_REST_Response( scholarly_bibliography_build_plain_text( $bibliography ) );
+		$response->header( 'Content-Type', 'text/plain; charset=utf-8' );
+
+		return $response;
+	}
+
+	if ( 'csl-json' === $format ) {
+		$response = rest_ensure_response( scholarly_bibliography_build_csl_json( $bibliography ) );
+		$response->header( 'Content-Type', 'application/vnd.citationstyles.csl+json; charset=utf-8' );
+
+		return $response;
+	}
+
+	return rest_ensure_response( $bibliography );
+}
+
+/**
+ * Register REST routes.
+ */
+function scholarly_bibliography_register_rest_routes() {
+	$common_args = array(
+		'post_id' => array(
+			'description'       => __( 'Post ID to inspect for bibliography blocks.', 'scholarly-bibliography' ),
+			'type'              => 'integer',
+			'sanitize_callback' => 'absint',
+			'validate_callback' => static function ( $value ) {
+				return is_numeric( $value ) && (int) $value > 0;
+			},
+		),
+	);
+
+	register_rest_route(
+		'scholarly-bibliography/v1',
+		'/posts/(?P<post_id>\d+)/bibliographies',
+		array(
+			'methods'             => WP_REST_Server::READABLE,
+			'callback'            => 'scholarly_bibliography_rest_get_bibliographies',
+			'permission_callback' => 'scholarly_bibliography_rest_permissions_check',
+			'args'                => $common_args,
+		)
+	);
+
+	register_rest_route(
+		'scholarly-bibliography/v1',
+		'/posts/(?P<post_id>\d+)/bibliographies/(?P<index>\d+)',
+		array(
+			'methods'             => WP_REST_Server::READABLE,
+			'callback'            => 'scholarly_bibliography_rest_get_bibliography',
+			'permission_callback' => 'scholarly_bibliography_rest_permissions_check',
+			'args'                => array_merge(
+				$common_args,
+				array(
+					'index'  => array(
+						'description'       => __( 'Zero-based bibliography block index within the post.', 'scholarly-bibliography' ),
+						'type'              => 'integer',
+						'sanitize_callback' => 'absint',
+						'validate_callback' => static function ( $value ) {
+							return is_numeric( $value ) && (int) $value >= 0;
+						},
+					),
+					'format' => array(
+						'description'       => __( 'Response format: json, text, or csl-json.', 'scholarly-bibliography' ),
+						'type'              => 'string',
+						'default'           => 'json',
+						'sanitize_callback' => static function ( $value ) {
+							return sanitize_key( $value );
+						},
+						'validate_callback' => static function ( $value ) {
+							return in_array( $value, array( 'json', 'text', 'csl-json' ), true );
+						},
+					),
+				)
+			),
+		)
+	);
+}
+
+
+/**
+ * Serve plain-text bibliography responses without JSON string wrapping.
+ *
+ * @param bool             $served  Whether the request has already been served.
+ * @param WP_HTTP_Response $result  Result to send to the client.
+ * @param WP_REST_Request  $request Request used to generate the response.
+ * @param WP_REST_Server   $server  Server instance.
+ * @return bool
+ */
+function scholarly_bibliography_rest_pre_serve_request( $served, $result, $request, $server ) {
+	if ( $served ) {
+		return $served;
+	}
+
+	if ( 0 !== strpos( $request->get_route(), '/scholarly-bibliography/v1/' ) ) {
+		return $served;
+	}
+
+	if ( 'text' !== $request->get_param( 'format' ) ) {
+		return $served;
+	}
+
+	$data = $result->get_data();
+
+	if ( ! is_string( $data ) ) {
+		return $served;
+	}
+
+	$headers = $result->get_headers();
+
+	foreach ( $headers as $key => $value ) {
+		$server->send_header( $key, $value );
+	}
+
+	echo $data; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Plain-text REST response is intentionally prebuilt server output.
+	return true;
+}
+
+/**
+ * Register the block.
+ */
+function scholarly_bibliography_block_init() {
+	register_block_type( __DIR__ );
+}
+add_action( 'init', 'scholarly_bibliography_block_init' );
+add_action( 'rest_api_init', 'scholarly_bibliography_register_rest_routes' );
+add_filter( 'rest_pre_serve_request', 'scholarly_bibliography_rest_pre_serve_request', 10, 4 );

@@ -1,0 +1,27 @@
+# Auto-detect text files and normalize line endings.
+* text=auto
+
+# Explicitly mark file types.
+*.php text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.scss text eol=lf
+*.css text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Exclude from release archives.
+/.github        export-ignore
+/.gitattributes export-ignore
+/.gitignore     export-ignore
+/node_modules   export-ignore
+/src            export-ignore
+/CLAUDE.md      export-ignore
+/SPEC.md        export-ignore
+/CHANGELOG.md   export-ignore
+/CONTRIBUTING.md export-ignore
+/SECURITY.md    export-ignore
+/package.json   export-ignore
+/package-lock.json export-ignore

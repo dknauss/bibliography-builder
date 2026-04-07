@@ -1,0 +1,69 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "scholarly/bibliography",
+	"version": "0.1.0",
+	"title": "Bibliography",
+	"category": "text",
+	"icon": "book-alt",
+	"description": "A scholarly bibliography block. Add DOI(s), BibTeX entries, and supported citations to build a semantically rich, auto-sorted reference list.",
+	"selectors": {
+		"root": ".wp-block-scholarly-bibliography",
+		"typography": {
+			"root": ".wp-block-scholarly-bibliography .scholarly-bibliography-entry-text, .wp-block-scholarly-bibliography .scholarly-bibliography-heading"
+		}
+	},
+	"keywords": [
+		"bibliography",
+		"citation",
+		"reference",
+		"doi",
+		"bibtex",
+		"scholarly"
+	],
+	"supports": {
+		"html": false,
+		"anchor": true,
+		"className": true,
+		"spacing": {
+			"margin": ["top", "bottom"],
+			"padding": ["top", "bottom"]
+		},
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"textdomain": "scholarly-bibliography",
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/index.css",
+	"style": "file:./build/style-index.css",
+	"attributes": {
+		"citationStyle": {
+			"type": "string",
+			"default": "chicago-notes-bibliography"
+		},
+		"headingText": {
+			"type": "string",
+			"default": ""
+		},
+		"outputJsonLd": {
+			"type": "boolean",
+			"default": true
+		},
+		"outputCoins": {
+			"type": "boolean",
+			"default": false
+		},
+		"outputCslJson": {
+			"type": "boolean",
+			"default": false
+		},
+		"citations": {
+			"type": "array",
+			"default": [],
+			"items": {
+				"type": "object"
+			}
+		}
+	}
+}

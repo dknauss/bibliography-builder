@@ -1,0 +1,436 @@
+import { useCallback, useState } from '@wordpress/element';
+import {
+	getAutoFormattedText,
+	getDisplayText,
+	getStyleDefinition,
+} from '../lib/formatting';
+import {
+	normalizeDoiValue,
+	normalizeUrlValue,
+	validateIdentifierFields,
+} from '../lib/manual-entry';
+import { sortCitations } from '../lib/sorter';
+
+function formatNameForField(name) {
+	if (!name) {
+		return '';
+	}
+
+	if (name.literal) {
+		return name.literal;
+	}
+
+	if (name.family && name.given) {
+		return `${name.family}, ${name.given}`;
+	}
+
+	return name.family || name.given || '';
+}
+
+function formatAuthorListForField(authors = []) {
+	return authors.map(formatNameForField).filter(Boolean).join('; ');
+}
+
+function parseAuthorFieldEntry(value) {
+	const normalized = value.trim().replace(/[.;]\s*$/u, '');
+
+	if (!normalized) {
+		return null;
+	}
+
+	if (normalized.includes(',')) {
+		const [family, given] = normalized.split(/\s*,\s*/, 2);
+
+		if (!family || !given) {
+			return {
+				literal: normalized,
+			};
+		}
+
+		return {
+			family: family.trim(),
+			given: given.trim(),
+		};
+	}
+
+	const parts = normalized.split(/\s+/u);
+
+	if (parts.length === 1) {
+		return {
+			literal: normalized,
+		};
+	}
+
+	return {
+		given: parts.slice(0, -1).join(' '),
+		family: parts.at(-1),
+	};
+}
+
+function parseAuthorFieldList(value) {
+	return value
+		.split(/\s*;\s*/u)
+		.map(parseAuthorFieldEntry)
+		.filter(Boolean);
+}
+
+export function useCitationEditorState({
+	announce,
+	citationStyle,
+	citationsRef,
+	clearNotice,
+	queueFocus,
+	setAttributes,
+}) {
+	const [editingId, setEditingId] = useState(null);
+	const [editText, setEditText] = useState('');
+	const [structuredEditingId, setStructuredEditingId] = useState(null);
+	const [structuredFields, setStructuredFields] = useState({});
+
+	const getEntryLabel = useCallback((citation) => {
+		const author = citation.csl.author?.[0];
+		const name = author?.family || author?.literal || 'Unknown';
+		const year = citation.csl.issued?.['date-parts']?.[0]?.[0] || '';
+		return `${name} ${year}`.trim();
+	}, []);
+
+	const getStructuredFieldId = useCallback(
+		(citationId, fieldKey) =>
+			`scholarly-bibliography-${citationId}-${fieldKey}`,
+		[]
+	);
+
+	const handleEditStart = useCallback(
+		(id) => {
+			const entry = citationsRef.current.find(
+				(citation) => citation.id === id
+			);
+			if (!entry) {
+				return;
+			}
+
+			setEditingId(id);
+			setEditText(getDisplayText(entry));
+			announce('info', 'Editing citation. Press Escape to cancel.');
+		},
+		[announce, citationsRef]
+	);
+
+	const resetEditingState = useCallback(() => {
+		setEditingId(null);
+		setEditText('');
+		setStructuredEditingId(null);
+		setStructuredFields({});
+	}, []);
+
+	const handleEditConfirm = useCallback(() => {
+		if (!editingId) {
+			return;
+		}
+
+		const updated = citationsRef.current.map((citation) => {
+			if (citation.id !== editingId) {
+				return citation;
+			}
+
+			const autoFormattedText = getAutoFormattedText(citation);
+
+			return {
+				...citation,
+				displayOverride:
+					editText === autoFormattedText ? null : editText,
+			};
+		});
+
+		citationsRef.current = updated;
+		setAttributes({ citations: updated });
+		clearNotice();
+		queueFocus({ type: 'entry', id: editingId });
+		setEditingId(null);
+		setEditText('');
+	}, [
+		clearNotice,
+		citationsRef,
+		editText,
+		editingId,
+		queueFocus,
+		setAttributes,
+	]);
+
+	const handleEditCancel = useCallback(() => {
+		if (editingId) {
+			clearNotice();
+			queueFocus({ type: 'entry', id: editingId });
+		}
+
+		setEditingId(null);
+		setEditText('');
+	}, [clearNotice, editingId, queueFocus]);
+
+	const handleEditKeyDown = useCallback(
+		(event) => {
+			if (event.key === 'Enter') {
+				event.preventDefault();
+				handleEditConfirm();
+			} else if (event.key === 'Escape') {
+				event.preventDefault();
+				handleEditCancel();
+			}
+		},
+		[handleEditCancel, handleEditConfirm]
+	);
+
+	const handleStructuredEditStart = useCallback(
+		(id) => {
+			const entry = citationsRef.current.find(
+				(citation) => citation.id === id
+			);
+
+			if (!entry) {
+				return;
+			}
+
+			setStructuredEditingId(id);
+			setStructuredFields({
+				authors: formatAuthorListForField(entry.csl.author),
+				title: entry.csl.title || '',
+				containerTitle: entry.csl['container-title'] || '',
+				publisher: entry.csl.publisher || '',
+				year:
+					String(entry.csl.issued?.['date-parts']?.[0]?.[0] || '') ||
+					'',
+				page: entry.csl.page || '',
+				doi: entry.csl.DOI || '',
+				url: entry.csl.URL || '',
+			});
+			announce('info', 'Editing fields. Review and save to reformat.');
+		},
+		[announce, citationsRef]
+	);
+
+	const handleStructuredFieldChange = useCallback((field, value) => {
+		setStructuredFields((currentFields) => ({
+			...currentFields,
+			[field]: value,
+		}));
+	}, []);
+
+	const handleStructuredEditCancel = useCallback(() => {
+		if (structuredEditingId) {
+			clearNotice();
+			queueFocus({ type: 'entry', id: structuredEditingId });
+		}
+
+		setStructuredEditingId(null);
+		setStructuredFields({});
+	}, [clearNotice, queueFocus, structuredEditingId]);
+
+	const handleStructuredEditSave = useCallback(async () => {
+		if (!structuredEditingId) {
+			return;
+		}
+
+		const citation = citationsRef.current.find(
+			(entry) => entry.id === structuredEditingId
+		);
+
+		if (!citation) {
+			return;
+		}
+
+		const identifierValidationMessage =
+			validateIdentifierFields(structuredFields);
+
+		if (identifierValidationMessage) {
+			announce('warning', identifierValidationMessage);
+			queueFocus({ type: 'notice' });
+			return;
+		}
+
+		const updatedCsl = {
+			...citation.csl,
+			title: structuredFields.title || citation.csl.title,
+		};
+
+		if (structuredFields.authors) {
+			updatedCsl.author = parseAuthorFieldList(structuredFields.authors);
+		} else {
+			delete updatedCsl.author;
+		}
+
+		if (structuredFields.containerTitle) {
+			updatedCsl['container-title'] = structuredFields.containerTitle;
+		} else {
+			delete updatedCsl['container-title'];
+		}
+
+		if (structuredFields.publisher) {
+			updatedCsl.publisher = structuredFields.publisher;
+		} else {
+			delete updatedCsl.publisher;
+		}
+
+		if (structuredFields.page) {
+			updatedCsl.page = structuredFields.page;
+		} else {
+			delete updatedCsl.page;
+		}
+
+		const normalizedDoi = normalizeDoiValue(structuredFields.doi);
+		if (normalizedDoi) {
+			updatedCsl.DOI = normalizedDoi;
+		} else {
+			delete updatedCsl.DOI;
+		}
+
+		const normalizedUrl = normalizeUrlValue(structuredFields.url);
+		if (normalizedUrl) {
+			updatedCsl.URL = normalizedUrl;
+		} else {
+			delete updatedCsl.URL;
+		}
+
+		if (structuredFields.year && /^\d{4}$/u.test(structuredFields.year)) {
+			updatedCsl.issued = {
+				'date-parts': [[Number(structuredFields.year)]],
+			};
+		} else {
+			delete updatedCsl.issued;
+		}
+
+		const { formatBibliographyEntry } = await import(
+			'../lib/formatting/csl'
+		);
+		const updated = sortCitations(
+			citationsRef.current.map((entry) =>
+				entry.id === structuredEditingId
+					? {
+							...entry,
+							csl: updatedCsl,
+							formattedText: formatBibliographyEntry(
+								updatedCsl,
+								citationStyle
+							),
+							displayOverride: null,
+							parseWarnings: [],
+					  }
+					: entry
+			),
+			citationStyle
+		);
+
+		citationsRef.current = updated;
+		setAttributes({ citations: updated });
+		announce('success', 'Fields updated.', { type: 'snackbar' });
+		queueFocus({ type: 'entry', id: structuredEditingId });
+		setStructuredEditingId(null);
+		setStructuredFields({});
+	}, [
+		announce,
+		citationStyle,
+		citationsRef,
+		queueFocus,
+		setAttributes,
+		structuredEditingId,
+		structuredFields,
+	]);
+
+	const handleResetAutoFormat = useCallback(
+		(id) => {
+			const updated = citationsRef.current.map((citation) =>
+				citation.id === id
+					? {
+							...citation,
+							displayOverride: null,
+					  }
+					: citation
+			);
+
+			citationsRef.current = updated;
+			setAttributes({ citations: updated });
+			announce('success', 'Auto-format restored.', {
+				type: 'snackbar',
+			});
+			queueFocus({ type: 'entry', id });
+		},
+		[announce, citationsRef, queueFocus, setAttributes]
+	);
+
+	const handleCitationStyleChange = useCallback(
+		async (nextStyle) => {
+			if (!nextStyle || nextStyle === citationStyle) {
+				return;
+			}
+
+			const nextStyleLabel = getStyleDefinition(nextStyle).label;
+
+			if (!citationsRef.current.length) {
+				setAttributes({ citationStyle: nextStyle });
+				announce('success', `Style changed to ${nextStyleLabel}.`, {
+					type: 'snackbar',
+				});
+				return;
+			}
+
+			const { formatBibliographyEntries } = await import(
+				'../lib/formatting/csl'
+			);
+			const formattedTexts = formatBibliographyEntries(
+				citationsRef.current.map((citation) => citation.csl),
+				nextStyle
+			);
+			const updated = sortCitations(
+				citationsRef.current.map((citation, index) => ({
+					...citation,
+					formattedText: formattedTexts[index],
+				})),
+				nextStyle
+			);
+
+			citationsRef.current = updated;
+			setAttributes({
+				citationStyle: nextStyle,
+				citations: updated,
+			});
+			clearNotice();
+			resetEditingState();
+			announce(
+				'success',
+				`Style changed to ${nextStyleLabel}. Reformatted ${
+					updated.length
+				} ${updated.length === 1 ? 'citation' : 'citations'}.`,
+				{ type: 'snackbar' }
+			);
+		},
+		[
+			announce,
+			citationStyle,
+			citationsRef,
+			clearNotice,
+			queueFocus,
+			resetEditingState,
+			setAttributes,
+		]
+	);
+
+	return {
+		editText,
+		editingId,
+		getEntryLabel,
+		getStructuredFieldId,
+		handleCitationStyleChange,
+		handleEditCancel,
+		handleEditConfirm,
+		handleEditKeyDown,
+		handleEditStart,
+		handleResetAutoFormat,
+		handleStructuredEditCancel,
+		handleStructuredEditSave,
+		handleStructuredEditStart,
+		handleStructuredFieldChange,
+		resetEditingState,
+		setEditText,
+		structuredEditingId,
+		structuredFields,
+	};
+}

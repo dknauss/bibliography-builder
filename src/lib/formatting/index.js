@@ -1,0 +1,213 @@
+export {
+	DEFAULT_CITATION_STYLE,
+	EXPERIMENTAL_STYLE_PICKER,
+	STYLE_DEFINITIONS,
+	getHeadingPlaceholder,
+	getStyleDefinition,
+	getListSemantics,
+	getSelectableStyles,
+} from './style-registry';
+
+export function getAutoFormattedText(citation) {
+	return citation.formattedText || citation.csl.title || '';
+}
+
+export function getDisplayText(citation) {
+	return citation.displayOverride || getAutoFormattedText(citation);
+}
+
+const URL_PATTERN = /https?:\/\/\S+/gu;
+
+function splitTrailingUrlPunctuation(url) {
+	let href = url;
+	let trailing = '';
+
+	while (href.length) {
+		const lastCharacter = href[href.length - 1];
+
+		if (/[.,;:!?]/u.test(lastCharacter)) {
+			trailing = lastCharacter + trailing;
+			href = href.slice(0, -1);
+			continue;
+		}
+
+		if (lastCharacter === ')') {
+			const openingCount = (href.match(/\(/gu) || []).length;
+			const closingCount = (href.match(/\)/gu) || []).length;
+
+			if (closingCount > openingCount) {
+				trailing = lastCharacter + trailing;
+				href = href.slice(0, -1);
+				continue;
+			}
+		}
+
+		break;
+	}
+
+	return { href, trailing };
+}
+
+export function splitTextIntoLinkParts(text) {
+	if (!text) {
+		return [{ text: '', link: false }];
+	}
+
+	const parts = [];
+	let cursor = 0;
+
+	for (const match of text.matchAll(URL_PATTERN)) {
+		const matchedUrl = match[0];
+		const start = match.index;
+
+		if (start > cursor) {
+			parts.push({
+				text: text.slice(cursor, start),
+				link: false,
+			});
+		}
+
+		const { href, trailing } = splitTrailingUrlPunctuation(matchedUrl);
+
+		parts.push({
+			text: href,
+			href,
+			link: true,
+		});
+
+		if (trailing) {
+			parts.push({
+				text: trailing,
+				link: false,
+			});
+		}
+
+		cursor = start + matchedUrl.length;
+	}
+
+	if (cursor < text.length) {
+		parts.push({
+			text: text.slice(cursor),
+			link: false,
+		});
+	}
+
+	return parts.length ? parts : [{ text, link: false }];
+}
+
+function isOpeningQuote(character) {
+	return character === '"' || character === '“';
+}
+
+function isClosingQuote(character) {
+	return character === '"' || character === '”';
+}
+
+function isQuotedAt(text, start, end) {
+	const before = text[start - 1];
+	const after = text[end];
+	return isOpeningQuote(before) && isClosingQuote(after);
+}
+
+function findLastRange(text, value, ranges) {
+	let start = text.lastIndexOf(value);
+
+	while (start !== -1) {
+		const end = start + value.length;
+
+		if (
+			!isQuotedAt(text, start, end) &&
+			!ranges.some((range) => start < range.end && end > range.start)
+		) {
+			return { start, end };
+		}
+
+		start = text.lastIndexOf(value, start - 1);
+	}
+
+	return null;
+}
+
+function addRange(ranges, text, value) {
+	if (!value) {
+		return;
+	}
+
+	const range = findLastRange(text, value, ranges);
+
+	if (!range) {
+		return;
+	}
+
+	ranges.push(range);
+}
+
+function getItalicizedFields(citation) {
+	const type = citation.csl.type;
+
+	if (['book', 'collection', 'report', 'thesis'].includes(type)) {
+		return [citation.csl.title];
+	}
+
+	if (
+		[
+			'article-journal',
+			'article-magazine',
+			'article-newspaper',
+			'chapter',
+			'review',
+			'review-book',
+		].includes(type)
+	) {
+		return [citation.csl['container-title']];
+	}
+
+	return [];
+}
+
+export function getDisplaySegments(citation) {
+	const displayText = getDisplayText(citation);
+
+	if (!displayText || citation.displayOverride) {
+		return [{ text: displayText, italic: false }];
+	}
+
+	const italicRanges = [];
+
+	for (const value of getItalicizedFields(citation)) {
+		addRange(italicRanges, displayText, value);
+	}
+
+	if (!italicRanges.length) {
+		return [{ text: displayText, italic: false }];
+	}
+
+	italicRanges.sort((left, right) => left.start - right.start);
+
+	const segments = [];
+	let cursor = 0;
+
+	for (const range of italicRanges) {
+		if (range.start > cursor) {
+			segments.push({
+				text: displayText.slice(cursor, range.start),
+				italic: false,
+			});
+		}
+
+		segments.push({
+			text: displayText.slice(range.start, range.end),
+			italic: true,
+		});
+		cursor = range.end;
+	}
+
+	if (cursor < displayText.length) {
+		segments.push({
+			text: displayText.slice(cursor),
+			italic: false,
+		});
+	}
+
+	return segments;
+}

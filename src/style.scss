@@ -1,0 +1,72 @@
+/**
+ * Frontend styles — loaded on both editor and frontend.
+ * Chicago author-date hanging indent format.
+ */
+
+.wp-block-scholarly-bibliography .scholarly-bibliography-list {
+	margin: 0;
+	padding-left: 0;
+}
+
+.wp-block-scholarly-bibliography .scholarly-bibliography-list-unordered {
+	list-style: none;
+}
+
+.wp-block-scholarly-bibliography .scholarly-bibliography-heading {
+	margin: 0 0 0.75em;
+	font-size: 1.25em;
+	font-weight: 600;
+	text-align: center;
+}
+
+.wp-block-scholarly-bibliography .scholarly-bibliography-list > li {
+	margin-bottom: 0.75em;
+}
+
+.wp-block-scholarly-bibliography .scholarly-bibliography-list-unordered > li {
+	padding-left: 2em;
+	text-indent: -2em;
+}
+
+.wp-block-scholarly-bibliography .scholarly-bibliography-list-numeric {
+	list-style: none;
+	counter-reset: bibliography-item;
+	--scholarly-bibliography-marker-width: 2.75em;
+}
+
+.wp-block-scholarly-bibliography .scholarly-bibliography-list-numeric > li {
+	counter-increment: bibliography-item;
+	padding-left: var(--scholarly-bibliography-marker-width);
+	text-indent: calc(-1 * var(--scholarly-bibliography-marker-width));
+}
+
+.wp-block-scholarly-bibliography .scholarly-bibliography-list-numeric > li::before {
+	display: inline-block;
+	width: var(--scholarly-bibliography-marker-width);
+	text-indent: 0;
+	white-space: nowrap;
+}
+
+.wp-block-scholarly-bibliography .scholarly-bibliography-list-vancouver > li::before {
+	content: counter(bibliography-item) ". ";
+}
+
+.wp-block-scholarly-bibliography .scholarly-bibliography-list-ieee > li::before {
+	content: "[" counter(bibliography-item) "] ";
+}
+
+.wp-block-scholarly-bibliography .scholarly-bibliography-entry-text {
+	font-style: normal;
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+.wp-block-scholarly-bibliography .scholarly-bibliography-list-numeric > li > .scholarly-bibliography-entry-text {
+	display: inline;
+}
+
+// Hide COinS spans.
+/* stylelint-disable-next-line selector-class-pattern */
+.wp-block-scholarly-bibliography .Z3988 {
+	display: none;
+}

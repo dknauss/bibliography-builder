@@ -1,0 +1,165 @@
+import { Button } from '@wordpress/components';
+import { CancelIcon, ConfirmIcon } from '../lib/wp-icons';
+import { useEffect, useRef } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+
+export const STRUCTURED_FIELD_DEFINITIONS = [
+	{
+		key: 'authors',
+		label: __('Author(s)', 'scholarly-bibliography'),
+	},
+	{
+		key: 'title',
+		label: __('Title', 'scholarly-bibliography'),
+	},
+	{
+		key: 'containerTitle',
+		label: __('Container', 'scholarly-bibliography'),
+	},
+	{
+		key: 'publisher',
+		label: __('Publisher', 'scholarly-bibliography'),
+	},
+	{
+		key: 'year',
+		label: __('Year', 'scholarly-bibliography'),
+	},
+	{
+		key: 'page',
+		label: __('Pages', 'scholarly-bibliography'),
+	},
+	{
+		key: 'doi',
+		label: __('DOI', 'scholarly-bibliography'),
+	},
+	{
+		key: 'url',
+		label: __('URL', 'scholarly-bibliography'),
+	},
+];
+
+export function StructuredCitationEditor({
+	citation = { id: 'manual-entry' },
+	fields,
+	fieldDefinitions = STRUCTURED_FIELD_DEFINITIONS,
+	getStructuredFieldId,
+	firstFieldRef,
+	onCancelLabel,
+	onFieldChange,
+	onSave,
+	onCancel,
+	showTypeSelector = false,
+	submitLabel,
+	typeOptions = [],
+	onTypeChange,
+}) {
+	const firstInteractiveFieldRef = useRef(null);
+
+	useEffect(() => {
+		firstInteractiveFieldRef.current?.focus();
+	}, []);
+
+	const setFirstFieldNode = (node) => {
+		firstInteractiveFieldRef.current = node;
+
+		if (!firstFieldRef) {
+			return;
+		}
+
+		if (typeof firstFieldRef === 'function') {
+			firstFieldRef(node);
+			return;
+		}
+
+		firstFieldRef.current = node;
+	};
+
+	const handleKeyDown = (event) => {
+		if (event.key === 'Escape') {
+			event.preventDefault();
+			event.stopPropagation();
+			onCancel();
+		}
+	};
+
+	return (
+		<div
+			className="scholarly-bibliography-structured-edit"
+			onKeyDownCapture={handleKeyDown}
+		>
+			{showTypeSelector && (
+				<div className="scholarly-bibliography-structured-field">
+					<label htmlFor={getStructuredFieldId(citation.id, 'type')}>
+						{__('Publication Type', 'scholarly-bibliography')}
+					</label>
+					<select
+						id={getStructuredFieldId(citation.id, 'type')}
+						ref={setFirstFieldNode}
+						value={fields.type || ''}
+						onChange={(event) => onTypeChange(event.target.value)}
+						onKeyDown={handleKeyDown}
+						aria-label={__(
+							'Publication Type',
+							'scholarly-bibliography'
+						)}
+					>
+						<option value="">
+							{__(
+								'Select a publication type',
+								'scholarly-bibliography'
+							)}
+						</option>
+						{typeOptions.map((option) => (
+							<option key={option.value} value={option.value}>
+								{option.label}
+							</option>
+						))}
+					</select>
+				</div>
+			)}
+			{fieldDefinitions.map(({ key, label }, index) => (
+				<div
+					key={key}
+					className="scholarly-bibliography-structured-field"
+				>
+					<label htmlFor={getStructuredFieldId(citation.id, key)}>
+						{label}
+					</label>
+					<input
+						id={getStructuredFieldId(citation.id, key)}
+						ref={
+							!showTypeSelector && index === 0
+								? setFirstFieldNode
+								: undefined
+						}
+						type="text"
+						value={fields[key] || ''}
+						onChange={(event) =>
+							onFieldChange(key, event.target.value)
+						}
+						onKeyDown={handleKeyDown}
+						aria-label={label}
+					/>
+				</div>
+			))}
+			<div className="scholarly-bibliography-structured-actions">
+				<Button
+					variant="primary"
+					className="scholarly-bibliography-form-button"
+					onClick={onSave}
+				>
+					<ConfirmIcon className="scholarly-bibliography-action-icon" />
+					{submitLabel || __('Save', 'scholarly-bibliography')}
+				</Button>
+				<Button
+					variant="secondary"
+					className="scholarly-bibliography-form-button"
+					onClick={onCancel}
+				>
+					<CancelIcon className="scholarly-bibliography-action-icon" />
+					{onCancelLabel || __('Cancel', 'scholarly-bibliography')}
+				</Button>
+			</div>
+		</div>
+	);
+}

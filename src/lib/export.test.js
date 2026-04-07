@@ -1,0 +1,259 @@
+import {
+	buildPlainTextBibliographyContent,
+	buildCslJsonExportContent,
+	buildBibtexExportContent,
+	downloadTextExport,
+	downloadCslJsonExport,
+	downloadBibtexExport,
+	CSL_JSON_EXPORT_FILENAME,
+	CSL_JSON_EXPORT_MIME_TYPE,
+	BIBTEX_EXPORT_FILENAME,
+	BIBTEX_EXPORT_MIME_TYPE,
+} from './export';
+
+describe('export helpers', () => {
+	it('builds a sorted plain-text bibliography payload', () => {
+		const content = buildPlainTextBibliographyContent(
+			[
+				{
+					id: '2',
+					formattedText: 'Zulu citation',
+					csl: {
+						type: 'book',
+						title: 'Zeta Book',
+						author: [{ family: 'Zulu', given: 'Zoe' }],
+						issued: { 'date-parts': [[2024]] },
+					},
+				},
+				{
+					id: '1',
+					displayOverride: 'Alpha override',
+					formattedText: 'Alpha citation',
+					csl: {
+						type: 'book',
+						title: 'Alpha Book',
+						author: [{ family: 'Alpha', given: 'Ada' }],
+						issued: { 'date-parts': [[2020]] },
+					},
+				},
+			],
+			'chicago-author-date'
+		);
+
+		expect(content).toBe('Alpha override\nZulu citation\n');
+	});
+
+	it('builds a sorted CSL-JSON export payload', () => {
+		const content = buildCslJsonExportContent(
+			[
+				{
+					id: '2',
+					csl: {
+						type: 'book',
+						title: 'Zeta Book',
+						author: [{ family: 'Zulu', given: 'Zoe' }],
+						issued: { 'date-parts': [[2024]] },
+					},
+				},
+				{
+					id: '1',
+					csl: {
+						type: 'book',
+						title: 'Alpha Book',
+						author: [{ family: 'Alpha', given: 'Ada' }],
+						issued: { 'date-parts': [[2020]] },
+					},
+				},
+			],
+			'chicago-author-date'
+		);
+
+		const parsed = JSON.parse(content);
+
+		expect(parsed).toHaveLength(2);
+		expect(parsed[0].title).toBe('Alpha Book');
+		expect(parsed[1].title).toBe('Zeta Book');
+		expect(content.endsWith('\n')).toBe(true);
+	});
+
+	it('downloads text content as a file', () => {
+		const click = jest.fn();
+		const remove = jest.fn();
+		const appendChild = jest.fn();
+		const createObjectURL = jest.fn(() => 'blob:download');
+		const revokeObjectURL = jest.fn();
+		const documentRef = {
+			createElement: jest.fn(() => ({
+				click,
+				remove,
+			})),
+			body: {
+				appendChild,
+			},
+		};
+		const BlobCtor = jest.fn(function MockBlob(parts, options) {
+			this.parts = parts;
+			this.options = options;
+		});
+
+		downloadTextExport(
+			{
+				content: '{"ok":true}',
+				filename: 'citations.json',
+				mimeType: 'application/json',
+			},
+			{
+				documentRef,
+				urlRef: { createObjectURL, revokeObjectURL },
+				BlobCtor,
+			}
+		);
+
+		expect(BlobCtor).toHaveBeenCalledWith(['{"ok":true}'], {
+			type: 'application/json',
+		});
+		expect(appendChild).toHaveBeenCalled();
+		expect(click).toHaveBeenCalled();
+		expect(remove).toHaveBeenCalled();
+		expect(revokeObjectURL).toHaveBeenCalledWith('blob:download');
+	});
+
+	it('downloads CSL-JSON with the expected filename and MIME type', () => {
+		const click = jest.fn();
+		const remove = jest.fn();
+		const appendChild = jest.fn();
+		const createObjectURL = jest.fn(() => 'blob:csl');
+		const revokeObjectURL = jest.fn();
+		const documentRef = {
+			createElement: jest.fn(() => ({
+				click,
+				remove,
+			})),
+			body: {
+				appendChild,
+			},
+		};
+		const BlobCtor = jest.fn(function MockBlob(parts, options) {
+			this.parts = parts;
+			this.options = options;
+		});
+
+		downloadCslJsonExport(
+			[
+				{
+					id: 'citation-1',
+					csl: {
+						type: 'webpage',
+						title: 'Responses API',
+					},
+				},
+			],
+			'apa-7',
+			{
+				documentRef,
+				urlRef: { createObjectURL, revokeObjectURL },
+				BlobCtor,
+			}
+		);
+
+		expect(documentRef.createElement).toHaveBeenCalledWith('a');
+		expect(BlobCtor).toHaveBeenCalledWith(
+			[expect.stringContaining('"Responses API"')],
+			{
+				type: CSL_JSON_EXPORT_MIME_TYPE,
+			}
+		);
+		expect(documentRef.createElement.mock.results[0].value.download).toBe(
+			CSL_JSON_EXPORT_FILENAME
+		);
+	});
+
+	it('builds a sorted BibTeX export payload', async () => {
+		const CiteCtor = jest.fn().mockImplementation((data) => ({
+			format: jest.fn(() => {
+				expect(data[0].title).toBe('Alpha Book');
+				expect(data[1].title).toBe('Zeta Book');
+				return '@book{Alpha2020Alpha,...}';
+			}),
+		}));
+
+		const content = await buildBibtexExportContent(
+			[
+				{
+					id: '2',
+					csl: {
+						type: 'book',
+						title: 'Zeta Book',
+						author: [{ family: 'Zulu', given: 'Zoe' }],
+						issued: { 'date-parts': [[2024]] },
+					},
+				},
+				{
+					id: '1',
+					csl: {
+						type: 'book',
+						title: 'Alpha Book',
+						author: [{ family: 'Alpha', given: 'Ada' }],
+						issued: { 'date-parts': [[2020]] },
+					},
+				},
+			],
+			'chicago-author-date',
+			{ CiteCtor }
+		);
+
+		expect(CiteCtor).toHaveBeenCalled();
+		expect(content).toContain('@book{Alpha2020Alpha');
+		expect(content.endsWith('\n')).toBe(true);
+	});
+
+	it('downloads BibTeX with the expected filename and MIME type', async () => {
+		const click = jest.fn();
+		const remove = jest.fn();
+		const appendChild = jest.fn();
+		const createObjectURL = jest.fn(() => 'blob:bib');
+		const revokeObjectURL = jest.fn();
+		const documentRef = {
+			createElement: jest.fn(() => ({
+				click,
+				remove,
+			})),
+			body: {
+				appendChild,
+			},
+		};
+		const BlobCtor = jest.fn(function MockBlob(parts, options) {
+			this.parts = parts;
+			this.options = options;
+		});
+
+		await downloadBibtexExport(
+			[
+				{
+					id: 'citation-1',
+					csl: {
+						type: 'book',
+						title: 'Test Book',
+					},
+				},
+			],
+			'apa-7',
+			{
+				documentRef,
+				urlRef: { createObjectURL, revokeObjectURL },
+				BlobCtor,
+				CiteCtor: jest.fn().mockImplementation(() => ({
+					format: () => '@book{TestBook,...}',
+				})),
+			}
+		);
+
+		expect(documentRef.createElement).toHaveBeenCalledWith('a');
+		expect(BlobCtor).toHaveBeenCalledWith(['@book{TestBook,...}\n'], {
+			type: BIBTEX_EXPORT_MIME_TYPE,
+		});
+		expect(documentRef.createElement.mock.results[0].value.download).toBe(
+			BIBTEX_EXPORT_FILENAME
+		);
+	});
+});

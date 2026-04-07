@@ -1,0 +1,476 @@
+import { renderToStaticMarkup } from 'react-dom/server';
+import save from './save';
+
+jest.mock(
+	'@wordpress/block-editor',
+	() => ({
+		useBlockProps: {
+			save: () => ({
+				className: 'wp-block-scholarly-bibliography',
+			}),
+		},
+	}),
+	{ virtual: true }
+);
+
+function createCitation(overrides = {}) {
+	return {
+		id: 'citation-1',
+		csl: {
+			type: 'article-journal',
+			title: 'Example title',
+			author: [
+				{
+					given: 'Ada',
+					family: 'Smith',
+				},
+			],
+			issued: {
+				'date-parts': [[2024]],
+			},
+			...overrides.csl,
+		},
+		formattedText: 'Example formatted citation',
+		displayOverride: null,
+		...overrides,
+	};
+}
+
+describe('save', () => {
+	it('returns null when there are no citations', () => {
+		expect(
+			save({
+				attributes: {
+					citationStyle: 'chicago-author-date',
+					citations: [],
+				},
+			})
+		).toBeNull();
+	});
+
+	it('renders an optional visible heading when provided', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-notes-bibliography',
+					headingText: 'Bibliography',
+					citations: [createCitation()],
+				},
+			})
+		);
+
+		expect(markup).toContain(
+			'<p class="scholarly-bibliography-heading">Bibliography</p>'
+		);
+	});
+
+	it('renders author-date styles as an unordered list', () => {
+		for (const style of ['chicago-author-date', 'apa-7']) {
+			const markup = renderToStaticMarkup(
+				save({
+					attributes: {
+						citationStyle: style,
+						citations: [createCitation()],
+					},
+				})
+			);
+
+			expect(markup).toContain(
+				'<ul class="scholarly-bibliography-list scholarly-bibliography-list-unordered'
+			);
+			expect(markup).not.toContain('<ol>');
+		}
+	});
+
+	it('renders notes styles as an unordered list', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-notes-bibliography',
+					citations: [createCitation()],
+				},
+			})
+		);
+
+		expect(markup).toContain(
+			'<ul class="scholarly-bibliography-list scholarly-bibliography-list-unordered'
+		);
+		expect(markup).not.toContain('<ol>');
+	});
+
+	it('sorts citations before rendering saved output', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-notes-bibliography',
+					citations: [
+						createCitation({
+							id: 'marks',
+							csl: {
+								title: 'The Book by Design',
+								author: [
+									{ family: 'Marks', given: 'P. J. M.' },
+								],
+							},
+							formattedText: 'Marks citation',
+						}),
+						createCitation({
+							id: 'borel',
+							csl: {
+								title: 'The Chicago Guide to Fact-Checking',
+								author: [{ family: 'Borel', given: 'Brooke' }],
+							},
+							formattedText: 'Borel citation',
+						}),
+					],
+				},
+			})
+		);
+
+		expect(markup.indexOf('Borel citation')).toBeLessThan(
+			markup.indexOf('Marks citation')
+		);
+	});
+
+	it('renders numeric styles as an ordered list', () => {
+		for (const style of ['ieee', 'vancouver']) {
+			const markup = renderToStaticMarkup(
+				save({
+					attributes: {
+						citationStyle: style,
+						citations: [createCitation()],
+					},
+				})
+			);
+
+			expect(markup).toContain(
+				`<ol class="scholarly-bibliography-list scholarly-bibliography-list-numeric scholarly-bibliography-list-${style}">`
+			);
+			expect(markup).not.toContain('<ul>');
+		}
+	});
+
+	it('renders semantic bibliography roles and language attributes', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-author-date',
+					citations: [
+						createCitation({
+							id: 'citation-7',
+							csl: {
+								language: 'fr',
+								DOI: '10.1234/example-doi',
+								page: '117-134',
+								'container-title':
+									'Journal of WordPress Studies',
+							},
+						}),
+					],
+				},
+			})
+		);
+
+		expect(markup).toContain('role="doc-bibliography"');
+		expect(markup).toContain('aria-label="Bibliography"');
+		expect(markup).toContain('role="doc-biblioentry"');
+		expect(markup).toContain('id="ref-citation-7"');
+		expect(markup).toContain('lang="fr"');
+	});
+
+	it('omits the lang attribute when no citation language is present', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-author-date',
+					citations: [createCitation()],
+				},
+			})
+		);
+
+		expect(markup).not.toContain(' lang=');
+	});
+
+	it('retains the CSL language attribute even when displayOverride is used', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-author-date',
+					citations: [
+						createCitation({
+							displayOverride: 'Remplacement manuel',
+							csl: {
+								language: 'fr',
+							},
+						}),
+					],
+				},
+			})
+		);
+
+		expect(markup).toContain('lang="fr"');
+		expect(markup).toContain('Remplacement manuel');
+	});
+
+	it('applies lang only to entries that declare a CSL language', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-author-date',
+					citations: [
+						createCitation({
+							id: 'fr-entry',
+							csl: {
+								language: 'fr',
+							},
+						}),
+						createCitation({
+							id: 'default-entry',
+						}),
+					],
+				},
+			})
+		);
+
+		expect(markup).toContain(
+			'<li role="doc-biblioentry" id="ref-fr-entry" lang="fr">'
+		);
+		expect(markup).toContain(
+			'<li role="doc-biblioentry" id="ref-default-entry">'
+		);
+	});
+
+	it('prefers displayOverride over auto-formatted text', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-author-date',
+					citations: [
+						createCitation({
+							displayOverride: 'Manual citation override',
+							formattedText: 'Auto formatted citation',
+						}),
+					],
+				},
+			})
+		);
+
+		expect(markup).toContain(
+			'<cite class="scholarly-bibliography-entry-text">Manual citation override</cite>'
+		);
+		expect(markup).not.toContain('Auto formatted citation');
+	});
+
+	it('escapes citation text and script payloads safely', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-author-date',
+					citations: [
+						createCitation({
+							formattedText:
+								'</cite><script>alert("citation")</script>',
+							csl: {
+								title: '</script><script>alert("jsonld")</script>',
+								DOI: '10.1234/example-doi',
+							},
+						}),
+					],
+				},
+			})
+		);
+
+		expect(markup).toContain(
+			'&lt;/cite&gt;&lt;script&gt;alert(&quot;citation&quot;)&lt;/script&gt;'
+		);
+		expect(markup).toContain(
+			'\\u003c/script>\\u003cscript>alert(\\"jsonld\\")\\u003c/script>'
+		);
+		expect(markup).not.toContain('<script>alert("citation")</script>');
+	});
+
+	it('renders visible frontend URLs as safe clickable links', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-notes-bibliography',
+					citations: [
+						createCitation({
+							formattedText:
+								'Smith, Ada. Example resource. https://example.com/resource.',
+							csl: {
+								type: 'webpage',
+								title: 'Example resource',
+								URL: 'https://example.com/resource',
+							},
+						}),
+					],
+				},
+			})
+		);
+
+		expect(markup).toContain(
+			'<a href="https://example.com/resource" rel="nofollow noopener noreferrer">https://example.com/resource</a>.'
+		);
+	});
+
+	it('italicizes only work titles that should be italicized in saved output', () => {
+		const bookMarkup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-notes-bibliography',
+					citations: [
+						createCitation({
+							csl: {
+								type: 'book',
+								title: 'The Example Book',
+							},
+							formattedText:
+								'Smith, Ada. The Example Book. Press, 2024.',
+						}),
+					],
+				},
+			})
+		);
+
+		const articleMarkup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-notes-bibliography',
+					citations: [
+						createCitation({
+							csl: {
+								type: 'article-journal',
+								title: 'Example Article',
+								'container-title': 'Journal of Examples',
+							},
+							formattedText:
+								'Smith, Ada. “Example Article.” Journal of Examples 12 (3): 117–34.',
+						}),
+					],
+				},
+			})
+		);
+
+		expect(bookMarkup).toContain('<i>The Example Book</i>');
+		expect(articleMarkup).toContain(
+			'“Example Article.” <i>Journal of Examples</i>'
+		);
+		expect(articleMarkup).not.toContain('<i>Example Article</i>');
+	});
+
+	it('outputs JSON-LD by default without COinS or CSL-JSON', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-author-date',
+					citations: [createCitation()],
+				},
+			})
+		);
+
+		expect(markup).toContain('<script type="application/ld+json">');
+		expect(markup).toContain('"@context":"https://schema.org"');
+		expect(markup).not.toContain(
+			'<script type="application/vnd.citationstyles.csl+json">'
+		);
+		expect(markup).not.toContain('class="Z3988"');
+	});
+
+	it('outputs COinS and CSL-JSON only when those layers are enabled', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-author-date',
+					outputJsonLd: true,
+					outputCoins: true,
+					outputCslJson: true,
+					citations: [createCitation()],
+				},
+			})
+		);
+
+		expect(markup).toContain('<script type="application/ld+json">');
+		expect(markup).toContain(
+			'<script type="application/vnd.citationstyles.csl+json">'
+		);
+		expect(markup).toContain('class="Z3988"');
+		expect(markup).toContain('aria-hidden="true"');
+		expect(markup).toContain('title="ctx_ver=Z39.88-2004');
+	});
+
+	it('can disable JSON-LD output entirely', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'chicago-author-date',
+					outputJsonLd: false,
+					citations: [createCitation()],
+				},
+			})
+		);
+
+		expect(markup).not.toContain('<script type="application/ld+json">');
+	});
+
+	it('renders manually entered citations through the normal save path', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'harvard',
+					citations: [
+						createCitation({
+							inputFormat: 'manual',
+							formattedText: 'Smith, A. (2024) Manual citation.',
+							csl: {
+								type: 'book',
+								title: 'Manual citation',
+								author: [{ given: 'Ada', family: 'Smith' }],
+								issued: { 'date-parts': [[2024]] },
+							},
+						}),
+					],
+				},
+			})
+		);
+
+		expect(markup).toContain(
+			'<ul class="scholarly-bibliography-list scholarly-bibliography-list-unordered'
+		);
+		expect(markup).toContain('Smith, A. (2024) <i>Manual citation</i>.');
+	});
+
+	it('applies metadata-layer toggles to manually entered citations', () => {
+		const markup = renderToStaticMarkup(
+			save({
+				attributes: {
+					citationStyle: 'ieee',
+					outputJsonLd: false,
+					outputCoins: true,
+					outputCslJson: true,
+					citations: [
+						createCitation({
+							inputFormat: 'manual',
+							formattedText: 'Manual citation.',
+							csl: {
+								type: 'article-journal',
+								title: 'Manual citation',
+								author: [{ given: 'Ada', family: 'Smith' }],
+								issued: { 'date-parts': [[2024]] },
+							},
+						}),
+					],
+				},
+			})
+		);
+
+		expect(markup).not.toContain('<script type="application/ld+json">');
+		expect(markup).toContain(
+			'<script type="application/vnd.citationstyles.csl+json">'
+		);
+		expect(markup).toContain('class="Z3988"');
+		expect(markup).toContain(
+			'<ol class="scholarly-bibliography-list scholarly-bibliography-list-numeric scholarly-bibliography-list-ieee">'
+		);
+	});
+});

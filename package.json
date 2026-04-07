@@ -1,0 +1,52 @@
+{
+	"name": "scholarly-bibliography",
+	"version": "0.1.0",
+	"description": "A WordPress block plugin that transforms pasted scholarly citations (DOIs, BibTeX) into a semantically rich, auto-sorted bibliography list.",
+	"author": "Dan Knauss",
+	"license": "GPL-2.0-or-later",
+	"main": "build/index.js",
+	"scripts": {
+		"build": "wp-scripts build",
+		"start": "wp-scripts start",
+		"lint:js": "wp-scripts lint-js",
+		"lint:css": "wp-scripts lint-style",
+		"test": "wp-scripts test-unit-js",
+		"benchmark:perf": "RUN_PERF_BENCHMARK=1 wp-scripts test-unit-js --runInBand --runTestsByPath src/benchmarks/performance-benchmark.test.js",
+		"package:release": "sh ./scripts/package-release.sh",
+		"test:rest:local": "sh ./scripts/test-rest-endpoints.sh",
+		"test:e2e": "playwright test",
+		"test:runtime:local": "sh ./scripts/runtime-matrix/smoke.sh"
+	},
+	"jest": {
+		"testEnvironment": "jsdom",
+		"transform": {
+			"^.+\\.[jt]sx?$": "babel-jest"
+		}
+	},
+	"dependencies": {
+		"@citation-js/core": "0.7.18",
+		"@citation-js/plugin-bibtex": "0.7.18",
+		"@citation-js/plugin-csl": "0.7.18",
+		"@citation-js/plugin-doi": "0.7.18",
+		"@wordpress/block-editor": "^15.15.0",
+		"@wordpress/blocks": "^15.15.0",
+		"@wordpress/components": "^32.4.0",
+		"@wordpress/data": "^10.42.0",
+		"@wordpress/element": "^6.42.0",
+		"@wordpress/i18n": "^6.15.0",
+		"@wordpress/icons": "^12.0.0",
+		"@wordpress/notices": "^5.42.0"
+	},
+	"devDependencies": {
+		"@testing-library/dom": "^8.20.1",
+		"@testing-library/jest-dom": "^5.17.0",
+		"@testing-library/react": "^12.1.5",
+		"@testing-library/user-event": "^13.5.0",
+		"@wordpress/scripts": "^19.2.4",
+		"prettier": "^2.8.8",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2",
+		"@wordpress/dependency-extraction-webpack-plugin": "^3.7.0",
+		"@playwright/test": "^1.54.2"
+	}
+}

@@ -1,0 +1,129 @@
+export const DEFAULT_CITATION_STYLE = 'chicago-notes-bibliography';
+export const EXPERIMENTAL_STYLE_PICKER = false;
+
+export const STYLE_DEFINITIONS = {
+	'chicago-notes-bibliography': {
+		key: 'chicago-notes-bibliography',
+		label: 'Chicago Notes-Bibliography',
+		enabled: true,
+		backend: 'csl',
+		cslTemplate: 'chicago-notes-bibliography',
+		listType: 'ul',
+		family: 'notes',
+		inlineCitationMode: 'note',
+		headingPlaceholder: 'Bibliography',
+	},
+	'chicago-author-date': {
+		key: 'chicago-author-date',
+		label: 'Chicago Author-Date',
+		enabled: true,
+		backend: 'csl',
+		cslTemplate: 'chicago-author-date',
+		listType: 'ul',
+		family: 'author-date',
+		inlineCitationMode: 'parenthetical',
+		headingPlaceholder: 'References',
+	},
+	'apa-7': {
+		key: 'apa-7',
+		label: 'APA 7',
+		enabled: true,
+		backend: 'csl',
+		cslTemplate: 'apa',
+		listType: 'ul',
+		family: 'author-date',
+		inlineCitationMode: 'parenthetical',
+		headingPlaceholder: 'References',
+	},
+	'mla-9': {
+		key: 'mla-9',
+		label: 'MLA 9',
+		enabled: true,
+		backend: 'csl',
+		cslTemplate: 'modern-language-association',
+		listType: 'ul',
+		family: 'author-date',
+		inlineCitationMode: 'parenthetical',
+		headingPlaceholder: 'Works Cited',
+	},
+	harvard: {
+		key: 'harvard',
+		label: 'Harvard',
+		enabled: true,
+		backend: 'csl',
+		cslTemplate: 'harvard1',
+		listType: 'ul',
+		family: 'author-date',
+		inlineCitationMode: 'parenthetical',
+		headingPlaceholder: 'References',
+	},
+	ieee: {
+		key: 'ieee',
+		label: 'IEEE',
+		enabled: true,
+		backend: 'csl',
+		cslTemplate: 'ieee',
+		listType: 'ol',
+		family: 'numeric',
+		inlineCitationMode: 'numeric',
+		headingPlaceholder: 'References',
+	},
+	vancouver: {
+		key: 'vancouver',
+		label: 'Vancouver',
+		enabled: true,
+		backend: 'csl',
+		cslTemplate: 'vancouver',
+		listType: 'ol',
+		family: 'numeric',
+		inlineCitationMode: 'numeric',
+		headingPlaceholder: 'References',
+	},
+	oscola: {
+		key: 'oscola',
+		label: 'OSCOLA',
+		enabled: true,
+		backend: 'csl',
+		cslTemplate: 'oscola',
+		listType: 'ul',
+		family: 'notes',
+		inlineCitationMode: 'note',
+		headingPlaceholder: 'Bibliography',
+	},
+	abnt: {
+		key: 'abnt',
+		label: 'ABNT',
+		enabled: true,
+		backend: 'csl',
+		cslTemplate: 'abnt',
+		listType: 'ul',
+		family: 'author-date',
+		inlineCitationMode: 'parenthetical',
+		headingPlaceholder: 'Referências',
+	},
+};
+
+export function getStyleDefinition(styleKey = DEFAULT_CITATION_STYLE) {
+	return (
+		STYLE_DEFINITIONS[styleKey] || STYLE_DEFINITIONS[DEFAULT_CITATION_STYLE]
+	);
+}
+
+export function getListSemantics(styleKey = DEFAULT_CITATION_STYLE) {
+	return getStyleDefinition(styleKey).listType;
+}
+
+export function getHeadingPlaceholder(styleKey = DEFAULT_CITATION_STYLE) {
+	return getStyleDefinition(styleKey).headingPlaceholder || 'Bibliography';
+}
+
+export function getSelectableStyles({
+	includeExperimental = EXPERIMENTAL_STYLE_PICKER,
+} = {}) {
+	return Object.values(STYLE_DEFINITIONS)
+		.filter((definition) => definition.enabled || includeExperimental)
+		.map(({ key, label }) => ({
+			label,
+			value: key,
+		}));
+}
