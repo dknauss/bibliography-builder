@@ -72,13 +72,6 @@ const WARNING_MESSAGES = {
 const CITATION_FORM_LABEL = __('Add citations', 'scholarly-bibliography');
 const PASTE_IMPORT_TAB_LABEL = __('Paste / Import', 'scholarly-bibliography');
 const MANUAL_ENTRY_TAB_LABEL = __('Manual Entry', 'scholarly-bibliography');
-const PASTE_IMPORT_LINK_LABEL = __('Paste / Import', 'scholarly-bibliography');
-const MANUAL_ENTRY_LINK_LABEL = __('Manual Entry', 'scholarly-bibliography');
-const PASTE_IMPORT_FORM_TITLE = __('Add citations', 'scholarly-bibliography');
-const MANUAL_ENTRY_FORM_TITLE = __(
-	'Add citation manually',
-	'scholarly-bibliography'
-);
 
 function pluralize(count, singular, plural = `${singular}s`) {
 	return `${count} ${count === 1 ? singular : plural}`;
@@ -416,6 +409,7 @@ export default function Edit({ attributes, setAttributes }) {
 	const handleAddModeChange = useCallback(
 		(mode) => {
 			setActiveAddMode(mode);
+			setIsFormOpen(true);
 			clearNotice();
 		},
 		[clearNotice]
@@ -623,48 +617,8 @@ export default function Edit({ attributes, setAttributes }) {
 		return 'scholarly-bibliography-entry';
 	};
 
-	const renderAddForm = (showHeader = true) => (
+	const renderAddForm = () => (
 		<>
-			{showHeader ? (
-				<div className="scholarly-bibliography-form-header">
-					<p className="scholarly-bibliography-form-title">
-						{activeAddMode === 'paste'
-							? PASTE_IMPORT_FORM_TITLE
-							: MANUAL_ENTRY_FORM_TITLE}
-					</p>
-					<Button
-						variant="link"
-						size="small"
-						className="scholarly-bibliography-mode-link"
-						onClick={() =>
-							handleAddModeChange(
-								activeAddMode === 'paste' ? 'manual' : 'paste'
-							)
-						}
-					>
-						{activeAddMode === 'paste'
-							? MANUAL_ENTRY_LINK_LABEL
-							: PASTE_IMPORT_LINK_LABEL}
-					</Button>
-				</div>
-			) : (
-				<div className="scholarly-bibliography-form-header scholarly-bibliography-form-header-compact">
-					<Button
-						variant="link"
-						size="small"
-						className="scholarly-bibliography-mode-link"
-						onClick={() =>
-							handleAddModeChange(
-								activeAddMode === 'paste' ? 'manual' : 'paste'
-							)
-						}
-					>
-						{activeAddMode === 'paste'
-							? MANUAL_ENTRY_LINK_LABEL
-							: PASTE_IMPORT_LINK_LABEL}
-					</Button>
-				</div>
-			)}
 			{activeAddMode === 'paste' ? (
 				<>
 					<BaseControl
@@ -772,15 +726,32 @@ export default function Edit({ attributes, setAttributes }) {
 					<ToolbarButton
 						icon={PasteImportIcon}
 						label={PASTE_IMPORT_TAB_LABEL}
-						isPressed={activeAddMode === 'paste'}
+						isPressed={isFormOpen && activeAddMode === 'paste'}
 						onClick={() => handleAddModeChange('paste')}
 					/>
 					<ToolbarButton
 						icon={ManualEntryIcon}
 						label={MANUAL_ENTRY_TAB_LABEL}
-						isPressed={activeAddMode === 'manual'}
+						isPressed={isFormOpen && activeAddMode === 'manual'}
 						onClick={() => handleAddModeChange('manual')}
 					/>
+					{citations.length > 0 && (
+						<ToolbarButton
+							icon={isFormOpen ? ChevronUpIcon : ChevronDownIcon}
+							label={
+								isFormOpen
+									? __(
+											'Hide citation form',
+											'scholarly-bibliography'
+									  )
+									: __(
+											'Show citation form',
+											'scholarly-bibliography'
+									  )
+							}
+							onClick={() => setIsFormOpen((open) => !open)}
+						/>
+					)}
 				</ToolbarGroup>
 			</BlockControls>
 			<InspectorControls>
@@ -934,34 +905,10 @@ export default function Edit({ attributes, setAttributes }) {
 						}
 						className="scholarly-bibliography-placeholder"
 					>
-						{renderAddForm(false)}
+						{renderAddForm()}
 					</Placeholder>
 				) : (
 					<>
-						<div className="scholarly-bibliography-form-toggle-row">
-							<Button
-								className="scholarly-bibliography-form-toggle"
-								icon={
-									isFormOpen ? ChevronUpIcon : ChevronDownIcon
-								}
-								label={
-									isFormOpen
-										? __(
-												'Hide citation form',
-												'scholarly-bibliography'
-										  )
-										: __(
-												'Show citation form',
-												'scholarly-bibliography'
-										  )
-								}
-								showTooltip
-								onClick={() => setIsFormOpen((open) => !open)}
-								aria-expanded={isFormOpen}
-								variant="tertiary"
-								size="small"
-							/>
-						</div>
 						{isFormOpen && renderAddForm()}
 						<EditorCanvasNotices
 							currentNotice={currentNotice}

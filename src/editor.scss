@@ -276,43 +276,6 @@
 		margin-bottom: 1em;
 	}
 
-	.scholarly-bibliography-form-toggle-row {
-		display: flex;
-		justify-content: flex-end;
-		margin-bottom: 0.25rem;
-	}
-
-	.scholarly-bibliography-form-header {
-		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		gap: 0.75rem;
-		margin-bottom: 0.5rem;
-	}
-
-	.scholarly-bibliography-form-header-compact {
-		justify-content: flex-end;
-		margin-bottom: 0.75rem;
-	}
-
-	.scholarly-bibliography-form-title {
-		margin: 0;
-		font-size: 13px;
-		font-weight: 600;
-	}
-
-	.scholarly-bibliography-mode-link {
-		margin: 0;
-		font-size: 12px;
-		line-height: 1.4;
-		min-height: auto;
-		padding: 0;
-
-		&.components-button {
-			height: auto;
-		}
-	}
-
 	.scholarly-bibliography-form-actions {
 		display: flex;
 		justify-content: flex-end;
