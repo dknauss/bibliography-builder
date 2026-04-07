@@ -46,19 +46,21 @@ A standalone WordPress block plugin that transforms pasted scholarly citations (
 
 ---
 
-## MVP Scope
+## Scope (1.0)
 
-**"Paste a DOI or BibTeX entry and render it as a semantically rich bibliography with Chicago Notes-Bibliography as the default style."**
+**"Paste a DOI, BibTeX entry, or supported formatted citation and render it as a semantically rich bibliography in any of nine academic citation styles."**
 
-### Supported Input Formats (MVP)
+### Supported Input Formats
 
 1. **DOI** — one or more per paste, one per line. Detected by `10.\d{4,}/` pattern. Resolved to CSL-JSON via `citation-js` (CrossRef lookup, client-side, no API key).
 2. **BibTeX** — one or more entries per paste. Detected by `@type{` boundaries. Parsed to CSL-JSON via `citation-js` (client-side).
 3. **Mixed** — a paste containing both DOIs and BibTeX entries, separated by blank lines.
+4. **Free-text formatted citations** — heuristic parser for books, journal articles, chapters, webpages/social posts, reviews, and theses/dissertations. Support is best-effort; unsupported inputs fail closed with a block-local notice.
+5. **Manual entry** — structured form with Publication Type, Author(s), Title, Container, Publisher, Year, Pages, DOI, and URL fields.
 
-### Citation Style (current baseline)
+### Citation Styles (1.0)
 
-Default to **Chicago Manual of Style — Notes-Bibliography**. The architecture and attribute model must support multiple styles, with the first active set centered on:
+Default: **Chicago Manual of Style — Notes-Bibliography**. Nine styles are selectable:
 
 -   Chicago Notes-Bibliography
 -   Chicago Author-Date
@@ -70,7 +72,7 @@ Default to **Chicago Manual of Style — Notes-Bibliography**. The architecture 
 -   OSCOLA
 -   ABNT
 
-Future phases extend this to potentially custom CSL uploads.
+Changing styles reformats all auto-generated citations and preserves manual display overrides. Future phases may extend this to custom CSL file uploads.
 
 ---
 
@@ -180,14 +182,23 @@ Below the add form, the sorted bibliography is rendered as a live preview. Each 
 
 ### Persistent Paste Zone
 
-The paste input remains visible below the rendered list at all times, allowing the user to add more entries incrementally. Adding new entries triggers a re-sort of the full list.
+The add-citation form appears above the rendered list when expanded, allowing the user to add more entries incrementally. Adding new entries triggers a re-sort of the full list.
 
-### Block Toolbar / Inspector Panel
+### Block Toolbar
 
--   **Citation Style** — selectable in the inspector. The default is **Chicago Notes-Bibliography**.
+Three buttons in the block toolbar control the add-citation form:
+
+-   **Paste / Import** — switches to the paste/import textarea. Auto-expands if collapsed.
+-   **Manual Entry** — switches to the structured manual entry form. Auto-expands if collapsed.
+-   **Expand/Collapse** (chevron) — toggles the add-citation form visibility. Only appears when citations exist.
+
+### Inspector Panel
+
+-   **Citation Style** — selectable. The default is **Chicago Notes-Bibliography**.
 -   **Visible Heading** — optional text shown above the bibliography on the front end only when at least one citation exists.
 -   **Metadata output controls** — JSON-LD on by default, with optional COinS and CSL-JSON toggles.
--   **Entry count** — e.g., "12 citations"
+-   **Entry count** — e.g., "Settings (12 sources)"
+-   **Exports** — Copy bibliography, Download CSL-JSON, Download BibTeX, Download RIS.
 
 ---
 
@@ -370,35 +381,37 @@ The plugin provides minimal, opinionated base styles. Theme authors can override
 
 ```
 scholarly-bibliography/
-├── scholarly-bibliography.php       # Plugin header, register_block_type()
-├── block.json                       # Block metadata, attributes, supports
+├── scholarly-bibliography.php    # Plugin bootstrap + REST API endpoints
+├── block.json                    # Block metadata & attributes
 ├── src/
-│   ├── index.js                     # registerBlockType() entry point
-│   ├── edit.js                      # Editor component
-│   │                                  - Paste zone (textarea with detection)
-│   │                                  - Sorted list with per-entry edit/delete
-│   │                                  - Validation feedback
-│   ├── save.js                      # Static save: semantic HTML + JSON-LD +
-│   │                                  CSL-JSON + COinS
-│   ├── editor.scss                  # Editor-only styles
-│   ├── style.scss                   # Frontend styles (hanging indent, etc.)
+│   ├── index.js                  # Block registration
+│   ├── edit.js                   # Editor component
+│   ├── save.js                   # Static save entrypoint
+│   ├── save-markup.js            # Shared static save markup
+│   ├── deprecated.js             # Block deprecation migrations
+│   ├── editor.scss               # Editor-only styles
+│   ├── style.scss                # Frontend bibliography styles
+│   ├── components/
+│   │   ├── citation-entry-body.js    # Per-citation row UI
+│   │   ├── editor-canvas-notices.js  # Block-local notice display
+│   │   └── structured-citation-editor.js  # Per-field structured editor
+│   ├── hooks/
+│   │   ├── use-block-notices.js      # Notice state management
+│   │   ├── use-citation-editor-state.js  # Edit/structured-edit state
+│   │   └── use-entry-focus.js        # Focus management after operations
 │   └── lib/
-│       ├── parser.js                # Input format detection
-│       │                              - DOI regex matching
-│       │                              - BibTeX boundary splitting
-│       │                              - citation-js orchestration
-│       │                              - Multi-entry paste handling
-│       ├── sorter.js                # Style-family sort comparator
-│       │                              - Last name → year → title
-│       ├── coins.js                 # CSL-JSON → COinS OpenURL string builder
-│       └── jsonld.js                # CSL-JSON → schema.org JSON-LD mapper
-│                                      - Type mapping (CSL → schema.org)
-│                                      - Person/author construction
-│                                      - Periodical/publisher/event context
-│                                      - ORCID sameAs linking
-├── package.json                     # Dependencies: @wordpress/scripts,
-│                                      citation-js
-└── readme.txt                       # WordPress.org readme
+│       ├── parser.js             # Input detection & parsing orchestration
+│       ├── sorter.js             # Style-family bibliography sort comparator
+│       ├── coins.js              # CSL-JSON → COinS builder
+│       ├── jsonld.js             # CSL-JSON → Schema.org JSON-LD mapper
+│       ├── deduplicate.js        # Duplicate citation detection
+│       ├── manual-entry.js       # Manual entry fields & validation
+│       ├── export.js             # CSL-JSON, BibTeX, RIS export
+│       ├── clipboard.js          # Copy-to-clipboard utility
+│       ├── wp-icons.js           # Wrapped Gutenberg icon imports
+│       └── formatting/           # Style registry + CSL-backed formatting
+├── package.json
+└── readme.txt                    # WordPress.org readme
 ```
 
 ### No server-side rendering required
@@ -419,16 +432,28 @@ With static save and no Highwire meta tags in MVP, the PHP side is minimal:
 
 -   Node.js 18+
 -   npm 9+
+-   Composer (for PHP tooling)
 -   `@wordpress/scripts` (dev dependency)
 
 ### Commands
 
 ```bash
-npm install          # Install dependencies
-npm run build        # Production build
-npm run start        # Development mode with file watching
-npm run lint:js      # ESLint
-npm run lint:css     # Stylelint
+npm install                  # Install dependencies
+composer install             # Install PHP tooling
+npm run build                # Production build
+npm run start                # Development mode with file watching
+npm run lint:js              # ESLint
+npm run lint:css             # Stylelint
+npm run lint:php             # WPCS/PHPCS
+npm run test                 # Unit tests
+npm run test:js:coverage     # JS coverage for Codecov
+npm run test:e2e             # Playwright smoke suite
+npm run test:e2e:playground  # Playground-based Playwright smoke suite
+npm run test:e2e:lifecycle   # Plugin lifecycle e2e tests
+npm run test:runtime:local   # Docker-based runtime smoke
+composer test:php            # PHPUnit REST and bootstrap tests
+composer test:php:coverage   # PHP coverage for Codecov
+composer analyze:php         # Psalm static analysis
 ```
 
 ### Key dependency: `citation-js`
@@ -466,7 +491,10 @@ Required Chicago CSL style XML can be bundled from the [Citation Style Language 
 
 ### Edit Safeguards
 
-MVP: none. The user can edit display text arbitrarily. Malformed edits affect only the visible text; the CSL-JSON and all machine-readable output remain intact. This is an acceptable tradeoff for MVP. See Roadmap for future structured editing.
+-   **Plain-text editing** — the user can edit display text arbitrarily via `displayOverride`. Malformed edits affect only the visible text; the CSL-JSON and all machine-readable output remain intact.
+-   **Structured field editing** — heuristic (free-text) and warning-marked entries open a per-field editor. Saves write back to CSL-JSON and re-render the formatted text.
+-   **Reset to auto-format** — clears `displayOverride` and restores the current auto-formatted output from CSL-JSON.
+-   **Duplicate detection** — new citations are checked against existing entries by DOI, title, or author+year. Duplicates are skipped with a notice.
 
 ---
 
@@ -875,69 +903,42 @@ Manual tests that cannot be fully automated and should be performed before each 
 
 ## Roadmap & Future Features Backlog
 
-The following features are explicitly out of MVP scope but represent the natural evolution of the plugin. They are ordered roughly by value and feasibility.
+### Shipped in 1.0
 
-### Phase 2: Enhanced Input
+The following features originally planned for later phases shipped in 1.0:
 
--   **Raw text citation parsing.** Accept pasted formatted citations (e.g., a Chicago-style string typed or copied from a paper) and extract structured data. Approaches:
+-   **Free-text citation parsing** (originally Phase 2) — heuristic parser for books, articles, chapters, webpages, reviews, and theses.
+-   **Manual entry** (originally Phase 2) — structured form with Publication Type, per-field editing, and validation.
+-   **Nine citation styles** (originally Phase 3) — style selector, automatic `<ul>`/`<ol>` switching, reformatting on style change.
+-   **Structured field editing** (originally Phase 4) — per-field editor for heuristic/warning-marked entries, reset to auto-format.
+-   **Duplicate detection** (originally Phase 8) — DOI, title, and within-batch deduplication.
+-   **Export** (originally Phase 7) — CSL-JSON, BibTeX, RIS downloads; per-entry copy citation; copy full bibliography.
+-   **REST API** (originally Phase 7) — read-only endpoints with JSON, text, and CSL-JSON format support.
 
-    -   **AnyStyle** (Ruby ML parser, self-hosted) — most accurate for free-text, but requires a server component or external API.
-    -   **GROBID** (Java ML tool) — used by academic publishers, heavy infrastructure.
-    -   **LLM-assisted parsing** — an API call to Claude or similar can extract structured fields from formatted citations with high accuracy. Adds cost and API key requirement, but could be offered as an optional enhancement.
-    -   **Hybrid** — attempt client-side heuristic parsing first, fall back to API for ambiguous cases.
+### Future: Enhanced Input
 
 -   **Additional identifier inputs:** PMID, PMCID, ISBN, URL (with metadata scraping). `citation-js` has plugins for several of these.
-
--   **RIS file import.** Accept `.ris` file uploads and parse to CSL-JSON. Enables bulk import from reference managers (Zotero, Mendeley, EndNote).
-
-### Phase 3: Multi-Style Support
-
--   **Style selector in inspector panel.** Allow the user to choose from common styles: APA (7th), MLA (9th), Chicago Author-Date, Chicago Notes-Bibliography, Harvard, IEEE, Vancouver/NLM.
--   **Style locking.** Once the first citation is added, the style locks. Changing the style re-formats all entries. A confirmation dialog warns the user.
--   **`<ul>` vs `<ol>` switching.** Numbered styles (IEEE, Vancouver) render as `<ol>`. Author-date styles render as `<ul>`. The save output adapts automatically based on the selected style.
+-   **RIS file import.** Accept `.ris` file uploads and parse to CSL-JSON. Enables bulk import from reference managers.
 -   **Custom CSL file upload.** Allow users to upload a `.csl` file for any of the 10,000+ styles in the CSL repository.
 
-### Phase 4: Structured Editing
-
--   **Per-field citation editor.** Instead of arbitrary text editing, present a form with fields: Title, Author(s), Year, Journal, Volume, Issue, Pages, DOI, URL, Publisher, etc. Edits write back to the CSL-JSON and re-render the formatted text.
--   **Author management.** Add/remove/reorder authors per citation. Each author has Given Name, Family Name, and optional ORCID fields.
--   **Validation warnings.** Flag common issues: missing required fields for the selected style, suspiciously old dates, duplicate entries, etc.
--   **Re-parse from CSL-JSON.** If the user has a `displayOverride` and later wants to reset to auto-formatted output, a "Reset to auto-format" action clears the override and re-renders from CSL-JSON.
-
-### Phase 5: In-Text Citation Integration
+### Future: In-Text Citation Integration
 
 -   **Companion inline citation block or format.** A small inline element (e.g., `(Smith 2024)`) that references an entry in the bibliography block by ID. Clicking it in the editor scrolls to/highlights the bibliography entry.
 -   **Anchor links.** Frontend `<a href="#ref-{id}">` links from inline citations to bibliography entries, and back-links from entries to their in-text occurrences.
 -   **Automatic inline citation formatting.** The inline element auto-formats based on the bibliography block's style (e.g., `(Smith 2024)` for Chicago author-date, `[1]` for IEEE).
 
-### Phase 6: Google Scholar / Highwire Companion Plugin
+### Future: Google Scholar / Highwire Companion Plugin
 
-A **separate plugin** — `scholarly-post-type` or `scholarly-publisher` — that:
+A **separate plugin** that registers a scholarly article post type and injects Highwire Press meta tags for Google Scholar discoverability. See the Technical Notes section for why this is a separate concern from the bibliography block.
 
--   Registers a custom post type for scholarly articles (journal papers, preprints, conference papers).
--   Injects **Highwire Press meta tags** into `<head>` on single article pages: `citation_title`, `citation_author`, `citation_date`, `citation_journal_title`, `citation_volume`, `citation_issue`, `citation_firstpage`, `citation_lastpage`, `citation_doi`, `citation_pdf_url`.
--   Optionally injects **Dublin Core** meta tags as a fallback layer.
--   Provides an admin setting to submit the site for Google Scholar inclusion review.
--   Consumes the bibliography block — the post type template could include a bibliography block by default.
+### Future: Site-Wide Citation Library
 
-**Why a separate plugin:** Google Scholar requires the site to primarily host scholarly content, each article on a separate URL with a visible abstract. This is a site-level architectural concern, not a block-level concern. The bibliography block should remain usable on any WordPress post without implying the site is a scholarly publication.
+A central store (custom post type or taxonomy) for citations used across multiple posts. The bibliography block could reference entries from the library rather than storing them inline.
 
-### Phase 7: Export & Interoperability
+### Future: AI-Assisted Features
 
--   **Current exports:** CSL-JSON, BibTeX, and RIS downloads from the editor.
--   **Copy citation:** shipped per-entry action that copies the visible formatted citation text to the clipboard.
--   **Copy bibliography:** shipped editor action that copies the full current bibliography as plain text in the current order and style.
--   **REST API endpoint:** shipped read-only routes at `/wp-json/scholarly-bibliography/v1/posts/<post_id>/bibliographies` and `/wp-json/scholarly-bibliography/v1/posts/<post_id>/bibliographies/<index>`, with single-bibliography `format=json|text|csl-json` support.
-
-### Phase 8: Deduplication & Cross-Post Awareness
-
--   **Duplicate detection.** When adding a citation, check for existing entries with the same DOI, title, or author+year combination. Warn the user instead of silently adding duplicates.
--   **Site-wide citation library.** A central store (custom post type or taxonomy) for citations used across multiple posts. The bibliography block could reference entries from the library rather than storing them inline. (This is the approach WBCom's Academic References takes with its database table, but done with WordPress-native data structures.)
-
-### Phase 9: AI-Assisted Features
-
--   **Citation verification.** Use an LLM to cross-check pasted citations against known databases — does this DOI actually match this author and title?
--   **Style detection.** When raw text is pasted, use an LLM or heuristic engine to identify which citation style was used and auto-set the block's style.
+-   **Citation verification.** Cross-check pasted citations against known databases.
+-   **Style detection.** Identify which citation style was used in pasted text.
 -   **Suggested citations.** Given the post's content, suggest relevant citations from the user's library or from public databases.
 
 ---
