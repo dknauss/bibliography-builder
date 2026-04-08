@@ -165,6 +165,12 @@
 		word-break: break-word;
 	}
 
+	.scholarly-bibliography-list-unordered > .scholarly-bibliography-entry .scholarly-bibliography-entry-text {
+		display: block;
+		padding-left: 2em;
+		text-indent: -2em;
+	}
+
 	.scholarly-bibliography-entry-warning {
 		display: block;
 		margin: 0.35rem 0 0;
