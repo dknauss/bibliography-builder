@@ -124,8 +124,7 @@ async function createPostWithBibliography(page) {
 		.filter({ hasText: 'Bibliography' })
 		.first();
 	await expect(blockOption).toBeVisible({ timeout: 10_000 });
-	await blockOption.scrollIntoViewIfNeeded();
-	await blockOption.click();
+	await blockOption.click({ force: true });
 	await page.waitForTimeout(1000);
 
 	// Fill the paste textarea with a BibTeX entry.
