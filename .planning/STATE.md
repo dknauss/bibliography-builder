@@ -22,6 +22,9 @@
 4. Future API/interoperability backlog
     - build on shipped copy-citation and bibliography REST access
     - consider richer API fields, discovery, or collection-level endpoints
+5. Translation expansion backlog
+    - interface locale files now added for French, German, Dutch, Swedish, Spanish, Italian, Portuguese, and Polish
+    - next recommended backlog locales: Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu
 
 ## Last activity
 

@@ -164,6 +164,32 @@ Planned next:
 
 ## Backlog / architecture investigations
 
+### Translation backlog
+
+Completed interface locale files:
+
+-   fr_FR
+-   de_DE
+-   nl_NL
+-   sv_SE
+-   es_ES
+-   it_IT
+-   pt_PT
+-   pl_PL
+
+Recommended next locale backlog, prioritizing broad WordPress usage and the requested language families:
+
+-   ja
+-   zh_CN
+-   ko_KR
+-   sr_RS
+-   hr
+-   pt_BR
+-   hi_IN
+-   bn_BD
+-   ta_IN
+-   te
+
 ### Option B: citation child blocks
 
 Explore a future architecture where each citation becomes a child block instead of an item in a parent `citations` array.
