@@ -7,24 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-
-- REST responses now treat `outputJsonLd` as enabled when the attribute is absent from stored block attributes, matching the block default for older or migrated blocks.
-- Structured edit cancellation now guards both before and after bibliography formatting resolves, preventing stale formatted data from being committed after a late cancel.
-- The PHPUnit `wp_strip_all_tags()` stub now matches WordPress behavior and no longer collapses whitespace, exposing plain-text rendering bugs more accurately.
-- `jsonld.js` now maps chapter citations with a container title to `isPartOf: { @type: "Book" }`, and maps `review-book` to `Review`.
-- `coins.js` now emits dissertation-specific COinS metadata for thesis citations instead of falling back to the journal format.
-
-### Added
-
-- 25 additional regression tests covering REST defaults, structured-edit cancellation races, focus helper behavior, manuscript/review italics branches, BibTeX aliases, thesis COinS output, and corrected JSON-LD mappings.
-- New dedicated hook test files for `use-citation-editor-state` and `use-entry-focus`.
-
-### Changed
-
-- Removed dead exports and branches in the parser and style registry, including the unused `SUPPORTED_INPUT_MESSAGE` re-export and experimental style-picker path.
-- Psalm failures now block CI instead of running with `continue-on-error`.
-- Playwright smoke tests now use configurable frontend and REST paths through `SMOKE_FRONTEND_PATH` and `SMOKE_REST_PATH`.
+No changes yet.
 
 ## [1.0.0] - 2026-04-07
 
@@ -55,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Lifecycle CI coverage.
 - Refined WordPress.org branding assets, including updated banner and icon artwork.
 - Bundled interface locale files for French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu.
+- 25 additional regression tests covering REST defaults, structured-edit cancellation races, focus helper behavior, manuscript/review italics branches, BibTeX aliases, thesis COinS output, and corrected JSON-LD mappings.
+- New dedicated hook test files for `use-citation-editor-state` and `use-entry-focus`.
 
 ### Changed
 
@@ -66,7 +51,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `focus-visible` outline to bibliography list entries.
 - Removed the redundant `aria-label` from the inline edit input.
 - Aligned the plugin slug-facing identifiers around `bibliography`, including the text domain, release package folder, Playground install target, export filenames, and REST namespace.
+- Removed dead exports and branches in the parser and style registry, including the unused `SUPPORTED_INPUT_MESSAGE` re-export and experimental style-picker path.
+- Psalm failures now block CI instead of running with `continue-on-error`.
+- Playwright smoke tests now use configurable frontend and REST paths through `SMOKE_FRONTEND_PATH` and `SMOKE_REST_PATH`.
 
 ### Security
 
 - Overrode the vulnerable transitive development dependency `basic-ftp` to the patched release.
+
+### Fixed
+
+- REST responses now treat `outputJsonLd` as enabled when the attribute is absent from stored block attributes, matching the block default for older or migrated blocks.
+- Structured edit cancellation now guards both before and after bibliography formatting resolves, preventing stale formatted data from being committed after a late cancel.
+- The PHPUnit `wp_strip_all_tags()` stub now matches WordPress behavior and no longer collapses whitespace, exposing plain-text rendering bugs more accurately.
+- `jsonld.js` now maps chapter citations with a container title to `isPartOf: { @type: "Book" }`, and maps `review-book` to `Review`.
+- `coins.js` now emits dissertation-specific COinS metadata for thesis citations instead of falling back to the journal format.

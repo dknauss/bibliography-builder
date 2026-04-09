@@ -1,5 +1,4 @@
 export const DEFAULT_CITATION_STYLE = 'chicago-notes-bibliography';
-export const EXPERIMENTAL_STYLE_PICKER = false;
 
 export const STYLE_DEFINITIONS = {
 	'chicago-notes-bibliography': {
@@ -164,17 +163,13 @@ export function getHeadingPlaceholder(styleKey = DEFAULT_CITATION_STYLE) {
 /**
  * Get selectable styles for the inspector dropdown.
  *
- * @param {Object}  [options={}]                        Options.
- * @param {boolean} [options.includeExperimental=false] Include experimental styles.
  * @return {Array<{label: string, value: string}>} Selectable style options.
  *
  * @since 0.1.0
  */
-export function getSelectableStyles({
-	includeExperimental = EXPERIMENTAL_STYLE_PICKER,
-} = {}) {
+export function getSelectableStyles() {
 	return Object.values(STYLE_DEFINITIONS)
-		.filter((definition) => definition.enabled || includeExperimental)
+		.filter((definition) => definition.enabled)
 		.map(({ key, label }) => ({
 			label,
 			value: key,

@@ -125,6 +125,36 @@ final class RestEndpointsTest extends TestCase {
 		$this->assertSame( 404, $response->get_error_data()['status'] );
 	}
 
+	public function test_outputJsonLd_defaults_to_true_when_absent_from_attrs(): void {
+		$post_id = 201;
+		$block_content = '<!-- wp:scholarly/bibliography {} /-->';
+
+		scholarly_bibliography_test_set_post( $post_id, 'publish', $block_content );
+		scholarly_bibliography_test_set_parsed_blocks(
+			$block_content,
+			array(
+				array(
+					'blockName' => 'scholarly/bibliography',
+					'attrs'     => array(
+						// outputJsonLd intentionally absent — block.json default is true.
+						'citations' => array(),
+					),
+				),
+			)
+		);
+
+		$request            = new WP_REST_Request( 'GET', '/bibliography/v1/posts/201/bibliographies' );
+		$request['post_id'] = $post_id;
+
+		$response = scholarly_bibliography_rest_get_bibliographies( $request );
+		$data     = $response->get_data();
+
+		$this->assertTrue(
+			$data['bibliographies'][0]['outputJsonLd'],
+			'outputJsonLd must default to true when the attribute is absent from stored block attrs'
+		);
+	}
+
 	public function test_plain_text_pre_serve_outputs_sanitized_text_only(): void {
 		$request = new WP_REST_Request( 'GET', '/bibliography/v1/posts/101/bibliographies/0' );
 		$request->set_query_params( array( 'format' => 'text' ) );

@@ -29,8 +29,16 @@ export function buildCoins(csl) {
 		addParam(params, 'rft.pub', csl.publisher);
 		addParam(params, 'rft.place', csl['publisher-place']);
 		addParam(params, 'rft.isbn', getPrimaryIdentifierValue(csl.ISBN));
+	} else if (type === 'thesis') {
+		params.push(
+			'rft_val_fmt=' +
+				encodeURIComponent('info:ofi/fmt:kev:mtx:dissertation')
+		);
+		addParam(params, 'rft.title', csl.title);
+		addParam(params, 'rft.inst', csl.publisher);
+		addParam(params, 'rft.degree', csl.genre);
 	} else {
-		// Default to journal article format.
+		// Default to journal article format for remaining types.
 		const pageBounds = getPageBounds(csl.page);
 
 		params.push(

@@ -785,9 +785,3 @@ export async function parsePastedInput(
  * @since 0.1.0
  */
 export { MAX_ENTRIES_PER_PASTE };
-/**
- * User-facing message for unsupported input types.
- *
- * @since 0.1.0
- */
-export { SUPPORTED_INPUT_MESSAGE };

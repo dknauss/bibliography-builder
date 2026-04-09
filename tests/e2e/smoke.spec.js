@@ -1,8 +1,15 @@
 /* eslint-disable jest/no-done-callback */
 const { test, expect } = require('@playwright/test');
 
-const FRONTEND_PATH = '/2026/04/01/scholarly-bibliography-test/';
-const REST_BASE = '/wp-json/bibliography/v1/posts/6/bibliographies/0';
+// Configure via environment variables when running against a specific WordPress install:
+//   SMOKE_FRONTEND_PATH  — relative path to the test post (default: /2026/04/01/scholarly-bibliography-test/)
+//   SMOKE_REST_PATH      — relative path to the REST endpoint (default: /wp-json/bibliography/v1/posts/6/bibliographies/0)
+const FRONTEND_PATH =
+	process.env.SMOKE_FRONTEND_PATH ||
+	'/2026/04/01/scholarly-bibliography-test/';
+const REST_BASE =
+	process.env.SMOKE_REST_PATH ||
+	'/wp-json/bibliography/v1/posts/6/bibliographies/0';
 
 test('frontend sample page renders bibliography content', async ({ page }) => {
 	await page.goto(FRONTEND_PATH);

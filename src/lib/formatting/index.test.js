@@ -192,6 +192,7 @@ describe('formatting helpers', () => {
 		'interview',
 		'legal_case',
 		'legislation',
+		'manuscript',
 		'map',
 		'musical_score',
 		'pamphlet',
@@ -218,7 +219,7 @@ describe('formatting helpers', () => {
 		expect(italicSegment.text).toBe('Standalone Work');
 	});
 
-	it.each(['entry', 'paper-conference', 'post', 'post-weblog'])(
+	it.each(['entry', 'paper-conference', 'post', 'post-weblog', 'review', 'review-book'])(
 		'italicizes the container-title for type "%s"',
 		(type) => {
 			const citation = createCitation({

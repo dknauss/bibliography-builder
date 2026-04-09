@@ -60,7 +60,33 @@ The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 t
 - **Export** — download the current bibliography as CSL-JSON, BibTeX, or RIS; copy individual citations or the full bibliography as plain text
 - **Static save** — bibliography HTML and metadata are baked into post content at save time
 - **Accessible editor UX** — focus management, block-local Gutenberg notices, keyboard escape/cancel flows, and row action controls
-- **Interface locale files included** — French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu
+- **Interface locale files included** — Interface translations currently ship for French (`fr_FR`), German (`de_DE`), Dutch (`nl_NL`), Swedish (`sv_SE`), Spanish (`es_ES`), Italian (`it_IT`), Portuguese (`pt_PT`), Polish (`pl_PL`), Russian (`ru_RU`), Japanese (`ja`), Simplified Chinese (`zh_CN`), Korean (`ko_KR`), Serbian (`sr_RS`), Croatian (`hr`), Brazilian Portuguese (`pt_BR`), Hindi (`hi_IN`), Bengali (`bn_BD`), Tamil (`ta_IN`), and Telugu (`te`)
+
+## Language Support
+
+Current bundled interface translations cover these locales:
+
+- `fr_FR` — French
+- `de_DE` — German
+- `nl_NL` — Dutch
+- `sv_SE` — Swedish
+- `es_ES` — Spanish
+- `it_IT` — Italian
+- `pt_PT` — Portuguese
+- `pl_PL` — Polish
+- `ru_RU` — Russian
+- `ja` — Japanese
+- `zh_CN` — Simplified Chinese
+- `ko_KR` — Korean
+- `sr_RS` — Serbian
+- `hr` — Croatian
+- `pt_BR` — Brazilian Portuguese
+- `hi_IN` — Hindi
+- `bn_BD` — Bengali
+- `ta_IN` — Tamil
+- `te` — Telugu
+
+These locale files currently cover the plugin interface only. Citation content remains user-provided or metadata-derived.
 
 ## Supported Input
 

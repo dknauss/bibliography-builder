@@ -9,6 +9,7 @@ const TYPE_MAP = {
 	thesis: 'Thesis',
 	report: 'Report',
 	'paper-conference': 'ScholarlyArticle',
+	'review-book': 'Review',
 	webpage: 'WebPage',
 };
 
@@ -93,6 +94,11 @@ export function cslToJsonLd(csl) {
 					? csl.ISSN[0]
 					: csl.ISSN;
 			}
+		} else if (csl.type === 'chapter') {
+			result.isPartOf = {
+				'@type': 'Book',
+				name: csl['container-title'],
+			};
 		} else if (csl.type === 'paper-conference') {
 			result.isPartOf = {
 				'@type': 'Event',

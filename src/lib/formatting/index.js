@@ -1,6 +1,5 @@
 export {
 	DEFAULT_CITATION_STYLE,
-	EXPERIMENTAL_STYLE_PICKER,
 	STYLE_DEFINITIONS,
 	getHeadingPlaceholder,
 	getStyleDefinition,

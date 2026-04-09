@@ -378,6 +378,30 @@ describe('parsePastedInput', () => {
 		);
 	});
 
+	it('normalizes BibTeX entry-type aliases @artikel and @inbuch', async () => {
+		Cite.async.mockResolvedValue({
+			get: () => [{ type: 'article-journal', title: 'Beispiel Artikel' }],
+		});
+
+		await parsePastedInput(`@artikel{baz,
+  title = {Beispiel Artikel}
+}`);
+		expect(Cite.async).toHaveBeenCalledWith(
+			expect.stringContaining('@article{baz')
+		);
+
+		Cite.async.mockResolvedValue({
+			get: () => [{ type: 'chapter', title: 'Beispiel Kapitel' }],
+		});
+
+		await parsePastedInput(`@inbuch{qux,
+  title = {Beispiel Kapitel}
+}`);
+		expect(Cite.async).toHaveBeenCalledWith(
+			expect.stringContaining('@inbook{qux')
+		);
+	});
+
 	it('falls back to a generated citation id when crypto.randomUUID is unavailable', async () => {
 		Cite.async.mockResolvedValue({
 			get: () => [

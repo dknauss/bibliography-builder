@@ -40,7 +40,7 @@ function scholarly_bibliography_collect_blocks( $blocks, $results = array() ) {
 				'headingText'   => isset( $attrs['headingText'] )
 					? (string) $attrs['headingText']
 					: '',
-				'outputJsonLd'  => ! empty( $attrs['outputJsonLd'] ),
+				'outputJsonLd'  => isset( $attrs['outputJsonLd'] ) ? (bool) $attrs['outputJsonLd'] : true,
 				'outputCoins'   => ! empty( $attrs['outputCoins'] ),
 				'outputCslJson' => ! empty( $attrs['outputCslJson'] ),
 				'citations'     => isset( $attrs['citations'] )

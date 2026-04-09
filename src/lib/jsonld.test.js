@@ -162,6 +162,42 @@ describe('cslToJsonLd', () => {
 		});
 	});
 
+	it('maps chapter to Chapter with Book isPartOf when container-title is present', () => {
+		expect(
+			cslToJsonLd({
+				type: 'chapter',
+				title: 'The Block Editor Ecosystem',
+				'container-title': 'The WordPress Handbook',
+				publisher: 'Open Source Press',
+				author: [{ given: 'Ada', family: 'Smith' }],
+			})
+		).toMatchObject({
+			'@type': 'Chapter',
+			name: 'The Block Editor Ecosystem',
+			isPartOf: {
+				'@type': 'Book',
+				name: 'The WordPress Handbook',
+			},
+			publisher: {
+				'@type': 'Organization',
+				name: 'Open Source Press',
+			},
+		});
+	});
+
+	it('maps review-book to Review type', () => {
+		expect(
+			cslToJsonLd({
+				type: 'review-book',
+				title: 'Review of The WordPress Handbook',
+				author: [{ given: 'Grace', family: 'Hopper' }],
+			})
+		).toMatchObject({
+			'@type': 'Review',
+			name: 'Review of The WordPress Handbook',
+		});
+	});
+
 	it('falls back to CreativeWork for unknown types and omits sameAs when ORCID is absent', () => {
 		expect(
 			cslToJsonLd({

@@ -337,6 +337,12 @@ export function useCitationEditorState({
 			citationStyle
 		);
 
+		// Second cancel guard: a cancel that arrives during formatBibliographyEntry
+		// would set structuredEditingIdRef.current to null — don't commit stale data.
+		if (structuredEditingIdRef.current !== activeStructuredEditingId) {
+			return;
+		}
+
 		const updated = sortCitations(
 			citationsRef.current.map((entry) =>
 				entry.id === activeStructuredEditingId
@@ -452,7 +458,6 @@ export function useCitationEditorState({
 		getEntryLabel,
 		getStructuredFieldId,
 		handleCitationStyleChange,
-		handleEditCancel,
 		handleEditConfirm,
 		handleEditKeyDown,
 		handleEditStart,

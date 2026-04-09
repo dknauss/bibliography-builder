@@ -24,3 +24,6 @@ Bibliography 1.0.0 is the first public release of the block plugin for building 
 - Added bundled interface locale files for French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu
 - Accessibility refinements for labels, notice regions, focus-visible states, and reduced-motion behavior
 - Patched vulnerable transitive development dependency `basic-ftp`
+- Fixed post-parse structured-edit cancellation races and corrected REST, JSON-LD, and COinS edge cases for older/migrated blocks, chapters, reviews, and theses
+- Added 25 regression tests, including new hook-level coverage for structured editing and focus helpers
+- Removed dead parser/style-registry branches and made Playwright smoke paths configurable via environment variables

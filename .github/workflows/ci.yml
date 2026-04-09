@@ -118,7 +118,6 @@ jobs:
     name: Psalm
     runs-on: ubuntu-latest
     needs: phpunit
-    continue-on-error: true
 
     steps:
       - name: Checkout

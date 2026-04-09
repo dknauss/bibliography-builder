@@ -102,4 +102,43 @@ describe('buildCoins', () => {
 		expect(title).toContain('rft.atitle=%22%20onclick%3D%22alert(1)');
 		expect(title).not.toContain('" onclick="alert(1)');
 	});
+
+	it('uses dissertation format for thesis and maps title/institution/degree', () => {
+		const params = new URLSearchParams(
+			buildCoins({
+				type: 'thesis',
+				title: 'Distributed Consensus in Byzantine Networks',
+				publisher: 'MIT',
+				genre: 'PhD thesis',
+				author: [{ family: 'Hopper', given: 'Grace' }],
+				issued: { 'date-parts': [[2023]] },
+			})
+		);
+
+		expect(params.get('rft_val_fmt')).toBe(
+			'info:ofi/fmt:kev:mtx:dissertation'
+		);
+		expect(params.get('rft.title')).toBe(
+			'Distributed Consensus in Byzantine Networks'
+		);
+		expect(params.get('rft.inst')).toBe('MIT');
+		expect(params.get('rft.degree')).toBe('PhD thesis');
+		// Shared fields still populated.
+		expect(params.get('rft.aulast')).toBe('Hopper');
+		expect(params.get('rft.date')).toBe('2023');
+	});
+
+	it('uses journal format for other non-book types (e.g. article-newspaper)', () => {
+		const params = new URLSearchParams(
+			buildCoins({
+				type: 'article-newspaper',
+				title: 'Block Editor Lands in Core',
+				'container-title': 'The WordPress Post',
+			})
+		);
+
+		expect(params.get('rft_val_fmt')).toBe('info:ofi/fmt:kev:mtx:journal');
+		expect(params.get('rft.atitle')).toBe('Block Editor Lands in Core');
+		expect(params.get('rft.jtitle')).toBe('The WordPress Post');
+	});
 });

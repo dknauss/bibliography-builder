@@ -82,7 +82,7 @@ function __( $text ) {
 }
 
 function wp_strip_all_tags( $text ) {
-	return trim( preg_replace( '/\s+/', ' ', strip_tags( (string) $text ) ) );
+	return strip_tags( (string) $text );
 }
 
 function rest_ensure_response( $response ) {
