@@ -7,17 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-
-- Improved reset icon from minus to counterclockwise arrow for clarity.
-- `aria-label` on bibliography section now matches custom heading text when set.
-- Added accessible name to citation entry buttons.
-- Added `role="region"` and `aria-label` to editor notice container.
-- Added `prefers-reduced-motion` override for action button transitions.
-- Added `focus-visible` outline to bibliography list entries.
-- Removed redundant `aria-label` from inline edit input (label element is sufficient).
-- Added lifecycle e2e tests (activate, deactivate, delete via zip install).
-- Added lifecycle e2e CI job.
+No changes yet.
 
 ## [1.0.0] - 2026-04-07
 
@@ -44,3 +34,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions CI: lint, test, build, PHPUnit, Psalm, CodeQL, Codecov, Playwright Playground smoke tests, runtime matrix.
 - Release workflow with tag-triggered GitHub Release and zip artifact.
 - WordPress Playground blueprint for instant evaluation.
+- Lifecycle end-to-end tests for activate, deactivate, and delete flows.
+- Lifecycle CI coverage.
+- Refined WordPress.org branding assets, including updated banner and icon artwork.
+
+### Changed
+
+- Improved reset icon from minus to counterclockwise arrow for clarity.
+- `aria-label` on bibliography section now matches custom heading text when set.
+- Added an accessible name to citation entry buttons.
+- Added `role="region"` and `aria-label` to the editor notice container.
+- Added `prefers-reduced-motion` override for action button transitions.
+- Added `focus-visible` outline to bibliography list entries.
+- Removed the redundant `aria-label` from the inline edit input.
+
+### Security
+
+- Overrode the vulnerable transitive development dependency `basic-ftp` to the patched release.
