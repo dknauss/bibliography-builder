@@ -2,29 +2,31 @@
 
 ## Current Focus
 
-1. Post-export cleanup and longer-term maintainability backlog.
-2. Optional future UX refinements around citation-row interaction and success-message behavior.
-3. Broadened runtime compatibility coverage, with multisite smoke still planned.
-4. Future API/interoperability backlog.
+1. v1.1 code-quality and maintainability sweep.
+2. Multisite runtime smoke coverage.
+3. Translation expansion backlog beyond the shipped interface locales.
+4. Longer-horizon architecture and API follow-up.
 
 ## Current Priority Order
 
-1. Post-export cleanup and longer-term semantic and maintainability backlog
-    - per-author visible HTML wrappers
+1. Code quality and maintainability sweep
+    - consolidate `getPrimaryIdentifierValue`
+    - upgrade the formatting cache from FIFO to LRU
+    - clarify or rename the two `getYear` helpers with different sentinel semantics
+    - continue module-scope i18n and prop-drilling cleanup where it buys testability or clarity
+2. Runtime compatibility coverage
+    - add a multisite smoke lane to the runtime matrix
+    - keep SQLite and existing Apache/Nginx/PHP/WordPress lanes healthy
+3. Translation expansion backlog
+    - shipped interface locale files: French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu
+    - next recommended backlog locales: Arabic, Turkish, Indonesian, Hebrew, Vietnamese, Ukrainian, Romanian, and Czech
+4. Longer-horizon product and architecture follow-up
     - citation child-block architecture option
-    - prop-drilling / module-scope i18n cleanup
-2. Low-priority UX follow-up
+    - inline citation integration
+    - richer API fields, discovery, or collection-level endpoints
+5. Low-priority UX follow-up
     - periodically re-check row-interaction accessibility
     - reconsider global snackbars for pure success-only cases if it ever improves clarity
-3. Runtime compatibility coverage
-    - expanded CI/runtime matrix across more PHP, WordPress, Apache, Nginx, and SQLite combinations
-    - plan a follow-on multisite smoke lane
-4. Future API/interoperability backlog
-    - build on shipped copy-citation and bibliography REST access
-    - consider richer API fields, discovery, or collection-level endpoints
-5. Translation expansion backlog
-    - interface locale files now added for French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu
-    - next recommended backlog locales: Arabic, Turkish, Indonesian, Hebrew, Vietnamese, Ukrainian, Romanian, and Czech
 
 ## Last activity
 
@@ -50,13 +52,13 @@ Recent work completed in the working tree includes:
 -   CSL-JSON, BibTeX, and RIS exports now ship in the editor as practical downloadable bibliography-data formats
 -   a per-entry copy-citation action now ships in the editor for reusing visible citation text
 -   a Copy bibliography action now ships in the editor for copying the current bibliography as plain text
--   read-only REST endpoints now expose bibliography block data at `/wp-json/scholarly-bibliography/v1/posts/<post_id>/bibliographies` and `/wp-json/scholarly-bibliography/v1/posts/<post_id>/bibliographies/<index>`
+-   read-only REST endpoints now expose bibliography block data at `/wp-json/bibliography/v1/posts/<post_id>/bibliographies` and `/wp-json/bibliography/v1/posts/<post_id>/bibliographies/<index>`
 -   GitHub Actions runtime coverage now spans additional Apache/Nginx/PHP/WordPress combinations and includes a SQLite smoke lane
 -   interface translation files now ship for French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu
 
 ## Active Concerns
 
--   **wp.org submission track** — 1.0.0 is tagged and the release zip is built. Three things remain before submission: Codecov badge verification, Playground block-registration debug (needs browser session), and plugin-directory screenshots (needs browser session).
+-   **1.0.0 release state is healthy** — `main`, `v1.0.0`, CI, CodeQL, runtime matrix, and the release workflow are green. WordPress.org assets, screenshots, Playground link, and release packaging are in place; actual plugin-directory submission remains a manual release action.
 -   The remaining style-expansion focus has shifted away from core bibliography styles now that OSCOLA and ABNT both shipped.
 -   The benchmark harness makes it easier to watch regression risk in editor-side formatting and deferred citation chunks over time.
 -   Notification behavior is now intentionally split between block-local inline notices for contextual validation and block-local snackbars for pure success messages.
@@ -67,22 +69,18 @@ Recent work completed in the working tree includes:
 
 ## Pending Todos
 
--   4 pending todos in `.planning/todos/pending`
-    - Verify Codecov badge resolves after CI fix
-    - Debug Playground block registration (browser session required)
-    - Generate wp.org plugin-directory screenshots (browser session required)
+-   1 pending todo in `.planning/todos/pending`
     - Add multisite runtime smoke coverage
 
 ## Roadmap Alignment
 
-**1.0.0 shipped 2026-04-08.** The project is now between milestones, ready to plan v1.1.
+**1.0.0 shipped 2026-04-08 and is now cleanly green.** The project is ready to plan v1.1 around post-release hardening and follow-on improvements.
 
 Proposed v1.1 focus areas (in priority order):
 
-1. **wp.org submission completion** — Codecov badge, Playground registration, screenshots, submit
-2. **Code quality sweep** — consolidate `getPrimaryIdentifierValue`, LRU format cache, `getYear` naming
-3. **CI/runtime coverage** — multisite smoke lane
-4. **Translation expansion** — Arabic, Turkish, Indonesian, Hebrew, Vietnamese, Ukrainian, Romanian, Czech
-5. **Longer-horizon** — citation child blocks investigation, inline citation integration, API enhancements
+1. **Code quality sweep** — consolidate `getPrimaryIdentifierValue`, LRU format cache, `getYear` naming
+2. **CI/runtime coverage** — multisite smoke lane
+3. **Translation expansion** — Arabic, Turkish, Indonesian, Hebrew, Vietnamese, Ukrainian, Romanian, Czech
+4. **Longer-horizon** — citation child blocks investigation, inline citation integration, API enhancements
 
 Run `/gsd:new-milestone` to kick off v1.1 planning.

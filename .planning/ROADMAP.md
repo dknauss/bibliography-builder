@@ -147,9 +147,9 @@ Completed:
 
 -   added WordPress.org banner assets from the approved banner image in `.wordpress-org/`
 
-Planned next:
+Completed:
 
--   generate editor/frontend screenshots in a browser-capable session for the plugin directory listing
+-   added WordPress.org plugin-directory screenshots in `.wordpress-org/`
 
 ## Compatibility and runtime coverage backlog
 
@@ -162,14 +162,18 @@ Planned next:
 
 -   add multisite runtime smoke coverage so at least one network-install lane is exercised in CI
 
-## wp.org submission track
+## wp.org submission status
 
-Items required before the plugin directory submission is complete:
+Completed release-prep work:
 
-1. **Verify Codecov badge** — CI condition was fixed (`secrets.CODECOV_TOKEN`); confirm badge resolves after next push to main.
-2. **Debug Playground block registration** — block does not appear in the Playground block editor; likely a runtime JS error; requires a browser-capable session (`/Users/danknauss/bin/claude-playwright`).
-3. **Generate plugin-directory screenshots** — editor and frontend screenshots needed for the wp.org listing; requires a browser-capable session.
-4. **Submit to wp.org** — upload `bibliography-block.zip` from the v1.0.0 GitHub Release.
+1. **Codecov badge** — badge resolves and CI upload is wired.
+2. **Playground** — the published Playground link installs the plugin from the latest GitHub Release artifact.
+3. **Plugin-directory screenshots** — banner, icon, and screenshots are present in `.wordpress-org/`.
+4. **Release asset** — `bibliography-block.zip` is published on the `v1.0.0` GitHub Release.
+
+Remaining manual step:
+
+-   submit the current `bibliography-block.zip` package and assets to WordPress.org.
 
 ## Code quality backlog
 
