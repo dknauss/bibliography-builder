@@ -30,6 +30,7 @@
 
 Recent work completed in the working tree includes:
 
+-   Claude bug-sweep follow-up landed: `outputJsonLd` REST defaults now honor the block attribute default when the key is absent, structured-edit cancellation now guards stale post-format commits, thesis COinS and chapter/review JSON-LD mappings were corrected, and 25 additional regression tests now cover those paths plus focus helper behavior
 -   docs/spec/checklist sync across `README.md`, `SPEC.md`, and QA worksheets
 -   reduced persisted citation payload for new entries by dropping `inputRaw`, `parsedAt`, and `parseConfidence`
 -   bounded-concurrency DOI parsing with stable result ordering
