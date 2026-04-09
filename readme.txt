@@ -23,6 +23,8 @@ Paste a DOI or BibTeX entry — get a formatted, auto-sorted bibliography in any
 
 **Zotero-ready.** Schema.org JSON-LD by default. Optional COinS metadata for citation manager detection. Download CSL-JSON, BibTeX, or RIS for reuse in reference managers and scripts.
 
+**Translation-ready.** Interface locale files are currently included for French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu.
+
 == Installation ==
 
 1. Upload the plugin files to `/wp-content/plugins/bibliography/`, or install directly through the WordPress plugin screen.

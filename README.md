@@ -60,6 +60,7 @@ The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 t
 - **Export** — download the current bibliography as CSL-JSON, BibTeX, or RIS; copy individual citations or the full bibliography as plain text
 - **Static save** — bibliography HTML and metadata are baked into post content at save time
 - **Accessible editor UX** — focus management, block-local Gutenberg notices, keyboard escape/cancel flows, and row action controls
+- **Interface locale files included** — French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu
 
 ## Supported Input
 

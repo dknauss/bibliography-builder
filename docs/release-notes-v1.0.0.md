@@ -21,5 +21,6 @@ Bibliography 1.0.0 is the first public release of the block plugin for building 
 - Lifecycle CI coverage
 - Updated WordPress.org banner and icon branding assets
 - Aligned slug-facing identifiers around `bibliography`, including the text domain, package folder, Playground target, export filenames, and REST namespace
+- Added bundled interface locale files for French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu
 - Accessibility refinements for labels, notice regions, focus-visible states, and reduced-motion behavior
 - Patched vulnerable transitive development dependency `basic-ftp`

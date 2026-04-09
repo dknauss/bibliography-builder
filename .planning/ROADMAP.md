@@ -176,9 +176,7 @@ Completed interface locale files:
 -   it_IT
 -   pt_PT
 -   pl_PL
-
-Recommended next locale backlog, prioritizing broad WordPress usage and the requested language families:
-
+-   ru_RU
 -   ja
 -   zh_CN
 -   ko_KR
@@ -189,6 +187,17 @@ Recommended next locale backlog, prioritizing broad WordPress usage and the requ
 -   bn_BD
 -   ta_IN
 -   te
+
+Recommended next locale backlog, prioritizing broad WordPress usage after the current shipped set:
+
+-   ar
+-   tr_TR
+-   id_ID
+-   he_IL
+-   vi
+-   uk
+-   ro_RO
+-   cs_CZ
 
 ### Option B: citation child blocks
 

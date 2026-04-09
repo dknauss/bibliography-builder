@@ -23,8 +23,8 @@
     - build on shipped copy-citation and bibliography REST access
     - consider richer API fields, discovery, or collection-level endpoints
 5. Translation expansion backlog
-    - interface locale files now added for French, German, Dutch, Swedish, Spanish, Italian, Portuguese, and Polish
-    - next recommended backlog locales: Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu
+    - interface locale files now added for French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu
+    - next recommended backlog locales: Arabic, Turkish, Indonesian, Hebrew, Vietnamese, Ukrainian, Romanian, and Czech
 
 ## Last activity
 
@@ -51,6 +51,7 @@ Recent work completed in the working tree includes:
 -   a Copy bibliography action now ships in the editor for copying the current bibliography as plain text
 -   read-only REST endpoints now expose bibliography block data at `/wp-json/scholarly-bibliography/v1/posts/<post_id>/bibliographies` and `/wp-json/scholarly-bibliography/v1/posts/<post_id>/bibliographies/<index>`
 -   GitHub Actions runtime coverage now spans additional Apache/Nginx/PHP/WordPress combinations and includes a SQLite smoke lane
+-   interface translation files now ship for French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu
 
 ## Active Concerns
 

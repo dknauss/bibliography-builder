@@ -37,6 +37,7 @@ No changes yet.
 - Lifecycle end-to-end tests for activate, deactivate, and delete flows.
 - Lifecycle CI coverage.
 - Refined WordPress.org branding assets, including updated banner and icon artwork.
+- Bundled interface locale files for French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu.
 
 ### Changed
 
