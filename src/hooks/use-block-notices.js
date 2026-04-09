@@ -20,7 +20,7 @@ import { store as noticesStore } from '@wordpress/notices';
  * block, which is slightly less "global-editor-native" but clearer and more
  * accessible for bibliography-specific workflows.
  */
-export const NOTICE_CONTEXT = 'scholarly-bibliography/editor';
+export const NOTICE_CONTEXT = 'bibliography/editor';
 const AUTO_DISMISS_MS = 5000;
 
 function getNoticeId(notice) {

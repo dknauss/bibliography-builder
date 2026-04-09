@@ -53,20 +53,20 @@ final class RestEndpointsTest extends TestCase {
 		$routes = $GLOBALS['scholarly_bibliography_test_rest_routes'];
 
 		$this->assertCount( 2, $routes );
-		$this->assertSame( 'scholarly-bibliography/v1', $routes[0]['namespace'] );
+		$this->assertSame( 'bibliography/v1', $routes[0]['namespace'] );
 		$this->assertSame( '/posts/(?P<post_id>\d+)/bibliographies', $routes[0]['route'] );
 		$this->assertSame( '/posts/(?P<post_id>\d+)/bibliographies/(?P<index>\d+)', $routes[1]['route'] );
 	}
 
 	public function test_published_posts_are_publicly_readable(): void {
-		$request            = new WP_REST_Request( 'GET', '/scholarly-bibliography/v1/posts/101/bibliographies' );
+		$request            = new WP_REST_Request( 'GET', '/bibliography/v1/posts/101/bibliographies' );
 		$request['post_id'] = $this->published_post_id;
 
 		$this->assertTrue( scholarly_bibliography_rest_permissions_check( $request ) );
 	}
 
 	public function test_draft_posts_require_edit_capability(): void {
-		$request            = new WP_REST_Request( 'GET', '/scholarly-bibliography/v1/posts/102/bibliographies' );
+		$request            = new WP_REST_Request( 'GET', '/bibliography/v1/posts/102/bibliographies' );
 		$request['post_id'] = $this->draft_post_id;
 
 		$forbidden = scholarly_bibliography_rest_permissions_check( $request );
@@ -80,7 +80,7 @@ final class RestEndpointsTest extends TestCase {
 	}
 
 	public function test_collection_endpoint_returns_bibliography_data(): void {
-		$request            = new WP_REST_Request( 'GET', '/scholarly-bibliography/v1/posts/101/bibliographies' );
+		$request            = new WP_REST_Request( 'GET', '/bibliography/v1/posts/101/bibliographies' );
 		$request['post_id'] = $this->published_post_id;
 
 		$response = scholarly_bibliography_rest_get_bibliographies( $request );
@@ -93,7 +93,7 @@ final class RestEndpointsTest extends TestCase {
 	}
 
 	public function test_single_endpoint_supports_json_text_and_csl_json_formats(): void {
-		$request            = new WP_REST_Request( 'GET', '/scholarly-bibliography/v1/posts/101/bibliographies/0' );
+		$request            = new WP_REST_Request( 'GET', '/bibliography/v1/posts/101/bibliographies/0' );
 		$request['post_id'] = $this->published_post_id;
 		$request['index']   = 0;
 
@@ -115,7 +115,7 @@ final class RestEndpointsTest extends TestCase {
 	}
 
 	public function test_single_endpoint_returns_404_for_missing_index(): void {
-		$request            = new WP_REST_Request( 'GET', '/scholarly-bibliography/v1/posts/101/bibliographies/99' );
+		$request            = new WP_REST_Request( 'GET', '/bibliography/v1/posts/101/bibliographies/99' );
 		$request['post_id'] = $this->published_post_id;
 		$request['index']   = 99;
 
@@ -126,7 +126,7 @@ final class RestEndpointsTest extends TestCase {
 	}
 
 	public function test_plain_text_pre_serve_outputs_sanitized_text_only(): void {
-		$request = new WP_REST_Request( 'GET', '/scholarly-bibliography/v1/posts/101/bibliographies/0' );
+		$request = new WP_REST_Request( 'GET', '/bibliography/v1/posts/101/bibliographies/0' );
 		$request->set_query_params( array( 'format' => 'text' ) );
 		$response = new WP_REST_Response( '<strong>Alpha</strong> citation.', 200 );
 		$response->header( 'Content-Type', 'text/plain; charset=utf-8' );

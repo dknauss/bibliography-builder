@@ -2,7 +2,7 @@
 const { test, expect } = require('@playwright/test');
 
 const FRONTEND_PATH = '/2026/04/01/scholarly-bibliography-test/';
-const REST_BASE = '/wp-json/scholarly-bibliography/v1/posts/6/bibliographies/0';
+const REST_BASE = '/wp-json/bibliography/v1/posts/6/bibliographies/0';
 
 test('frontend sample page renders bibliography content', async ({ page }) => {
 	await page.goto(FRONTEND_PATH);

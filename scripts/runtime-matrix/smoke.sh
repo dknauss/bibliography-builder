@@ -137,7 +137,7 @@ fi
 cat >> "$COMPOSE_FILE" <<EOF2
     volumes:
       - ${SITE_DIR}:/var/www/html
-      - ${PLUGIN_DIR}:/var/www/html/wp-content/plugins/scholarly-bibliography
+      - ${PLUGIN_DIR}:/var/www/html/wp-content/plugins/bibliography
 EOF2
 
 if [ "$SERVER" = "nginx" ]; then
@@ -236,7 +236,7 @@ else
 	bootstrap_mysql_site
 fi
 
-wp_exec 'wp plugin activate scholarly-bibliography --allow-root --path=/var/www/html'
+wp_exec 'wp plugin activate bibliography --allow-root --path=/var/www/html'
 
 BLOCK_CONTENT=$(cat <<'BLOCKEOF'
 <!-- wp:scholarly/bibliography {"citationStyle":"chicago-notes-bibliography","headingText":"References","outputJsonLd":true,"outputCoins":false,"outputCslJson":false,"citations":[{"id":"alpha-1","formattedText":"Alpha citation.","csl":{"type":"book","title":"Alpha Book","author":[{"family":"Alpha","given":"Ada"}],"issued":{"date-parts":[[2024]]}}}]} -->
@@ -249,9 +249,9 @@ POST_ID=$(docker compose -f "$COMPOSE_FILE" exec -T -e BLOCK_CONTENT="$BLOCK_CON
 printf '%s\n' "$POST_ID" > "$ARTIFACT_DIR/post-id.txt"
 
 capture_http frontend "$SITE_URL/?p=$POST_ID"
-capture_http rest-collection "$SITE_URL/?rest_route=/scholarly-bibliography/v1/posts/$POST_ID/bibliographies"
-capture_http rest-text "$SITE_URL/?rest_route=/scholarly-bibliography/v1/posts/$POST_ID/bibliographies/0&format=text"
-capture_http rest-csl-json "$SITE_URL/?rest_route=/scholarly-bibliography/v1/posts/$POST_ID/bibliographies/0&format=csl-json"
+capture_http rest-collection "$SITE_URL/?rest_route=/bibliography/v1/posts/$POST_ID/bibliographies"
+capture_http rest-text "$SITE_URL/?rest_route=/bibliography/v1/posts/$POST_ID/bibliographies/0&format=text"
+capture_http rest-csl-json "$SITE_URL/?rest_route=/bibliography/v1/posts/$POST_ID/bibliographies/0&format=csl-json"
 
 grep -q 'scholarly-bibliography-entry-text' "$ARTIFACT_RESPONSE_DIR/frontend.body"
 grep -q '"entryCount":1' "$ARTIFACT_RESPONSE_DIR/rest-collection.body"

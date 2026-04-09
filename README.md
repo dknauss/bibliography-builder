@@ -35,7 +35,7 @@ WordPress.org branding assets, including the bookshelf icon and banner source fi
 
 ## Installation
 
-1. Upload the plugin files to `/wp-content/plugins/scholarly-bibliography/`, or install directly through the WordPress plugin screen.
+1. Upload the plugin files to `/wp-content/plugins/bibliography/`, or install directly through the WordPress plugin screen.
 2. Activate the plugin through the **Plugins** screen in WordPress.
 3. Add the **Bibliography** block to any post or page.
 4. Paste DOI(s), BibTeX entries, or supported citations.
@@ -86,8 +86,8 @@ Support is heuristic rather than universal. Unsupported inputs fail closed with 
 
 The plugin exposes a read-only REST endpoint for bibliography data:
 
-- `GET /wp-json/scholarly-bibliography/v1/posts/<post_id>/bibliographies`
-- `GET /wp-json/scholarly-bibliography/v1/posts/<post_id>/bibliographies/<index>`
+- `GET /wp-json/bibliography/v1/posts/<post_id>/bibliographies`
+- `GET /wp-json/bibliography/v1/posts/<post_id>/bibliographies/<index>`
 
 Behavior:
 
@@ -157,7 +157,7 @@ SQLite runtime smoke remains a planned follow-up while the CI bootstrap path is 
 ### File structure
 
 ```text
-scholarly-bibliography/
+bibliography/
 ├── scholarly-bibliography.php    # Plugin bootstrap
 ├── block.json                    # Block metadata & attributes
 ├── src/

@@ -4,7 +4,7 @@ set -eu
 
 ROOT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
 RELEASE_ROOT="$ROOT_DIR/output/release"
-STAGING_DIR="$RELEASE_ROOT/scholarly-bibliography"
+STAGING_DIR="$RELEASE_ROOT/bibliography"
 ZIP_PATH="$RELEASE_ROOT/bibliography-block.zip"
 
 mkdir -p "$RELEASE_ROOT"

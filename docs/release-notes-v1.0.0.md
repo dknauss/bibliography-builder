@@ -20,5 +20,6 @@ Bibliography 1.0.0 is the first public release of the block plugin for building 
 - Lifecycle end-to-end tests for activate, deactivate, and delete flows
 - Lifecycle CI coverage
 - Updated WordPress.org banner and icon branding assets
+- Aligned slug-facing identifiers around `bibliography`, including the text domain, package folder, Playground target, export filenames, and REST namespace
 - Accessibility refinements for labels, notice regions, focus-visible states, and reduced-motion behavior
 - Patched vulnerable transitive development dependency `basic-ftp`

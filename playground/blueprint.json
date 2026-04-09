@@ -21,7 +21,7 @@
       },
       "options": {
         "activate": true,
-        "targetFolderName": "scholarly-bibliography"
+        "targetFolderName": "bibliography"
       }
     }
   ]

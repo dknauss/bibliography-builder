@@ -47,6 +47,7 @@ No changes yet.
 - Added `prefers-reduced-motion` override for action button transitions.
 - Added `focus-visible` outline to bibliography list entries.
 - Removed the redundant `aria-label` from the inline edit input.
+- Aligned the plugin slug-facing identifiers around `bibliography`, including the text domain, release package folder, Playground install target, export filenames, and REST namespace.
 
 ### Security
 

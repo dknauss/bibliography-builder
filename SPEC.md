@@ -4,7 +4,7 @@
 
 A standalone WordPress block plugin that transforms pasted scholarly citations (DOIs, BibTeX entries) into a semantically rich, auto-sorted bibliography list. No shortcodes. Static HTML output that survives plugin deactivation.
 
-**Plugin slug:** `scholarly-bibliography`
+**Plugin slug:** `bibliography`
 **Block namespace:** `scholarly/bibliography`
 **License:** GPL-2.0-or-later
 
@@ -380,7 +380,7 @@ The plugin provides minimal, opinionated base styles. Theme authors can override
 ## File Structure
 
 ```
-scholarly-bibliography/
+bibliography/
 ├── scholarly-bibliography.php    # Plugin bootstrap + REST API endpoints
 ├── block.json                    # Block metadata & attributes
 ├── src/
@@ -420,7 +420,7 @@ With static save and no Highwire meta tags in MVP, the PHP side is minimal:
 
 -   `scholarly-bibliography.php` — standard plugin header, calls `register_block_type()` pointing at `block.json`, enqueues editor and frontend assets.
 -   No custom database tables.
--   Read-only REST API endpoints at `/wp-json/scholarly-bibliography/v1/posts/<post_id>/bibliographies` and `/wp-json/scholarly-bibliography/v1/posts/<post_id>/bibliographies/<index>` for programmatic bibliography access.
+-   Read-only REST API endpoints at `/wp-json/bibliography/v1/posts/<post_id>/bibliographies` and `/wp-json/bibliography/v1/posts/<post_id>/bibliographies/<index>` for programmatic bibliography access.
 -   No `render_callback`.
 -   No `wp_head` hooks.
 

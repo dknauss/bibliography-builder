@@ -211,6 +211,6 @@ jobs:
       - name: Upload packaged plugin artifact
         uses: actions/upload-artifact@v6
         with:
-          name: scholarly-bibliography-release
+          name: bibliography-release
           path: output/release/bibliography-block.zip
           if-no-files-found: error

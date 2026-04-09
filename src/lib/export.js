@@ -1,12 +1,12 @@
 import { getDisplayText } from './formatting';
 import { sortCitations } from './sorter';
 
-export const CSL_JSON_EXPORT_FILENAME = 'scholarly-bibliography.csl.json';
+export const CSL_JSON_EXPORT_FILENAME = 'bibliography.csl.json';
 export const CSL_JSON_EXPORT_MIME_TYPE =
 	'application/vnd.citationstyles.csl+json;charset=utf-8';
-export const BIBTEX_EXPORT_FILENAME = 'scholarly-bibliography.bib';
+export const BIBTEX_EXPORT_FILENAME = 'bibliography.bib';
 export const BIBTEX_EXPORT_MIME_TYPE = 'text/x-bibtex;charset=utf-8';
-export const RIS_EXPORT_FILENAME = 'scholarly-bibliography.ris';
+export const RIS_EXPORT_FILENAME = 'bibliography.ris';
 export const RIS_EXPORT_MIME_TYPE =
 	'application/x-research-info-systems;charset=utf-8';
 

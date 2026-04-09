@@ -85,35 +85,35 @@ try {
 
 	wp_set_current_user( 0 );
 
-	$collection = scholarly_bibliography_test_request( "/scholarly-bibliography/v1/posts/{$published_post_id}/bibliographies" );
+	$collection = scholarly_bibliography_test_request( "/bibliography/v1/posts/{$published_post_id}/bibliographies" );
 	scholarly_bibliography_test_assert( 200 === $collection->get_status(), 'Published collection route should return 200.' );
 	$collection_data = $collection->get_data();
 	scholarly_bibliography_test_assert( $published_post_id === $collection_data['postId'], 'Collection route should return matching postId.' );
 	scholarly_bibliography_test_assert( 1 === count( $collection_data['bibliographies'] ), 'Collection route should return one bibliography.' );
 
-	$single = scholarly_bibliography_test_request( "/scholarly-bibliography/v1/posts/{$published_post_id}/bibliographies/0" );
+	$single = scholarly_bibliography_test_request( "/bibliography/v1/posts/{$published_post_id}/bibliographies/0" );
 	scholarly_bibliography_test_assert( 200 === $single->get_status(), 'Single bibliography route should return 200.' );
 	$single_data = $single->get_data();
 	scholarly_bibliography_test_assert( 0 === $single_data['index'], 'Single bibliography route should return requested index.' );
 	scholarly_bibliography_test_assert( 1 === $single_data['entryCount'], 'Single bibliography route should return entry count.' );
 
-	$text = scholarly_bibliography_test_request( "/scholarly-bibliography/v1/posts/{$published_post_id}/bibliographies/0?format=text" );
+	$text = scholarly_bibliography_test_request( "/bibliography/v1/posts/{$published_post_id}/bibliographies/0?format=text" );
 	scholarly_bibliography_test_assert( 200 === $text->get_status(), 'Plain-text format should return 200.' );
 	scholarly_bibliography_test_assert( "Alpha citation.\n" === $text->get_data(), 'Plain-text format should return sanitized plain citation text.' );
 
-	$csl_json = scholarly_bibliography_test_request( "/scholarly-bibliography/v1/posts/{$published_post_id}/bibliographies/0?format=csl-json" );
+	$csl_json = scholarly_bibliography_test_request( "/bibliography/v1/posts/{$published_post_id}/bibliographies/0?format=csl-json" );
 	scholarly_bibliography_test_assert( 200 === $csl_json->get_status(), 'CSL-JSON format should return 200.' );
 	$csl_json_data = $csl_json->get_data();
 	scholarly_bibliography_test_assert( 'Alpha Book' === $csl_json_data[0]['title'], 'CSL-JSON format should return citation metadata.' );
 
-	$missing = scholarly_bibliography_test_request( "/scholarly-bibliography/v1/posts/{$published_post_id}/bibliographies/99" );
+	$missing = scholarly_bibliography_test_request( "/bibliography/v1/posts/{$published_post_id}/bibliographies/99" );
 	scholarly_bibliography_test_assert( 404 === $missing->get_status(), 'Missing bibliography index should return 404.' );
 
-	$forbidden = scholarly_bibliography_test_request( "/scholarly-bibliography/v1/posts/{$draft_post_id}/bibliographies" );
+	$forbidden = scholarly_bibliography_test_request( "/bibliography/v1/posts/{$draft_post_id}/bibliographies" );
 	scholarly_bibliography_test_assert( 403 === $forbidden->get_status(), 'Draft collection route should be forbidden for anonymous users.' );
 
 	wp_set_current_user( 1 );
-	$draft_allowed = scholarly_bibliography_test_request( "/scholarly-bibliography/v1/posts/{$draft_post_id}/bibliographies" );
+	$draft_allowed = scholarly_bibliography_test_request( "/bibliography/v1/posts/{$draft_post_id}/bibliographies" );
 	scholarly_bibliography_test_assert( 200 === $draft_allowed->get_status(), 'Draft collection route should be allowed for editors.' );
 
 	fwrite( STDOUT, "REST endpoint smoke tests passed.\n" );

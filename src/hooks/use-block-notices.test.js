@@ -113,8 +113,8 @@ describe('useBlockNotices', () => {
 		expect(
 			require('@wordpress/data').__unstableGetRemoveAllCalls()
 		).toEqual([
-			['default', 'scholarly-bibliography/editor'],
-			['snackbar', 'scholarly-bibliography/editor'],
+			['default', 'bibliography/editor'],
+			['snackbar', 'bibliography/editor'],
 		]);
 	});
 });

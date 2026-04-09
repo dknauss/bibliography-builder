@@ -25,7 +25,7 @@ Paste a DOI or BibTeX entry — get a formatted, auto-sorted bibliography in any
 
 == Installation ==
 
-1. Upload the plugin files to `/wp-content/plugins/scholarly-bibliography/`, or install directly through the WordPress plugin screen.
+1. Upload the plugin files to `/wp-content/plugins/bibliography/`, or install directly through the WordPress plugin screen.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Add the "Bibliography" block to any post or page.
 4. Paste DOI(s), BibTeX entries, or supported citations for books, articles, chapters, and webpages.
@@ -54,7 +54,7 @@ Yes. The editor currently includes Download CSL-JSON, Download BibTeX, Download 
 
 = Can I access bibliography data via API? =
 
-Yes. The plugin exposes read-only REST endpoints at `/wp-json/scholarly-bibliography/v1/posts/<post_id>/bibliographies` and `/wp-json/scholarly-bibliography/v1/posts/<post_id>/bibliographies/<index>`. Published posts are readable publicly; non-public posts require permission to edit the post. The single-bibliography route also supports `format=json`, `format=text`, and `format=csl-json`.
+Yes. The plugin exposes read-only REST endpoints at `/wp-json/bibliography/v1/posts/<post_id>/bibliographies` and `/wp-json/bibliography/v1/posts/<post_id>/bibliographies/<index>`. Published posts are readable publicly; non-public posts require permission to edit the post. The single-bibliography route also supports `format=json`, `format=text`, and `format=csl-json`.
 
 = Does Bibliography work on WordPress Multisite? =
 

@@ -269,7 +269,7 @@ function scholarly_bibliography_register_rest_routes() {
 	);
 
 	register_rest_route(
-		'scholarly-bibliography/v1',
+		'bibliography/v1',
 		'/posts/(?P<post_id>\d+)/bibliographies',
 		array(
 			'methods'             => WP_REST_Server::READABLE,
@@ -280,7 +280,7 @@ function scholarly_bibliography_register_rest_routes() {
 	);
 
 	register_rest_route(
-		'scholarly-bibliography/v1',
+		'bibliography/v1',
 		'/posts/(?P<post_id>\d+)/bibliographies/(?P<index>\d+)',
 		array(
 			'methods'             => WP_REST_Server::READABLE,
@@ -339,7 +339,7 @@ function scholarly_bibliography_rest_pre_serve_request( $served, $result, $reque
 		return $served;
 	}
 
-	if ( 0 !== strpos( $request->get_route(), '/scholarly-bibliography/v1/' ) ) {
+	if ( 0 !== strpos( $request->get_route(), '/bibliography/v1/' ) ) {
 		return $served;
 	}
 
