@@ -171,9 +171,7 @@ Completed release-prep work:
 3. **Plugin-directory screenshots** — banner, icon, and screenshots are present in `.wordpress-org/`.
 4. **Release asset** — `bibliography-block.zip` is published on the `v1.0.0` GitHub Release.
 
-Remaining manual step:
-
--   submit the current `bibliography-block.zip` package and assets to WordPress.org.
+Submitted 2026-04-11. Awaiting WordPress.org review response.
 
 ## Code quality backlog
 

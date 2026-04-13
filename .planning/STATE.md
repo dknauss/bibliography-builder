@@ -58,7 +58,7 @@ Recent work completed in the working tree includes:
 
 ## Active Concerns
 
--   **1.0.0 release state is healthy** — `main`, `v1.0.0`, CI, CodeQL, runtime matrix, and the release workflow are green. WordPress.org assets, screenshots, Playground link, and release packaging are in place; actual plugin-directory submission remains a manual release action.
+-   **1.0.0 release state is healthy** — `main`, `v1.0.0`, CI, CodeQL, runtime matrix, and the release workflow are green. WordPress.org assets, screenshots, Playground link, and release packaging are in place. Plugin submitted to WordPress.org on 2026-04-11; awaiting review response.
 -   The remaining style-expansion focus has shifted away from core bibliography styles now that OSCOLA and ABNT both shipped.
 -   The benchmark harness makes it easier to watch regression risk in editor-side formatting and deferred citation chunks over time.
 -   Notification behavior is now intentionally split between block-local inline notices for contextual validation and block-local snackbars for pure success messages.
