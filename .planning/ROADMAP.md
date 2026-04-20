@@ -173,6 +173,21 @@ Completed release-prep work:
 
 Submitted 2026-04-11. Awaiting WordPress.org review response.
 
+Current operational note (2026-04-20):
+
+- `main` is ahead of `v1.0.0` and currently has a CI lint failure to clear before taking another release-tag action.
+
+## Immediate next-task priorities (2026-04-20)
+
+1. **Restore `main` CI to green**
+   - fix Prettier lint failures in `src/components/editor-canvas-notices.js`, `src/components/structured-citation-editor.js`, and `src/edit.js`
+   - rerun CI and confirm Node 20/22 quality lanes pass
+2. **Keep wp.org submission response-ready**
+   - plugin submitted 2026-04-11; monitor and respond to reviewer feedback quickly
+3. **Ship multisite runtime smoke coverage**
+   - add at least one multisite lane to runtime matrix
+4. **Then proceed with the deferred code-quality sweep**
+
 ## Code quality backlog
 
 Identified in the 2026-04-08 post-release review. All are non-blocking improvements deferred from the 1.0.0 sweep:

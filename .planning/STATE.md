@@ -2,29 +2,32 @@
 
 ## Current Focus
 
-1. v1.1 code-quality and maintainability sweep.
-2. Multisite runtime smoke coverage.
-3. Translation expansion backlog beyond the shipped interface locales.
-4. Longer-horizon architecture and API follow-up.
+1. Restore `main` CI to fully green after the 2026-04-20 branding/slug updates.
+2. Keep WordPress.org submission readiness high while awaiting plugin review response.
+3. Add multisite runtime smoke coverage.
+4. Run the v1.1 code-quality sweep and translation-expansion backlog.
 
 ## Current Priority Order
 
-1. Code quality and maintainability sweep
+1. Immediate CI hygiene (blocking)
+    - fix Prettier lint failures currently breaking `CI` on `main`
+    - rerun CI and confirm Node 20/22 quality lanes are green
+    - keep `v1.0.0` release tag unchanged until a deliberate release update decision is made
+2. WordPress.org review-response readiness
+    - monitor wp.org plugin-review inbox and respond quickly to reviewer requests
+    - keep release artifact and plugin headers/readme aligned with current approved naming (`bibliography-block`)
+3. Runtime compatibility coverage
+    - add a multisite smoke lane to the runtime matrix
+    - keep SQLite and existing Apache/Nginx/PHP/WordPress lanes healthy
+4. Code quality and maintainability sweep
     - consolidate `getPrimaryIdentifierValue`
     - upgrade the formatting cache from FIFO to LRU
     - clarify or rename the two `getYear` helpers with different sentinel semantics
     - continue module-scope i18n and prop-drilling cleanup where it buys testability or clarity
-2. Runtime compatibility coverage
-    - add a multisite smoke lane to the runtime matrix
-    - keep SQLite and existing Apache/Nginx/PHP/WordPress lanes healthy
-3. Translation expansion backlog
+5. Translation expansion backlog
     - shipped interface locale files: French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu
     - next recommended backlog locales: Arabic, Turkish, Indonesian, Hebrew, Vietnamese, Ukrainian, Romanian, and Czech
-4. Longer-horizon product and architecture follow-up
-    - citation child-block architecture option
-    - inline citation integration
-    - richer API fields, discovery, or collection-level endpoints
-5. Low-priority UX follow-up
+6. Low-priority UX follow-up
     - periodically re-check row-interaction accessibility
     - reconsider global snackbars for pure success-only cases if it ever improves clarity
 
@@ -58,7 +61,7 @@ Recent work completed in the working tree includes:
 
 ## Active Concerns
 
--   **1.0.0 release state is healthy** — `main`, `v1.0.0`, CI, CodeQL, runtime matrix, and the release workflow are green. WordPress.org assets, screenshots, Playground link, and release packaging are in place. Plugin submitted to WordPress.org on 2026-04-11; awaiting review response.
+-   **Current release baseline vs. head** — `v1.0.0` points to `ac53d1d` while `main` is ahead at `409f249`. Plugin-directory submission is in review (submitted 2026-04-11), and the latest `main` CI is currently failing only due Prettier formatting on three JS files after the branding update.
 -   The remaining style-expansion focus has shifted away from core bibliography styles now that OSCOLA and ABNT both shipped.
 -   The benchmark harness makes it easier to watch regression risk in editor-side formatting and deferred citation chunks over time.
 -   Notification behavior is now intentionally split between block-local inline notices for contextual validation and block-local snackbars for pure success messages.
@@ -69,18 +72,21 @@ Recent work completed in the working tree includes:
 
 ## Pending Todos
 
--   1 pending todo in `.planning/todos/pending`
+-   3 pending todos in `.planning/todos/pending`
+    - Restore `main` CI to green after branding update
+    - WordPress.org review-response readiness and submission follow-up
     - Add multisite runtime smoke coverage
 
 ## Roadmap Alignment
 
-**1.0.0 shipped 2026-04-08 and is now cleanly green.** The project is ready to plan v1.1 around post-release hardening and follow-on improvements.
+**1.0.0 shipped 2026-04-08; submission is in wp.org review.** The project is in a short stabilization window before broader v1.1 work.
 
-Proposed v1.1 focus areas (in priority order):
+Proposed next-task sequence:
 
-1. **Code quality sweep** — consolidate `getPrimaryIdentifierValue`, LRU format cache, `getYear` naming
-2. **CI/runtime coverage** — multisite smoke lane
-3. **Translation expansion** — Arabic, Turkish, Indonesian, Hebrew, Vietnamese, Ukrainian, Romanian, Czech
-4. **Longer-horizon** — citation child blocks investigation, inline citation integration, API enhancements
+1. **Fix `main` CI** — clear current Prettier lint failures and restore all required checks
+2. **Maintain submission readiness** — stay ready for wp.org reviewer feedback and patch requests
+3. **CI/runtime coverage** — add multisite smoke lane
+4. **Code quality sweep** — consolidate helpers/cache semantics cleanup
+5. **Translation expansion** — Arabic, Turkish, Indonesian, Hebrew, Vietnamese, Ukrainian, Romanian, Czech
 
-Run `/gsd:new-milestone` to kick off v1.1 planning.
+Run `/gsd:new-milestone` when ready to formalize v1.1 once CI is back to stable green.
