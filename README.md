@@ -1,13 +1,13 @@
 # Bibliography Builder for WordPress
 
 [![License: GPL v2+](https://img.shields.io/badge/License-GPLv2%2B-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![WordPress tested](https://img.shields.io/badge/WordPress-6.4%E2%80%93latest-21759b.svg?logo=wordpress&logoColor=white)](https://github.com/dknauss/bibliography-builder/actions/workflows/runtime-matrix.yml)
-[![PHP tested](https://img.shields.io/badge/PHP-7.4%E2%80%938.4-777bb4.svg?logo=php&logoColor=white)](https://github.com/dknauss/bibliography-builder/actions/workflows/runtime-matrix.yml)
-[![CI](https://github.com/dknauss/bibliography-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/dknauss/bibliography-builder/actions/workflows/ci.yml)
-[![Runtime matrix](https://github.com/dknauss/bibliography-builder/actions/workflows/runtime-matrix.yml/badge.svg)](https://github.com/dknauss/bibliography-builder/actions/workflows/runtime-matrix.yml)
-[![CodeQL](https://github.com/dknauss/bibliography-builder/actions/workflows/codeql.yml/badge.svg)](https://github.com/dknauss/bibliography-builder/actions/workflows/codeql.yml)
-[![Codecov](https://codecov.io/gh/dknauss/bibliography-builder/branch/main/graph/badge.svg)](https://codecov.io/gh/dknauss/bibliography-builder)
-[![WordPress Playground](https://img.shields.io/badge/WordPress%20Playground-Try%20it-3858e9.svg?logo=wordpress&logoColor=white)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/bibliography-builder/main/playground/blueprint.json)
+[![WordPress tested](https://img.shields.io/badge/WordPress-6.4%E2%80%93latest-21759b.svg?logo=wordpress&logoColor=white)](https://github.com/dknauss/Bibliography-Builder/actions/workflows/runtime-matrix.yml)
+[![PHP tested](https://img.shields.io/badge/PHP-7.4%E2%80%938.4-777bb4.svg?logo=php&logoColor=white)](https://github.com/dknauss/Bibliography-Builder/actions/workflows/runtime-matrix.yml)
+[![CI](https://github.com/dknauss/Bibliography-Builder/actions/workflows/ci.yml/badge.svg)](https://github.com/dknauss/Bibliography-Builder/actions/workflows/ci.yml)
+[![Runtime matrix](https://github.com/dknauss/Bibliography-Builder/actions/workflows/runtime-matrix.yml/badge.svg)](https://github.com/dknauss/Bibliography-Builder/actions/workflows/runtime-matrix.yml)
+[![CodeQL](https://github.com/dknauss/Bibliography-Builder/actions/workflows/codeql.yml/badge.svg)](https://github.com/dknauss/Bibliography-Builder/actions/workflows/codeql.yml)
+[![Codecov](https://codecov.io/gh/dknauss/Bibliography-Builder/branch/main/graph/badge.svg)](https://codecov.io/gh/dknauss/Bibliography-Builder)
+[![WordPress Playground](https://img.shields.io/badge/WordPress%20Playground-Try%20it-3858e9.svg?logo=wordpress&logoColor=white)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/Bibliography-Builder/main/playground/blueprint.json)
 
 The only all-in-one bibliography block for the WordPress editor that transforms pasted scholarly references — DOI numbers/URLs, BibTeX entries, and supported formatted citations — into a semantically rich, auto-sorted bibliography with static saved output. Export your work as CSL-JSON, BibTeX, and RIS.
 
@@ -17,11 +17,11 @@ Just write out your citations or paste DOIs and BibTeX code, up to 50 at a time.
 
 ## Try it in WordPress Playground
 
-Launch a disposable WordPress instance with the plugin preinstalled: [Try the Bibliography Builder in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/bibliography-builder/main/playground/blueprint.json). Playground installs the plugin from the latest GitHub Release zip artifact.
+Launch a disposable WordPress instance with the plugin preinstalled: [Try the Bibliography Builder in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/Bibliography-Builder/main/playground/blueprint.json). Playground installs the plugin from the latest GitHub Release zip artifact.
 
 ![](.wordpress-org/banner-1544x500.png)
 
-WordPress.org branding assets, including the bookshelf icon and banner source files, live in `/Users/danknauss/Developer/GitHub/bibliography-builder/.wordpress-org/` and `/Users/danknauss/Developer/GitHub/bibliography-builder/.wordpress-org/source/`.
+WordPress.org branding assets live in [.wordpress-org](./.wordpress-org/), and editable source files live in [.wordpress-org/source](./.wordpress-org/source/).
 
 ## Screenshots
 
@@ -60,33 +60,13 @@ The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 t
 - **Export** — download the current bibliography as CSL-JSON, BibTeX, or RIS; copy individual citations or the full bibliography as plain text
 - **Static save** — bibliography HTML and metadata are baked into post content at save time
 - **Accessible editor UX** — focus management, block-local Gutenberg notices, keyboard escape/cancel flows, and row action controls
-- **Interface locale files included** — Interface translations currently ship for French (`fr_FR`), German (`de_DE`), Dutch (`nl_NL`), Swedish (`sv_SE`), Spanish (`es_ES`), Italian (`it_IT`), Portuguese (`pt_PT`), Polish (`pl_PL`), Russian (`ru_RU`), Japanese (`ja`), Simplified Chinese (`zh_CN`), Korean (`ko_KR`), Serbian (`sr_RS`), Croatian (`hr`), Brazilian Portuguese (`pt_BR`), Hindi (`hi_IN`), Bengali (`bn_BD`), Tamil (`ta_IN`), and Telugu (`te`)
+- **Interface locale files included** — 19 bundled locales for plugin UI strings (see **Language Support** below)
 
 ## Language Support
 
-Current bundled interface translations cover these locales:
+Current bundled interface translations cover: `fr_FR`, `de_DE`, `nl_NL`, `sv_SE`, `es_ES`, `it_IT`, `pt_PT`, `pl_PL`, `ru_RU`, `ja`, `zh_CN`, `ko_KR`, `sr_RS`, `hr`, `pt_BR`, `hi_IN`, `bn_BD`, `ta_IN`, and `te`.
 
-- `fr_FR` — French
-- `de_DE` — German
-- `nl_NL` — Dutch
-- `sv_SE` — Swedish
-- `es_ES` — Spanish
-- `it_IT` — Italian
-- `pt_PT` — Portuguese
-- `pl_PL` — Polish
-- `ru_RU` — Russian
-- `ja` — Japanese
-- `zh_CN` — Simplified Chinese
-- `ko_KR` — Korean
-- `sr_RS` — Serbian
-- `hr` — Croatian
-- `pt_BR` — Brazilian Portuguese
-- `hi_IN` — Hindi
-- `bn_BD` — Bengali
-- `ta_IN` — Tamil
-- `te` — Telugu
-
-These locale files currently cover the plugin interface only. Citation content remains user-provided or metadata-derived.
+These locale files cover plugin interface strings only. Citation content remains user-provided or metadata-derived.
 
 ## Supported Input
 
@@ -181,10 +161,19 @@ Each runtime smoke job uploads artifacts, including Docker logs, service status,
 
 SQLite runtime smoke remains a planned follow-up while the CI bootstrap path is stabilized.
 
+## Project docs and operational files
+
+- [Plugin specification](./SPEC.md)
+- [Release notes (v1.0.0)](./docs/release-notes-v1.0.0.md)
+- [Release readiness checklist](./docs/release-readiness-checklist.md)
+- [Playground blueprint](./playground/blueprint.json)
+- [Runtime matrix smoke script](./scripts/runtime-matrix/smoke.sh)
+- [Brand assets](./.wordpress-org/)
+
 ### File structure
 
 ```text
-bibliography/
+bibliography-builder/
 ├── bibliography-builder.php    # Plugin bootstrap
 ├── block.json                    # Block metadata & attributes
 ├── src/

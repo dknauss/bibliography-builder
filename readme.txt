@@ -13,7 +13,7 @@ Paste a DOI or BibTeX entry — get a formatted, auto-sorted bibliography in any
 
 == Description ==
 
-**Bibliography** transforms pasted DOI(s), BibTeX entries, and citations into a semantically rich, auto-sorted reference list.
+**Bibliography Builder** transforms pasted DOI(s), BibTeX entries, and citations into a semantically rich, auto-sorted reference list.
 
 **One-click import.** Paste a DOI, and CrossRef resolves the metadata instantly. Paste BibTeX or formatted citations for books, articles, chapters, webpages, reviews, and theses.
 
@@ -38,15 +38,15 @@ Paste a DOI or BibTeX entry — get a formatted, auto-sorted bibliography in any
 
 The plugin currently ships interface locale files for French (`fr_FR`), German (`de_DE`), Dutch (`nl_NL`), Swedish (`sv_SE`), Spanish (`es_ES`), Italian (`it_IT`), Portuguese (`pt_PT`), Polish (`pl_PL`), Russian (`ru_RU`), Japanese (`ja`), Simplified Chinese (`zh_CN`), Korean (`ko_KR`), Serbian (`sr_RS`), Croatian (`hr`), Brazilian Portuguese (`pt_BR`), Hindi (`hi_IN`), Bengali (`bn_BD`), Tamil (`ta_IN`), and Telugu (`te`). These translations currently cover the plugin interface only.
 
-= What citation input formats does Bibliography support? =
+= What citation input formats does Bibliography Builder support? =
 
 Bare DOIs, DOI URLs, BibTeX entries, and supported formatted citations for books, articles, chapters, webpages, reviews, and theses/dissertations. You can paste multiple entries at once, up to 50 entries per add.
 
-= What happens if I deactivate the plugin? =
+= What happens if I deactivate Bibliography Builder? =
 
 Your bibliographies remain fully readable. The block uses static HTML output, so all formatted citations stay in your post content.
 
-= Does Bibliography work with Zotero? =
+= Does Bibliography Builder work with Zotero? =
 
 Yes, if you enable the optional COinS output layer. That metadata is intended for Zotero's browser connector and similar tools.
 
@@ -62,7 +62,7 @@ Yes. The editor currently includes Download CSL-JSON, Download BibTeX, Download 
 
 Yes. The plugin exposes read-only REST endpoints at `/wp-json/bibliography/v1/posts/<post_id>/bibliographies` and `/wp-json/bibliography/v1/posts/<post_id>/bibliographies/<index>`. Published posts are readable publicly; non-public posts require permission to edit the post. The single-bibliography route also supports `format=json`, `format=text`, and `format=csl-json`.
 
-= Does Bibliography work on WordPress Multisite? =
+= Does Bibliography Builder work on WordPress Multisite? =
 
 Expected to work — block registration is site-local by default — but Multisite has not been explicitly tested yet. If you encounter issues, please report them.
 
@@ -82,7 +82,7 @@ PHP 7.4+ and WordPress 6.4+. The plugin has minimal PHP runtime (block registrat
 
 Source code, issue tracker, and contribution guidelines are on GitHub:
 
-[https://github.com/dknauss/bibliography-builder](https://github.com/dknauss/bibliography-builder)
+[https://github.com/dknauss/Bibliography-Builder](https://github.com/dknauss/Bibliography-Builder)
 
 Bug reports, feature requests, and pull requests are welcome. See CONTRIBUTING.md in the repository for development setup, coding standards, and the PR process.
 
