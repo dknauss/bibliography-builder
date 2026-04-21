@@ -45,63 +45,6 @@ async function dismissEditorOverlay(page) {
 	}
 }
 
-async function openInserterAndSearch(page, query) {
-	await page
-		.getByRole('button', {
-			name: /Block Inserter|Toggle block inserter/i,
-		})
-		.click({ force: true });
-
-	const inserterSearch = page
-		.locator(
-			'input[placeholder*="Search" i], input[aria-label*="Search" i], [role="searchbox"], .block-editor-inserter__search input'
-		)
-		.first();
-
-	if (
-		!(await inserterSearch.isVisible({ timeout: 3000 }).catch(() => false))
-	) {
-		const browseAllButton = page
-			.getByRole('button', {
-				name: /Browse all|See all|Open block inserter/i,
-			})
-			.first();
-
-		if (await browseAllButton.isVisible().catch(() => false)) {
-			await browseAllButton.click({ force: true });
-		}
-	}
-
-	await expect(inserterSearch).toBeVisible({ timeout: 10_000 });
-	await inserterSearch.fill(query);
-}
-
-async function clickVisibleBibliographyInserterOption(page) {
-	const optionLocator = page.locator(
-		'.block-editor-block-types-list__item, [role="option"], button[role="option"], button'
-	);
-	const optionCount = await optionLocator.count();
-
-	for (let i = 0; i < optionCount; i += 1) {
-		const option = optionLocator.nth(i);
-		const isVisible = await option.isVisible().catch(() => false);
-
-		if (!isVisible) {
-			continue;
-		}
-
-		const optionText = (await option.textContent()) || '';
-		if (!/bibliography/i.test(optionText)) {
-			continue;
-		}
-
-		await option.click({ force: true });
-		return;
-	}
-
-	throw new Error('Visible Bibliography block option not found in inserter.');
-}
-
 async function getPluginRow(page) {
 	await page.goto('/wp-admin/plugins.php');
 	await expect(
@@ -148,65 +91,78 @@ async function deactivatePlugin(page) {
  */
 async function createPostWithBibliography(page) {
 	await page.goto('/wp-admin/post-new.php');
-	const editorFrame = page.frameLocator(
-		'iframe[name="editor-canvas"], iframe'
-	);
-
 	await dismissEditorOverlay(page);
 
-	const titleField = editorFrame.getByRole('textbox', {
-		name: /Add title/i,
-	});
-	await expect(titleField).toBeVisible();
-	await titleField.fill('Lifecycle Test Post');
-
-	// Insert bibliography block.
-	await openInserterAndSearch(page, 'Bibliography');
-
-	// Wait for search results, then click a visible Bibliography block option.
-	await clickVisibleBibliographyInserterOption(page);
-	await page.waitForTimeout(1000);
-
-	// Fill the paste textarea with a BibTeX entry.
-	const textarea = editorFrame.locator('textarea').first();
-	if (await textarea.isVisible().catch(() => false)) {
-		await textarea.fill(
-			'@article{lifecycle2024, author={Test Author}, title={Lifecycle Test Article}, journal={Test Journal}, year={2024}}'
-		);
-
-		const addButton = editorFrame
-			.locator(
-				'button:has-text("Add"), button:has-text("Parse"), button:has-text("Import")'
-			)
-			.first();
-		if (await addButton.isVisible().catch(() => false)) {
-			await addButton.click();
-			await page.waitForTimeout(2000);
+	const postData = await page.evaluate(async () => {
+		const { blocks, data } = window.wp || {};
+		if (!blocks || !data) {
+			throw new Error('Gutenberg editor APIs are not available.');
 		}
+
+		const dispatch = data.dispatch('core/editor');
+		const select = data.select('core/editor');
+		const block = blocks.createBlock('bibliography-builder/bibliography', {
+			citationStyle: 'chicago-notes-bibliography',
+			headingText: 'References',
+			outputJsonLd: true,
+			outputCoins: false,
+			outputCslJson: false,
+			citations: [
+				{
+					id: 'lifecycle2024',
+					displayText:
+						'Test Author. Lifecycle Test Article. Test Journal (2024).',
+					csl: {
+						id: 'lifecycle2024',
+						type: 'article-journal',
+						title: 'Lifecycle Test Article',
+						'container-title': 'Test Journal',
+						author: [{ family: 'Author', given: 'Test' }],
+						issued: { 'date-parts': [[2024]] },
+					},
+				},
+			],
+		});
+
+		dispatch.resetBlocks([block]);
+		dispatch.editPost({
+			title: 'Lifecycle Test Post',
+			status: 'publish',
+		});
+		await dispatch.savePost();
+
+		const currentPost = select.getCurrentPost();
+		return {
+			id: currentPost?.id || select.getCurrentPostId(),
+			link: currentPost?.link || null,
+		};
+	});
+
+	if (postData.link) {
+		return postData.link;
 	}
 
-	// Publish the post.
-	const publishButton = page
-		.getByRole('button', { name: /Publish/i })
-		.first();
-	await publishButton.click();
-	await page.waitForTimeout(1000);
-
-	const confirmPublish = page
-		.getByRole('button', { name: /Publish/i })
-		.last();
-	if (await confirmPublish.isVisible().catch(() => false)) {
-		await confirmPublish.click();
-		await page.waitForTimeout(2000);
+	const postId = postData.id;
+	if (!postId) {
+		throw new Error('Could not determine post ID after save.');
 	}
 
-	const viewLink = page.getByRole('link', { name: /View Post/i }).first();
-	let postUrl = '/';
-	if (await viewLink.isVisible().catch(() => false)) {
-		postUrl = (await viewLink.getAttribute('href')) || '/';
-	}
+	const fallbackLink = await page.evaluate(async (id) => {
+		const nonce = window.wpApiSettings?.nonce;
+		const response = await fetch(
+			`/wp-json/wp/v2/posts/${id}?context=edit`,
+			{
+				headers: nonce ? { 'X-WP-Nonce': nonce } : {},
+			}
+		);
+		if (!response.ok) {
+			throw new Error(`Failed to fetch post ${id}.`);
+		}
+		const post = await response.json();
+		return post?.link || '/';
+	}, postId);
 
-	return postUrl;
+	return fallbackLink || '/';
 }
 
 test.describe('Plugin lifecycle', () => {
