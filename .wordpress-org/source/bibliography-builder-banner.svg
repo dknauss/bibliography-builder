@@ -12,288 +12,226 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"><defs
-     id="defs23" /><sodipodi:namedview
-     id="namedview23"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="0.53854167"
-     inkscape:cx="700.96711"
-     inkscape:cy="419.65183"
-     inkscape:window-width="1190"
-     inkscape:window-height="661"
-     inkscape:window-x="68"
-     inkscape:window-y="526"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="g2" /><path
-     d="m0 0h1920v560h-1920z"
-     fill="#f5f3ef"
-     id="path1" /><g
-     fill="none"
-     opacity=".14"
-     stroke="#2d3136"
-     stroke-width="2"
-     transform="translate(-154.90909 28.363636)"
-     id="g12"><path
-       d="m1460 1146h-1000l-500-866 500-866h1000l500 866z"
-       id="path2" /><path
-       d="m1340 938h-760l-380-658 380-658h760l380 658z"
-       id="path3" /><path
-       d="m1240 765h-560l-280-485 280-485h560l280 485z"
-       id="path4" /><path
-       d="m1160 626h-400l-200-346 200-346h400l200 346z"
-       id="path5" /><path
-       d="m1100 522h-280l-140-242 140-242h280l140 242z"
-       id="path6" /><path
-       d="m1055 445h-190l-95-165 95-165h190l95 165z"
-       id="path7" /><path
-       d="m1024 391h-128l-64-111 64-111h128l64 111z"
-       id="path8" /><path
-       d="m1003 354h-86l-43-74 43-74h86l43 74z"
-       id="path9" /><path
-       d="m989 330h-58l-29-50 29-50h58l29 50z"
-       id="path10" /><path
-       d="m980 315h-40l-20-35 20-35h40l20 35z"
-       id="path11" /><path
-       d="m974 304h-28l-14-24 14-24h28l14 24z"
-       id="path12" /></g><g
-     transform="matrix(1.6366285,0.11444421,-0.11444421,1.6366285,53.429342,139.09345)"
-     id="g14"><rect
-       fill="#2d3136"
-       height="148"
-       rx="2"
-       width="42"
-       id="rect12"
-       x="0"
-       y="0" /><rect
-       fill="#23272b"
-       height="148"
-       rx="1"
-       width="5"
-       id="rect13"
-       x="0"
-       y="0" /><rect
-       fill="#ffffff"
-       height="8"
-       opacity="0.85"
-       rx="1.5"
-       width="20"
-       x="12"
-       y="68"
-       id="rect14" /></g><g
-     stroke-width="1.64062"
-     id="g21"
-     transform="translate(-135.55126,25.996132)"><rect
-       fill="#7b8fa1"
-       height="255.9375"
-       rx="1.640625"
-       width="22.96875"
-       x="247.34375"
-       y="104.1875"
-       id="rect15" /><rect
-       fill="#2d3136"
-       height="255.9375"
-       rx="3.28125"
-       width="65.625"
-       x="263.75"
-       y="104.1875"
-       id="rect16" /><rect
-       fill="#23272b"
-       height="255.9375"
-       rx="1.640625"
-       width="8.203125"
-       x="263.75"
-       y="104.1875"
-       id="rect17" /><rect
-       fill="#ffffff"
-       height="13.125"
-       opacity="0.85"
-       rx="2.4609375"
-       width="32.8125"
-       x="283.4375"
-       y="222.3125"
-       id="rect18" /><rect
-       fill="#2d3136"
-       height="236.25"
-       rx="3.28125"
-       width="68.90625"
-       x="335.9375"
-       y="123.875"
-       id="rect19" /><rect
-       fill="#23272b"
-       height="236.25"
-       rx="1.640625"
-       width="8.203125"
-       x="335.9375"
-       y="123.875"
-       id="rect20" /><rect
-       fill="#ffffff"
-       height="13.125"
-       opacity="0.85"
-       rx="2.4609375"
-       width="32.8125"
-       x="355.625"
-       y="232.15625"
-       id="rect21" /></g><rect
-     fill="#c4973e"
-     height="7"
-     rx="1.0933368"
-     width="1692.4855"
-     x="16.448755"
-     y="385.99612"
-     id="rect22"
-     style="stroke-width:1.04563" /><text
-     style="font-style:italic;font-weight:400;font-size:52px;font-family:'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif;text-anchor:end;fill:#3d4a57"
-     x="681.63055"
-     y="458.8143"
-     id="text22">The library will endure;</text><text
-     fill="#3d4a57"
-     font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
-     font-size="52px"
-     font-style="italic"
-     font-weight="400"
-     x="811.53955"
-     y="463.17792"
-     id="text23">it is the universe...</text><!-- Vertical gold separator --><!-- Feature panel heading --><text
-     x="1219.3578"
-     y="163.99612"
-     font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
-     font-size="33px"
-     font-weight="700"
+   id="defs23" /><sodipodi:namedview
+   id="namedview23"
+   pagecolor="#ffffff"
+   bordercolor="#000000"
+   borderopacity="0.25"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   inkscape:zoom="0.53854167"
+   inkscape:cx="948.85879"
+   inkscape:cy="393.6557"
+   inkscape:window-width="1190"
+   inkscape:window-height="661"
+   inkscape:window-x="68"
+   inkscape:window-y="267"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="svg23" /><path
+   d="m0 0h1920v560h-1920z"
+   fill="#f5f3ef"
+   id="path1" /><g
+   fill="none"
+   opacity=".14"
+   stroke="#2d3136"
+   stroke-width="2"
+   transform="translate(-154.90909 28.363636)"
+   id="g12"><path
+     d="m1460 1146h-1000l-500-866 500-866h1000l500 866z"
+     id="path2" /><path
+     d="m1340 938h-760l-380-658 380-658h760l380 658z"
+     id="path3" /><path
+     d="m1240 765h-560l-280-485 280-485h560l280 485z"
+     id="path4" /><path
+     d="m1160 626h-400l-200-346 200-346h400l200 346z"
+     id="path5" /><path
+     d="m1100 522h-280l-140-242 140-242h280l140 242z"
+     id="path6" /><path
+     d="m1055 445h-190l-95-165 95-165h190l95 165z"
+     id="path7" /><path
+     d="m1024 391h-128l-64-111 64-111h128l64 111z"
+     id="path8" /><path
+     d="m1003 354h-86l-43-74 43-74h86l43 74z"
+     id="path9" /><path
+     d="m989 330h-58l-29-50 29-50h58l29 50z"
+     id="path10" /><path
+     d="m980 315h-40l-20-35 20-35h40l20 35z"
+     id="path11" /><path
+     d="m974 304h-28l-14-24 14-24h28l14 24z"
+     id="path12" /></g><g
+   transform="matrix(1.6366285,0.11444421,-0.11444421,1.6366285,53.429342,139.09345)"
+   id="g14"><rect
      fill="#2d3136"
-     id="text1"
-     style="font-weight:700;font-size:33px;font-family:'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif;fill:#2d3136"><tspan
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:32px;font-family:'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif;-inkscape-font-specification:'Libre Baskerville, Baskerville, Liberation Serif, Times New Roman, serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
-       id="tspan29">The Bibliography Builder Block</tspan></text><!-- Gold hairline under heading --><rect
-     x="1219.3578"
-     y="177.99612"
-     width="488"
-     height="1.5"
-     fill="#c4973e"
-     id="rect2" /><!-- Feature list --><text
-     x="1241.6401"
-     y="215.13925"
-     font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
-     font-size="25px"
-     font-weight="400"
-     id="text3"><tspan
+     height="148"
+     rx="2"
+     width="42"
+     id="rect12"
+     x="0"
+     y="0" /><rect
+     fill="#23272b"
+     height="148"
+     rx="1"
+     width="5"
+     id="rect13"
+     x="0"
+     y="0" /><rect
+     fill="#ffffff"
+     height="8"
+     opacity="0.85"
+     rx="1.5"
+     width="20"
+     x="12"
+     y="68"
+     id="rect14" /></g><g
+   stroke-width="1.64062"
+   id="g21"
+   transform="translate(-135.55126,25.996132)"><rect
+     fill="#7b8fa1"
+     height="255.9375"
+     rx="1.640625"
+     width="22.96875"
+     x="247.34375"
+     y="104.1875"
+     id="rect15" /><rect
+     fill="#2d3136"
+     height="255.9375"
+     rx="3.28125"
+     width="65.625"
+     x="263.75"
+     y="104.1875"
+     id="rect16" /><rect
+     fill="#23272b"
+     height="255.9375"
+     rx="1.640625"
+     width="8.203125"
+     x="263.75"
+     y="104.1875"
+     id="rect17" /><rect
+     fill="#ffffff"
+     height="13.125"
+     opacity="0.85"
+     rx="2.4609375"
+     width="32.8125"
+     x="283.4375"
+     y="222.3125"
+     id="rect18" /><rect
+     fill="#2d3136"
+     height="236.25"
+     rx="3.28125"
+     width="68.90625"
+     x="335.9375"
+     y="123.875"
+     id="rect19" /><rect
+     fill="#23272b"
+     height="236.25"
+     rx="1.640625"
+     width="8.203125"
+     x="335.9375"
+     y="123.875"
+     id="rect20" /><rect
+     fill="#ffffff"
+     height="13.125"
+     opacity="0.85"
+     rx="2.4609375"
+     width="32.8125"
+     x="355.625"
+     y="232.15625"
+     id="rect21" /></g><rect
+   fill="#c4973e"
+   height="7"
+   rx="1.0933368"
+   width="1692.4855"
+   x="16.448755"
+   y="385.99612"
+   id="rect22"
+   style="stroke-width:1.04563" /><text
+   style="font-style:italic;font-weight:400;font-size:52px;font-family:'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif;text-anchor:end;fill:#3d4a57"
+   x="681.63055"
+   y="458.8143"
+   id="text22">The library will endure;</text><text
+   fill="#3d4a57"
+   font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
+   font-size="52px"
+   font-style="italic"
+   font-weight="400"
+   x="811.53955"
+   y="463.17792"
+   id="text23">it is the universe...</text><!-- Vertical gold separator --><!-- Feature panel heading --><text
+   x="1219.3578"
+   y="163.99612"
+   font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
+   font-size="33px"
+   font-weight="700"
+   fill="#2d3136"
+   id="text1"
+   style="font-weight:700;font-size:33px;font-family:'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif;fill:#2d3136"><tspan
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:32px;font-family:'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif;-inkscape-font-specification:'Libre Baskerville, Baskerville, Liberation Serif, Times New Roman, serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+     id="tspan29">The Bibliography Builder Block</tspan></text><!-- Gold hairline under heading --><rect
+   x="1219.3578"
+   y="177.99612"
+   width="488"
+   height="1.5"
+   fill="#c4973e"
+   id="rect2" /><!-- Feature list --><text
+   x="1241.6401"
+   y="215.13925"
+   font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
+   font-size="25px"
+   font-weight="400"
+   id="text3"><tspan
    style="font-weight:bold"
    id="tspan24">Paste DOIs</tspan><tspan
    style="font-weight:bold"
    id="tspan2">•</tspan> Citations resolved instantly</text><text
-     x="1241.6401"
-     y="252.13925"
-     font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
-     font-size="25px"
-     font-weight="400"
-     id="text5"><tspan
+   x="1241.6401"
+   y="252.13925"
+   font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
+   font-size="25px"
+   font-weight="400"
+   id="text5"><tspan
    style="font-weight:bold"
    id="tspan25">Nine styles:</tspan> Chicago, APA 7, MLA 9, IEEE</text><text
-     x="1241.6401"
-     y="289.13925"
-     font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
-     font-size="25px"
-     font-weight="400"
-     id="text7"><tspan
+   x="1241.6401"
+   y="289.13925"
+   font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
+   font-size="25px"
+   font-weight="400"
+   id="text7"><tspan
    style="font-weight:bold"
    id="tspan26">Zotero-ready</tspan><tspan
    style="font-weight:bold"
    id="tspan1">•</tspan> COinS &amp; JSON-LD</text><text
-     x="1241.6401"
-     y="326.13925"
-     font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
-     font-size="25px"
-     font-weight="400"
-     id="text9"><tspan
+   x="1241.6401"
+   y="326.13925"
+   font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
+   font-size="25px"
+   font-weight="400"
+   id="text9"><tspan
    style="font-weight:bold"
    id="tspan27">Export:</tspan> BibTeX, CSL-JSON, or RIS</text><text
-     x="1241.6401"
-     y="363.13925"
-     font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
-     font-size="25px"
-     font-weight="400"
-     id="text11"><tspan
+   x="1241.6401"
+   y="363.13925"
+   font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
+   font-size="25px"
+   font-weight="400"
+   id="text11"><tspan
    style="font-weight:bold"
    id="tspan28">Portable Semantic HTML</tspan> • No Lock-In</text><g
-     id="g2"
-     transform="matrix(2.8259277,-0.24290214,0.16033937,1.8653909,299.99145,179.27144)"><rect
-       width="100%"
-       height="100%"
-       fill="none"
-       id="rect1"
-       x="0"
-       y="0" /></g><g id="sig-borges"
-   transform="matrix(0.05,0,0,-0.05,65,398)">
+   id="g2"
+   transform="matrix(2.8259277,-0.24290214,0.16033937,1.8653909,299.99145,179.27144)"><rect
+     width="100%"
+     height="100%"
+     fill="none"
+     id="rect1"
+     x="0"
+     y="0" /></g><g
+   id="sig-borges"
+   transform="matrix(0.05,0,0,-0.05,298.96518,526.12379)">
   <path
-     style="fill:#1a1a1a;fill-opacity:1"
-     d="M3162 8219 c-49 -15 -103 -75 -154 -174 -52 -102 -79 -166 -246 -600
--308 -795 -452 -1150 -583 -1432 -31 -68 -56 -101 -150 -200 -330 -348 -642
--747 -994 -1273 -361 -539 -719 -1189 -790 -1434 -23 -77 -8 -135 43 -174 30
--23 46 -27 97 -27 57 0 66 3 121 44 80 59 354 336 495 501 453 529 749 1038
-1189 2050 137 315 134 309 204 405 128 174 543 486 867 652 345 178 640 260
-898 251 145 -6 211 -25 280 -84 155 -133 118 -355 -104 -629 -146 -180 -453
--450 -681 -600 -46 -31 -91 -66 -99 -78 -39 -60 -26 -132 30 -167 29 -18 43
--19 151 -14 212 11 376 -46 503 -174 174 -174 193 -392 62 -699 -52 -121 -193
--341 -237 -369 -12 -9 -127 -42 -255 -75 -902 -231 -1374 -515 -1289 -774 57
--172 321 -214 640 -103 164 58 394 188 572 325 103 79 262 228 352 331 77 88
-96 104 137 116 26 8 59 22 73 31 30 20 50 73 41 108 -5 19 1 37 22 69 97 144
-196 355 235 501 33 123 31 294 -4 399 -41 123 -92 204 -187 298 -99 97 -208
-165 -338 207 -46 15 -83 30 -83 34 0 4 44 44 98 90 336 286 525 505 614 711
-108 253 87 448 -67 603 -71 72 -155 116 -274 146 -73 18 -105 21 -225 17 -172
--6 -297 -31 -501 -99 -320 -108 -682 -304 -984 -533 -41 -31 -76 -54 -78 -53
--8 9 325 798 442 1047 45 96 135 286 199 422 123 263 133 296 100 359 -8 17
--30 37 -49 45 -39 16 -47 16 -93 3z m-1301 -2926 c-15 -32 -52 -112 -81 -178
--221 -505 -480 -955 -749 -1300 -156 -200 -431 -498 -431 -467 0 34 189 413
-318 637 81 141 235 390 291 470 19 28 57 83 84 124 46 69 143 203 278 384 72
-96 309 387 315 387 2 0 -9 -26 -25 -57z m1854 -1670 c-199 -190 -404 -322
--601 -390 -100 -34 -118 -37 -222 -38 -100 0 -115 2 -127 19 -12 16 -12 23 3
-48 31 53 179 155 318 219 103 48 315 129 414 159 155 48 305 88 310 83 3 -3
--40 -48 -95 -100z
-M12476 5219 c-164 -39 -416 -283 -552 -534 -51 -95 -54 -98 -163
--157 -281 -150 -628 -357 -830 -495 -148 -101 -217 -152 -419 -312 -84 -67
--154 -121 -156 -121 -6 0 124 375 197 570 36 96 107 271 156 388 55 127 91
-227 91 247 0 50 -16 84 -50 103 -16 9 -30 22 -30 29 0 23 -58 79 -111 107 -67
-37 -187 46 -297 22 -203 -43 -468 -215 -630 -409 l-63 -75 -37 17 c-217 104
--276 121 -442 128 -263 11 -522 -73 -807 -261 l-98 -64 -6 61 c-11 116 -65
-195 -163 239 -145 64 -421 -9 -730 -192 -85 -51 -112 -72 -122 -97 -27 -62
--11 -113 43 -138 46 -22 70 -15 178 54 118 76 196 115 303 150 161 54 228 50
-258 -13 40 -83 -31 -255 -198 -481 -171 -230 -209 -291 -211 -334 -3 -74 64
--129 141 -115 48 9 85 48 262 280 268 350 457 517 708 627 123 55 229 79 364
-85 104 4 126 2 209 -22 93 -27 207 -80 215 -101 3 -6 -13 -49 -35 -95 -51
--110 -76 -225 -60 -283 47 -181 230 -251 454 -174 128 44 281 136 397 238 71
-63 85 71 67 38 -6 -12 -26 -67 -44 -123 -18 -55 -79 -231 -135 -391 l-103
--290 -96 -95 c-53 -53 -211 -201 -351 -330 -140 -129 -334 -312 -430 -405 -96
--94 -203 -197 -237 -230 -129 -126 -375 -390 -469 -506 -342 -417 -497 -757
--464 -1017 39 -301 308 -410 609 -245 492 267 1033 1149 1567 2553 57 150 61
-157 124 220 165 165 548 464 850 662 199 131 624 388 642 388 2 0 1 -30 -2
--67 -17 -191 93 -337 295 -394 73 -20 307 -18 415 5 297 63 740 255 1355 589
-563 305 818 437 846 437 13 0 112 -138 152 -210 47 -87 61 -154 43 -214 -33
--109 -105 -157 -510 -337 -110 -49 -211 -99 -224 -112 -14 -12 -33 -41 -44
--65 -17 -37 -18 -48 -7 -80 13 -43 43 -78 82 -99 100 -51 434 -76 727 -54 528
-41 1557 216 2560 436 183 40 720 172 755 185 12 5 28 22 35 40 27 64 -27 111
--105 91 -173 -46 -866 -185 -1350 -270 -1228 -216 -1912 -297 -2224 -265 l-62
-7 133 66 c513 254 591 492 302 918 -35 51 -72 112 -82 136 -26 58 -74 82 -149
-74 -56 -6 -229 -90 -558 -272 -367 -203 -467 -256 -687 -366 -593 -296 -921
--416 -1173 -426 -106 -5 -127 -3 -177 17 -63 24 -92 53 -110 112 -14 48 0 133
-34 204 22 46 29 52 143 112 242 127 359 207 442 302 127 146 100 342 -54 394
--26 9 -49 16 -52 15 -3 -1 -24 -5 -45 -10z m4 -249 c0 -29 -123 -134 -209
--180 l-24 -12 21 28 c25 35 128 135 162 158 28 18 50 21 50 6z m-1995 -112
-c13 -13 -14 -33 -95 -70 -114 -52 -397 -158 -424 -158 -21 0 62 74 146 130
-123 83 240 124 323 113 22 -3 45 -9 50 -15z m-42 -259 c-47 -82 -275 -314
--402 -409 -156 -118 -315 -179 -379 -146 -55 28 -58 93 -7 192 52 101 69 118
-160 148 111 38 398 146 530 200 61 25 111 45 113 46 2 0 -5 -14 -15 -31z
-m-631 -1865 c-260 -649 -562 -1224 -837 -1588 -206 -275 -466 -486 -618 -503
--140 -16 -192 155 -116 380 74 220 263 501 580 862 198 226 1051 1066 1066
-1051 3 -2 -31 -93 -75 -202z
-M6132 4708 c-197 -26 -460 -196 -641 -414 -353 -426 -352 -872 2
--944 93 -19 243 12 371 77 95 48 220 141 316 235 284 279 443 685 351 893 -46
-102 -130 154 -257 158 -43 1 -107 -1 -142 -5z m145 -209 c57 -23 73 -48 73
--111 0 -98 -75 -285 -170 -422 -63 -92 -211 -236 -306 -299 -134 -88 -283
--126 -353 -90 -156 81 -41 448 216 694 145 139 341 245 459 248 17 1 54 -8 81
--20z" />
+   style="fill:#1a1a1a;fill-opacity:1"
+   d="m 3162,8219 c -49,-15 -103,-75 -154,-174 -52,-102 -79,-166 -246,-600 -308,-795 -452,-1150 -583,-1432 -31,-68 -56,-101 -150,-200 C 1699,5465 1387,5066 1035,4540 674,4001 316,3351 245,3106 c -23,-77 -8,-135 43,-174 30,-23 46,-27 97,-27 57,0 66,3 121,44 80,59 354,336 495,501 453,529 749,1038 1189,2050 137,315 134,309 204,405 128,174 543,486 867,652 345,178 640,260 898,251 145,-6 211,-25 280,-84 155,-133 118,-355 -104,-629 -146,-180 -453,-450 -681,-600 -46,-31 -91,-66 -99,-78 -39,-60 -26,-132 30,-167 29,-18 43,-19 151,-14 212,11 376,-46 503,-174 174,-174 193,-392 62,-699 -52,-121 -193,-341 -237,-369 -12,-9 -127,-42 -255,-75 -902,-231 -1374,-515 -1289,-774 57,-172 321,-214 640,-103 164,58 394,188 572,325 103,79 262,228 352,331 77,88 96,104 137,116 26,8 59,22 73,31 30,20 50,73 41,108 -5,19 1,37 22,69 97,144 196,355 235,501 33,123 31,294 -4,399 -41,123 -92,204 -187,298 -99,97 -208,165 -338,207 -46,15 -83,30 -83,34 0,4 44,44 98,90 336,286 525,505 614,711 108,253 87,448 -67,603 -71,72 -155,116 -274,146 -73,18 -105,21 -225,17 -172,-6 -297,-31 -501,-99 -320,-108 -682,-304 -984,-533 -41,-31 -76,-54 -78,-53 -8,9 325,798 442,1047 45,96 135,286 199,422 123,263 133,296 100,359 -8,17 -30,37 -49,45 -39,16 -47,16 -93,3 z M 1861,5293 c -15,-32 -52,-112 -81,-178 -221,-505 -480,-955 -749,-1300 -156,-200 -431,-498 -431,-467 0,34 189,413 318,637 81,141 235,390 291,470 19,28 57,83 84,124 46,69 143,203 278,384 72,96 309,387 315,387 2,0 -9,-26 -25,-57 z M 3715,3623 c -199,-190 -404,-322 -601,-390 -100,-34 -118,-37 -222,-38 -100,0 -115,2 -127,19 -12,16 -12,23 3,48 31,53 179,155 318,219 103,48 315,129 414,159 155,48 305,88 310,83 3,-3 -40,-48 -95,-100 z m 8761,1596 c -164,-39 -416,-283 -552,-534 -51,-95 -54,-98 -163,-157 -281,-150 -628,-357 -830,-495 -148,-101 -217,-152 -419,-312 -84,-67 -154,-121 -156,-121 -6,0 124,375 197,570 36,96 107,271 156,388 55,127 91,227 91,247 0,50 -16,84 -50,103 -16,9 -30,22 -30,29 0,23 -58,79 -111,107 -67,37 -187,46 -297,22 -203,-43 -468,-215 -630,-409 l -63,-75 -37,17 c -217,104 -276,121 -442,128 -263,11 -522,-73 -807,-261 l -98,-64 -6,61 c -11,116 -65,195 -163,239 -145,64 -421,-9 -730,-192 -85,-51 -112,-72 -122,-97 -27,-62 -11,-113 43,-138 46,-22 70,-15 178,54 118,76 196,115 303,150 161,54 228,50 258,-13 40,-83 -31,-255 -198,-481 -171,-230 -209,-291 -211,-334 -3,-74 64,-129 141,-115 48,9 85,48 262,280 268,350 457,517 708,627 123,55 229,79 364,85 104,4 126,2 209,-22 93,-27 207,-80 215,-101 3,-6 -13,-49 -35,-95 -51,-110 -76,-225 -60,-283 47,-181 230,-251 454,-174 128,44 281,136 397,238 71,63 85,71 67,38 -6,-12 -26,-67 -44,-123 -18,-55 -79,-231 -135,-391 l -103,-290 -96,-95 c -53,-53 -211,-201 -351,-330 -140,-129 -334,-312 -430,-405 -96,-94 -203,-197 -237,-230 -129,-126 -375,-390 -469,-506 -342,-417 -497,-757 -464,-1017 39,-301 308,-410 609,-245 492,267 1033,1149 1567,2553 57,150 61,157 124,220 165,165 548,464 850,662 199,131 624,388 642,388 2,0 1,-30 -2,-67 -17,-191 93,-337 295,-394 73,-20 307,-18 415,5 297,63 740,255 1355,589 563,305 818,437 846,437 13,0 112,-138 152,-210 47,-87 61,-154 43,-214 -33,-109 -105,-157 -510,-337 -110,-49 -211,-99 -224,-112 -14,-12 -33,-41 -44,-65 -17,-37 -18,-48 -7,-80 13,-43 43,-78 82,-99 100,-51 434,-76 727,-54 528,41 1557,216 2560,436 183,40 720,172 755,185 12,5 28,22 35,40 27,64 -27,111 -105,91 -173,-46 -866,-185 -1350,-270 -1228,-216 -1912,-297 -2224,-265 l -62,7 133,66 c 513,254 591,492 302,918 -35,51 -72,112 -82,136 -26,58 -74,82 -149,74 -56,-6 -229,-90 -558,-272 -367,-203 -467,-256 -687,-366 -593,-296 -921,-416 -1173,-426 -106,-5 -127,-3 -177,17 -63,24 -92,53 -110,112 -14,48 0,133 34,204 22,46 29,52 143,112 242,127 359,207 442,302 127,146 100,342 -54,394 -26,9 -49,16 -52,15 -3,-1 -24,-5 -45,-10 z m 4,-249 c 0,-29 -123,-134 -209,-180 l -24,-12 21,28 c 25,35 128,135 162,158 28,18 50,21 50,6 z m -1995,-112 c 13,-13 -14,-33 -95,-70 -114,-52 -397,-158 -424,-158 -21,0 62,74 146,130 123,83 240,124 323,113 22,-3 45,-9 50,-15 z m -42,-259 c -47,-82 -275,-314 -402,-409 -156,-118 -315,-179 -379,-146 -55,28 -58,93 -7,192 52,101 69,118 160,148 111,38 398,146 530,200 61,25 111,45 113,46 2,0 -5,-14 -15,-31 z M 9812,2734 C 9552,2085 9250,1510 8975,1146 8769,871 8509,660 8357,643 c -140,-16 -192,155 -116,380 74,220 263,501 580,862 198,226 1051,1066 1066,1051 3,-2 -31,-93 -75,-202 z M 6132,4708 c -197,-26 -460,-196 -641,-414 -353,-426 -352,-872 2,-944 93,-19 243,12 371,77 95,48 220,141 316,235 284,279 443,685 351,893 -46,102 -130,154 -257,158 -43,1 -107,-1 -142,-5 z m 145,-209 c 57,-23 73,-48 73,-111 0,-98 -75,-285 -170,-422 -63,-92 -211,-236 -306,-299 -134,-88 -283,-126 -353,-90 -156,81 -41,448 216,694 145,139 341,245 459,248 17,1 54,-8 81,-20 z"
+   id="path13" />
 </g>
 </svg>
