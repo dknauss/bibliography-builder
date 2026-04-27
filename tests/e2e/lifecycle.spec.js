@@ -52,7 +52,12 @@ async function getPluginRow(page) {
 		.locator(
 			'tr[data-slug="bibliography-builder"], tr[data-plugin="bibliography-builder/bibliography-builder.php"]'
 		)
-		.first();
+		.first()
+		.or(
+			page.locator('tr', {
+				hasText: 'Bibliography',
+			})
+		);
 }
 
 async function ensurePluginActive(page) {
