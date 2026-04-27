@@ -740,14 +740,8 @@ export default function Edit({ attributes, setAttributes }) {
 							icon={isFormOpen ? ChevronUpIcon : ChevronDownIcon}
 							label={
 								isFormOpen
-									? __(
-											'Hide citation form',
-											'bibliography'
-									  )
-									: __(
-											'Show citation form',
-											'bibliography'
-									  )
+									? __('Hide citation form', 'bibliography')
+									: __('Show citation form', 'bibliography')
 							}
 							onClick={() => setIsFormOpen((open) => !open)}
 						/>
