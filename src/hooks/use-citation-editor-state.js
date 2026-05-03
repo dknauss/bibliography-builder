@@ -11,6 +11,9 @@ import {
 } from '../lib/manual-entry';
 import { sortCitations } from '../lib/sorter';
 
+const FORMATTER_FALLBACK_MESSAGE =
+	'Formatter unavailable; using fallback citation text.';
+
 function formatNameForField(name) {
 	if (!name) {
 		return '';
@@ -332,9 +335,15 @@ export function useCitationEditorState({
 			return;
 		}
 
+		let formatterFallback = false;
 		const formattedText = await formatBibliographyEntry(
 			updatedCsl,
-			citationStyle
+			citationStyle,
+			{
+				onFallback: () => {
+					formatterFallback = true;
+				},
+			}
 		);
 
 		// Second cancel guard: a cancel that arrives during formatBibliographyEntry
@@ -360,8 +369,18 @@ export function useCitationEditorState({
 
 		citationsRef.current = updated;
 		setAttributes({ citations: updated });
-		announce('success', 'Fields updated.', { type: 'snackbar' });
-		queueFocus({ type: 'entry', id: activeStructuredEditingId });
+		announce(
+			formatterFallback ? 'warning' : 'success',
+			formatterFallback
+				? `Fields updated. ${FORMATTER_FALLBACK_MESSAGE}`
+				: 'Fields updated.',
+			formatterFallback ? {} : { type: 'snackbar' }
+		);
+		queueFocus(
+			formatterFallback
+				? { type: 'notice' }
+				: { type: 'entry', id: activeStructuredEditingId }
+		);
 		structuredEditingIdRef.current = null;
 		setStructuredEditingId(null);
 		setStructuredFields({});
@@ -415,9 +434,15 @@ export function useCitationEditorState({
 			const { formatBibliographyEntries } = await import(
 				'../lib/formatting/csl'
 			);
+			let formatterFallback = false;
 			const formattedTexts = await formatBibliographyEntries(
 				citationsRef.current.map((citation) => citation.csl),
-				nextStyle
+				nextStyle,
+				{
+					onFallback: () => {
+						formatterFallback = true;
+					},
+				}
 			);
 			const updated = sortCitations(
 				citationsRef.current.map((citation, index) => ({
@@ -435,18 +460,24 @@ export function useCitationEditorState({
 			clearNotice();
 			resetEditingState();
 			announce(
-				'success',
+				formatterFallback ? 'warning' : 'success',
 				`Style changed to ${nextStyleLabel}. Reformatted ${
 					updated.length
-				} ${updated.length === 1 ? 'citation' : 'citations'}.`,
-				{ type: 'snackbar' }
+				} ${updated.length === 1 ? 'citation' : 'citations'}.${
+					formatterFallback ? ` ${FORMATTER_FALLBACK_MESSAGE}` : ''
+				}`,
+				formatterFallback ? {} : { type: 'snackbar' }
 			);
+			if (formatterFallback) {
+				queueFocus({ type: 'notice' });
+			}
 		},
 		[
 			announce,
 			citationStyle,
 			citationsRef,
 			clearNotice,
+			queueFocus,
 			resetEditingState,
 			setAttributes,
 		]

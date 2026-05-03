@@ -962,6 +962,45 @@ describe('Edit focus management', () => {
 		});
 	});
 
+	it('skips duplicate manual entries before formatting them', async () => {
+		render(
+			<EditHarness
+				initialCitations={[
+					createCitation({
+						id: 'entry-manual-book',
+						title: 'Manual Book',
+						type: 'book',
+						inputFormat: 'manual',
+					}),
+				]}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getAllByRole('button', { name: 'Manual Entry' })[0]
+		);
+		await userEvent.selectOptions(
+			screen.getByLabelText('Publication Type'),
+			'book'
+		);
+		await userEvent.type(screen.getByLabelText('Title'), 'Manual Book');
+		await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+
+		expect(await screen.findByRole('status')).toHaveTextContent(
+			'No new citations added. Skipped 1 duplicate.'
+		);
+		expect(formatBibliographyEntry).not.toHaveBeenCalled();
+		expect(screen.getAllByRole('listitem')).toHaveLength(1);
+
+		await waitFor(() => {
+			expect(
+				screen
+					.getByRole('status')
+					.closest('.bibliography-builder-editor-notices')
+			).toHaveFocus();
+		});
+	});
+
 	it('sorts manual entries with existing citations and reformats them on style change', async () => {
 		render(
 			<EditHarness
@@ -1078,7 +1117,10 @@ describe('Edit focus management', () => {
 					title: 'Bravo citation',
 				}),
 			],
-			'apa-7'
+			'apa-7',
+			expect.objectContaining({
+				onFallback: expect.any(Function),
+			})
 		);
 
 		await userEvent.click(
@@ -1490,7 +1532,10 @@ describe('Edit focus management', () => {
 						{ family: 'Scholar', given: 'Jane' },
 					],
 				}),
-				'chicago-notes-bibliography'
+				'chicago-notes-bibliography',
+				expect.objectContaining({
+					onFallback: expect.any(Function),
+				})
 			);
 		});
 	});

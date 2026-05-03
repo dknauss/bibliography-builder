@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" default-locale="en-US">
+  <info>
+    <title>Borges Bibliography Builder Numeric</title>
+    <id>https://example.invalid/borges-bibliography-builder/numeric</id>
+    <link href="https://example.invalid/borges-bibliography-builder/numeric" rel="self"/>
+    <author><name>Borges Bibliography Builder contributors</name></author>
+    <category citation-format="numeric"/>
+    <updated>2026-05-03T00:00:00+00:00</updated>
+    <rights license="https://www.gnu.org/licenses/gpl-2.0.html">GPL-2.0-or-later</rights>
+  </info>
+  <macro name="contributors"><names variable="author"><name initialize-with=". " delimiter=", " delimiter-precedes-last="always"/><substitute><names variable="editor"><name initialize-with=". " delimiter=", " delimiter-precedes-last="always"/><label form="short" prefix=", "/></names><text variable="title"/></substitute></names></macro>
+  <macro name="year"><choose><if variable="issued"><date variable="issued"><date-part name="year"/></date></if><else><text term="no date"/></else></choose></macro>
+  <macro name="title"><choose><if type="article-journal article-magazine article-newspaper chapter paper-conference post post-weblog review review-book webpage" match="any"><text variable="title" quotes="true"/></if><else><text variable="title" font-style="italic"/></else></choose></macro>
+  <macro name="container"><choose><if variable="container-title"><text variable="container-title" font-style="italic"/></if></choose></macro>
+  <macro name="access"><choose><if variable="DOI"><text variable="DOI" prefix="https://doi.org/"/></if><else-if variable="URL"><text variable="URL"/></else-if></choose></macro>
+  <bibliography>
+    <layout suffix="."><group delimiter=" "><text variable="citation-number" suffix=". "/><text macro="contributors" suffix="."/><text macro="title" suffix="."/><text macro="container" suffix="."/><text macro="year" suffix="."/><text macro="access"/></group></layout>
+  </bibliography>
+</style>

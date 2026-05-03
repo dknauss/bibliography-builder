@@ -14,7 +14,6 @@ async function getCiteConstructor() {
 	const [{ Cite }] = await Promise.all([
 		import('@citation-js/core'),
 		import('@citation-js/plugin-bibtex'),
-		import('@citation-js/plugin-csl'),
 	]);
 
 	return Cite;

@@ -4,7 +4,7 @@ const { test, expect } = require('@playwright/test');
 function getPluginRow(page) {
 	return page
 		.locator(
-			'tr[data-slug="bibliography-builder"], tr[data-plugin="bibliography-builder/bibliography-builder.php"]'
+			'tr[data-slug="borges-bibliography-builder"], tr[data-plugin="borges-bibliography-builder/bibliography-builder.php"]'
 		)
 		.first()
 		.or(

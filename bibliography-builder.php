@@ -5,7 +5,7 @@
  * Description:       Paste a DOI or BibTeX entry to build a formatted, auto-sorted bibliography in any style.
  * Version:           1.0.0
  * Requires at least: 6.4
- * Tested up to:      7.0
+ * Tested up to:      6.9
  * Requires PHP:      7.4
  * Author:            Dan Knauss
  * Author URI:        https://dan.knauss.ca/
@@ -20,6 +20,20 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+if ( ! defined( 'BIBLIOGRAPHY_BUILDER_PLUGIN_DIR' ) ) {
+	define( 'BIBLIOGRAPHY_BUILDER_PLUGIN_DIR', __DIR__ . '/' );
+}
+
+/**
+ * Maximum number of citations that may be formatted in one request.
+ */
+const BIBLIOGRAPHY_BUILDER_MAX_FORMAT_ITEMS = 50;
+
+/**
+ * Maximum formatter request payload size.
+ */
+const BIBLIOGRAPHY_BUILDER_MAX_FORMAT_BYTES = 1048576;
 
 /**
  * Recursively gather bibliography block data from parsed blocks.
@@ -150,6 +164,320 @@ function bibliography_builder_build_csl_json( $bibliography ) {
 }
 
 /**
+ * Citation style definitions shared by PHP formatting endpoints.
+ *
+ * @return array
+ */
+function bibliography_builder_get_formatter_style_definitions() {
+	return array(
+		'chicago-notes-bibliography' => array(
+			'template' => 'chicago-notes-bibliography',
+			'locale'   => 'en-US',
+			'family'   => 'notes',
+		),
+		'chicago-author-date'        => array(
+			'template' => 'chicago-author-date',
+			'locale'   => 'en-US',
+			'family'   => 'author-date',
+		),
+		'apa-7'                      => array(
+			'template' => 'apa',
+			'locale'   => 'en-US',
+			'family'   => 'author-date',
+		),
+		'mla-9'                      => array(
+			'template' => 'modern-language-association',
+			'locale'   => 'en-US',
+			'family'   => 'author-date',
+		),
+		'harvard'                    => array(
+			'template' => 'harvard1',
+			'locale'   => 'en-US',
+			'family'   => 'author-date',
+		),
+		'ieee'                       => array(
+			'template' => 'ieee',
+			'locale'   => 'en-US',
+			'family'   => 'numeric',
+		),
+		'vancouver'                  => array(
+			'template' => 'vancouver',
+			'locale'   => 'en-US',
+			'family'   => 'numeric',
+		),
+		'oscola'                     => array(
+			'template' => 'oscola',
+			'locale'   => 'en-GB',
+			'family'   => 'notes',
+		),
+		'abnt'                       => array(
+			'template' => 'abnt',
+			'locale'   => 'pt-BR',
+			'family'   => 'author-date',
+		),
+	);
+}
+
+/**
+ * Get one formatter style definition, falling back to the default style.
+ *
+ * @param string $style_key Style key from the block attribute.
+ * @return array
+ */
+function bibliography_builder_get_formatter_style_definition( $style_key ) {
+	$styles = bibliography_builder_get_formatter_style_definitions();
+
+	return isset( $styles[ $style_key ] ) ? $styles[ $style_key ] : $styles['chicago-notes-bibliography'];
+}
+
+/**
+ * Load Composer autoload and verify citeproc-php is usable.
+ *
+ * @return true|WP_Error
+ */
+function bibliography_builder_ensure_formatter_available() {
+	foreach ( array( 'dom', 'intl', 'json', 'mbstring', 'SimpleXML' ) as $extension ) {
+		if ( ! extension_loaded( $extension ) ) {
+			return new WP_Error(
+				'bibliography_builder_formatter_extension_missing',
+				sprintf(
+					/* translators: %s: PHP extension name. */
+					__( 'The bibliography formatter requires the PHP %s extension.', 'borges-bibliography-builder' ),
+					$extension
+				),
+				array( 'status' => 500 )
+			);
+		}
+	}
+
+	$autoload = BIBLIOGRAPHY_BUILDER_PLUGIN_DIR . 'vendor/autoload.php';
+
+	if ( ! file_exists( $autoload ) ) {
+		return new WP_Error(
+			'bibliography_builder_formatter_missing',
+			__( 'The bibliography formatter dependencies are missing.', 'borges-bibliography-builder' ),
+			array( 'status' => 500 )
+		);
+	}
+
+	require_once $autoload;
+
+	if ( ! class_exists( '\\Seboettg\\CiteProc\\CiteProc' ) ) {
+		return new WP_Error(
+			'bibliography_builder_formatter_missing',
+			__( 'The bibliography formatter is unavailable.', 'borges-bibliography-builder' ),
+			array( 'status' => 500 )
+		);
+	}
+
+	return true;
+}
+
+/**
+ * JSON-encode data using WordPress when available.
+ *
+ * @param mixed $data Data to encode.
+ * @return string|false
+ */
+function bibliography_builder_json_encode( $data ) {
+	// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode -- Used only when WordPress is unavailable in isolated tests.
+	return function_exists( 'wp_json_encode' ) ? wp_json_encode( $data ) : json_encode( $data );
+}
+
+/**
+ * Sanitize formatted citation text down to inert plain text.
+ *
+ * @param string $text Text extracted from citeproc output.
+ * @return string
+ */
+function bibliography_builder_sanitize_formatted_text( $text ) {
+	$decoded  = html_entity_decode( (string) $text, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+	$stripped = wp_strip_all_tags( $decoded );
+
+	return trim( preg_replace( '/\s+/u', ' ', $stripped ) );
+}
+
+/**
+ * Normalize known citeproc style artifacts for the saved static list.
+ *
+ * @param string $text  Plain formatted text.
+ * @param array  $style Formatter style definition.
+ * @return string
+ */
+function bibliography_builder_normalize_formatted_text( $text, $style ) {
+	if ( isset( $style['family'] ) && 'numeric' === $style['family'] ) {
+		$text = preg_replace( '/^(?:\[\d+\]|\d+\.)\s+/u', '', $text );
+	}
+
+	if ( isset( $style['template'] ) && 'abnt' === $style['template'] ) {
+		$text = preg_replace( '/\bv\.\s+vol\.\s+/u', 'v. ', $text );
+		$text = preg_replace( '/\bn\.\s+no\.\s+/u', 'n. ', $text );
+		$text = preg_replace( '/\bp\.\s+p\.p?\.\s+/u', 'p. ', $text );
+	}
+
+	return str_replace( 'and et al.', 'et al.', $text );
+}
+
+/**
+ * Extract per-entry text from citeproc HTML output.
+ *
+ * @param string $html  citeproc HTML output.
+ * @param array  $style Formatter style definition.
+ * @return array<int,array{id:string,text:string}>
+ */
+function bibliography_builder_extract_citeproc_entries( $html, $style ) {
+	if ( ! class_exists( 'DOMDocument' ) || ! class_exists( 'DOMXPath' ) ) {
+		return array(
+			array(
+				'id'   => '',
+				'text' => bibliography_builder_normalize_formatted_text(
+					bibliography_builder_sanitize_formatted_text( $html ),
+					$style
+				),
+			),
+		);
+	}
+
+	$document = new DOMDocument( '1.0', 'UTF-8' );
+	$previous = libxml_use_internal_errors( true );
+	$document->loadHTML(
+		'<?xml encoding="UTF-8"><body>' . $html . '</body>',
+		LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+	);
+	libxml_clear_errors();
+	libxml_use_internal_errors( $previous );
+
+	$xpath   = new DOMXPath( $document );
+	$entries = array();
+
+	foreach ( $xpath->query( '//*[contains(concat(" ", normalize-space(@class), " "), " csl-entry ")]' ) as $node ) {
+		$id = '';
+
+		foreach ( $xpath->query( './/*[@data-borges-csl-id]', $node ) as $marker ) {
+			$id = (string) $marker->getAttribute( 'data-borges-csl-id' );
+			break;
+		}
+
+		// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- DOMDocument exposes textContent.
+		$node_text = $node->textContent;
+		$entries[] = array(
+			'id'   => $id,
+			'text' => bibliography_builder_normalize_formatted_text(
+				bibliography_builder_sanitize_formatted_text( $node_text ),
+				$style
+			),
+		);
+	}
+
+	return $entries;
+}
+
+/**
+ * Format CSL-JSON items as plain-text bibliography entries.
+ *
+ * @param array  $csl_items CSL-JSON objects.
+ * @param string $style_key Citation style key.
+ * @return array|WP_Error Array of formatted text strings in input order.
+ */
+function bibliography_builder_format_csl_items( $csl_items, $style_key ) {
+	$available = bibliography_builder_ensure_formatter_available();
+
+	if ( is_wp_error( $available ) ) {
+		return $available;
+	}
+
+	$style           = bibliography_builder_get_formatter_style_definition( sanitize_key( $style_key ) );
+	$style_file_name = $style['template'] . '.csl';
+	$style_path      = BIBLIOGRAPHY_BUILDER_PLUGIN_DIR . 'vendor/citation-style-language/styles/' . $style_file_name;
+
+	if ( ! is_readable( $style_path ) ) {
+		return new WP_Error(
+			'bibliography_builder_formatter_style_missing',
+			__( 'The requested bibliography style is unavailable.', 'borges-bibliography-builder' ),
+			array( 'status' => 500 )
+		);
+	}
+
+	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local plugin file, not a remote URL.
+	$style_xml = file_get_contents( $style_path );
+
+	if ( false === $style_xml ) {
+		return new WP_Error(
+			'bibliography_builder_formatter_style_unreadable',
+			__( 'The requested bibliography style could not be read.', 'borges-bibliography-builder' ),
+			array( 'status' => 500 )
+		);
+	}
+
+	$prepared_items = array();
+
+	foreach ( array_values( $csl_items ) as $index => $item ) {
+		$item_array       = is_array( $item ) ? $item : array();
+		$item_array['id'] = 'bibliography-builder-format-' . $index;
+		$prepared_items[] = $item_array;
+	}
+
+	$encoded_items = bibliography_builder_json_encode( $prepared_items );
+
+	if ( ! is_string( $encoded_items ) ) {
+		return new WP_Error(
+			'bibliography_builder_formatter_encode_failed',
+			__( 'The citation data could not be prepared for formatting.', 'borges-bibliography-builder' ),
+			array( 'status' => 400 )
+		);
+	}
+
+	$items_for_formatter = json_decode( $encoded_items );
+	$markup_extension    = array(
+		'bibliography' => array(
+			'csl-entry' => static function ( $csl_item, $rendered_text ) {
+				$id = isset( $csl_item->id )
+					? preg_replace( '/[^A-Za-z0-9_.:-]/', '', (string) $csl_item->id )
+					: '';
+
+					return '<span data-borges-csl-id="'
+						. htmlspecialchars( $id, ENT_QUOTES, 'UTF-8' )
+						. '">' . $rendered_text . '</span>';
+			},
+		),
+	);
+
+	try {
+		$formatter = new \Seboettg\CiteProc\CiteProc( $style_xml, $style['locale'], $markup_extension );
+		$html      = $formatter->render( $items_for_formatter, 'bibliography' );
+	} catch ( Throwable $error ) {
+		return new WP_Error(
+			'bibliography_builder_formatter_failed',
+			__( 'The citations could not be formatted.', 'borges-bibliography-builder' ),
+			array(
+				'status' => 500,
+				'error'  => $error->getMessage(),
+			)
+		);
+	}
+
+	$entries_by_id = array();
+
+	foreach ( bibliography_builder_extract_citeproc_entries( $html, $style ) as $entry ) {
+		if ( '' !== $entry['id'] ) {
+			$entries_by_id[ $entry['id'] ] = $entry['text'];
+		}
+	}
+
+	$formatted = array();
+
+	foreach ( $prepared_items as $index => $item ) {
+		$id            = $item['id'];
+		$fallback_text = isset( $item['title'] ) && is_string( $item['title'] ) ? $item['title'] : '';
+		$formatted[]   = isset( $entries_by_id[ $id ] )
+			? $entries_by_id[ $id ]
+			: bibliography_builder_sanitize_formatted_text( $fallback_text );
+	}
+
+	return $formatted;
+}
+
+/**
  * Whether the current request may read bibliography data for a post.
  *
  * @param WP_Post $post Post object.
@@ -157,6 +485,10 @@ function bibliography_builder_build_csl_json( $bibliography ) {
  */
 function bibliography_builder_can_read_post( $post ) {
 	$status = get_post_status( $post );
+
+	if ( function_exists( 'post_password_required' ) && post_password_required( $post ) ) {
+		return current_user_can( 'edit_post', $post->ID );
+	}
 
 	if ( 'publish' === $status ) {
 		return true;
@@ -191,6 +523,104 @@ function bibliography_builder_rest_permissions_check( WP_REST_Request $request )
 		'bibliography_builder_forbidden',
 		__( 'Sorry, you are not allowed to read this bibliography.', 'borges-bibliography-builder' ),
 		array( 'status' => 403 )
+	);
+}
+
+/**
+ * Permission callback for editor-only formatter requests.
+ *
+ * @return true|WP_Error
+ */
+function bibliography_builder_rest_format_permissions_check() {
+	if ( current_user_can( 'edit_posts' ) ) {
+		return true;
+	}
+
+	return new WP_Error(
+		'bibliography_builder_formatter_forbidden',
+		__( 'Sorry, you are not allowed to format bibliographies.', 'borges-bibliography-builder' ),
+		array( 'status' => 403 )
+	);
+}
+
+/**
+ * Read JSON/body params from a REST request.
+ *
+ * @param WP_REST_Request $request REST request.
+ * @return array
+ */
+function bibliography_builder_get_request_params( WP_REST_Request $request ) {
+	if ( method_exists( $request, 'get_json_params' ) ) {
+		$params = $request->get_json_params();
+
+		if ( is_array( $params ) ) {
+			return $params;
+		}
+	}
+
+	return array();
+}
+
+/**
+ * REST callback that formats CSL-JSON items as plain text.
+ *
+ * @param WP_REST_Request $request REST request.
+ * @return WP_REST_Response|WP_Error
+ */
+function bibliography_builder_rest_format_citations( WP_REST_Request $request ) {
+	if ( method_exists( $request, 'get_body' ) ) {
+		$body = (string) $request->get_body();
+
+		if ( strlen( $body ) > BIBLIOGRAPHY_BUILDER_MAX_FORMAT_BYTES ) {
+			return new WP_Error(
+				'bibliography_builder_formatter_payload_too_large',
+				__( 'The citation formatting request is too large.', 'borges-bibliography-builder' ),
+				array( 'status' => 413 )
+			);
+		}
+	}
+
+	$params    = bibliography_builder_get_request_params( $request );
+	$style_key = isset( $params['style'] ) ? sanitize_key( $params['style'] ) : 'chicago-notes-bibliography';
+	$csl_items = isset( $params['cslItems'] ) && is_array( $params['cslItems'] ) ? $params['cslItems'] : array();
+
+	if ( empty( $csl_items ) ) {
+		return rest_ensure_response(
+			array(
+				'style'   => $style_key,
+				'entries' => array(),
+			)
+		);
+	}
+
+	if ( count( $csl_items ) > BIBLIOGRAPHY_BUILDER_MAX_FORMAT_ITEMS ) {
+		return new WP_Error(
+			'bibliography_builder_formatter_too_many_items',
+			__( 'Too many citations were sent for formatting.', 'borges-bibliography-builder' ),
+			array( 'status' => 400 )
+		);
+	}
+
+	$formatted = bibliography_builder_format_csl_items( $csl_items, $style_key );
+
+	if ( is_wp_error( $formatted ) ) {
+		return $formatted;
+	}
+
+	return rest_ensure_response(
+		array(
+			'style'   => $style_key,
+			'entries' => array_map(
+				static function ( $text, $index ) {
+					return array(
+						'index' => $index,
+						'text'  => $text,
+					);
+				},
+				$formatted,
+				array_keys( $formatted )
+			),
+		)
 	);
 }
 
@@ -257,6 +687,16 @@ function bibliography_builder_rest_get_bibliography( WP_REST_Request $request ) 
  * Register REST routes.
  */
 function bibliography_builder_register_rest_routes() {
+	register_rest_route(
+		'bibliography/v1',
+		'/format',
+		array(
+			'methods'             => WP_REST_Server::CREATABLE,
+			'callback'            => 'bibliography_builder_rest_format_citations',
+			'permission_callback' => 'bibliography_builder_rest_format_permissions_check',
+		)
+	);
+
 	$common_args = array(
 		'post_id' => array(
 			'description'       => __( 'Post ID to inspect for bibliography blocks.', 'borges-bibliography-builder' ),

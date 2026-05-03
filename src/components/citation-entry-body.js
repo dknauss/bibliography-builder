@@ -76,7 +76,7 @@ export function CitationEntryBody({
 				onClick={handleEntryActivate}
 				aria-label={`Edit ${getEntryLabel(citation)}`}
 			>
-				<div className="bibliography-builder-entry-main">
+				<span className="bibliography-builder-entry-main">
 					<span className="bibliography-builder-entry-text">
 						{getDisplaySegments(citation).map((segment, index) =>
 							segment.italic ? (
@@ -96,7 +96,7 @@ export function CitationEntryBody({
 							{warningMessage}
 						</span>
 					))}
-				</div>
+				</span>
 			</button>
 			<span className="bibliography-builder-actions">
 				{isStructuredEditable && (

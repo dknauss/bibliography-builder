@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<locale xmlns="http://purl.org/net/xbiblio/csl" version="1.0" xml:lang="en-US">
+  <style-options punctuation-in-quote="true"/>
+  <terms>
+    <term name="and">and</term>
+    <term name="et-al">et al.</term>
+    <term name="no date">n.d.</term>
+    <term name="editor"><single>editor</single><multiple>editors</multiple></term>
+    <term name="editor" form="short"><single>ed.</single><multiple>eds.</multiple></term>
+    <term name="translator"><single>translator</single><multiple>translators</multiple></term>
+    <term name="translator" form="short"><single>trans.</single><multiple>trans.</multiple></term>
+    <term name="page" form="short"><single>p.</single><multiple>pp.</multiple></term>
+    <term name="volume" form="short"><single>vol.</single><multiple>vols.</multiple></term>
+    <term name="issue" form="short"><single>no.</single><multiple>nos.</multiple></term>
+    <term name="in">in</term>
+    <term name="accessed">accessed</term>
+    <term name="available at">available at</term>
+  </terms>
+</locale>

@@ -4,7 +4,7 @@
 
 A standalone WordPress block plugin that transforms pasted scholarly citations (DOIs, BibTeX entries) into a semantically rich, auto-sorted bibliography list. No shortcodes. Static HTML output that survives plugin deactivation.
 
-**Plugin slug:** `bibliography`
+**Plugin slug:** `borges-bibliography-builder`
 **Block namespace:** `bibliography-builder/bibliography`
 **License:** GPL-2.0-or-later
 
@@ -40,8 +40,9 @@ A standalone WordPress block plugin that transforms pasted scholarly citations (
 
 | Dependency          | Role                                                                     | Cost / API Key                                                                                                  |
 | ------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| `citation-js` (npm) | DOI resolution (via CrossRef), BibTeX parsing, CSL-JSON → formatted text | Free, no API key. CrossRef requests benefit from a polite-pool contact email in headers for better rate limits. |
+| `citation-js` (npm) | DOI resolution (via CrossRef) and BibTeX parsing | Free, no API key. CrossRef requests benefit from a polite-pool contact email in headers for better rate limits. |
 | CrossRef API        | Upstream DOI metadata provider (used transparently by `citation-js`)     | Free, public, no key required                                                                                   |
+| `citeproc-php` (Composer) | Local CSL-JSON → plain-text bibliography formatting using plugin-owned GPL-compatible styles/locales | Runs locally in WordPress; no external service |
 | AnyStyle (Ruby gem) | ML-based free-text citation parsing                                      | Free to self-host; no public API. **Not needed for MVP.**                                                       |
 
 ---
@@ -228,7 +229,7 @@ The sort is applied:
 
 ### Implementation
 
-`citation-js` can output formatted citations in the correct order for a given style. However, since we store and manage the array ourselves, we implement sorting independently in `sorter.js` using CSL-JSON field access:
+`citeproc-php` can output formatted citations for a given style. However, since we store and manage the array ourselves, we implement sorting independently in `sorter.js` using CSL-JSON field access:
 
 ```
 Primary:   csl.author[0].family || csl.author[0].literal
@@ -465,8 +466,7 @@ composer analyze:php         # Psalm static analysis
 	"dependencies": {
 		"@citation-js/core": "^0.7",
 		"@citation-js/plugin-doi": "^0.7",
-		"@citation-js/plugin-bibtex": "^0.7",
-		"@citation-js/plugin-csl": "^0.7"
+		"@citation-js/plugin-bibtex": "^0.7"
 	}
 }
 ```
@@ -475,9 +475,8 @@ These handle:
 
 -   `plugin-doi`: DOI string → CSL-JSON (via CrossRef API fetch)
 -   `plugin-bibtex`: BibTeX string → CSL-JSON
--   `plugin-csl`: CSL-JSON → formatted citation string (using CSL style definitions)
 
-Required Chicago CSL style XML can be bundled from the [Citation Style Language repository](https://github.com/citation-style-language/styles), including both the notes-bibliography and author-date variants.
+Formatted bibliography strings are generated locally through `citeproc-php` using plugin-owned GPL-compatible CSL style and locale fixtures. Do not bundle the official CSL style or locale repositories in the WordPress.org release package.
 
 ---
 
@@ -533,7 +532,7 @@ Escape at minimum:
 
 Use the `@wordpress/escape-html` package (`escapeHTML()`) or React's default JSX escaping (which handles this automatically when values are passed as text children, not via `dangerouslySetInnerHTML`).
 
-**Critical rule: never use `dangerouslySetInnerHTML` for citation text.** If `citation-js` returns HTML-formatted output (e.g., italicized titles), convert it to React elements or strip the HTML and apply formatting via CSL-JSON field inspection. The `citation-js` output format should be set to `text` (plain text), not `html`, for the values stored and rendered by this block.
+**Critical rule: never use `dangerouslySetInnerHTML` for citation text.** Formatter output must be stored and rendered as plain text. If a formatter returns HTML-formatted output (e.g., italicized titles), parse or strip it server-side and save only inert text; visible emphasis is applied later through React elements derived from CSL-JSON field inspection.
 
 #### JSON-LD Script Block
 
@@ -945,12 +944,9 @@ A central store (custom post type or taxonomy) for citations used across multipl
 
 The editor JS bundle is 759KB minified (248KB zip). The frontend loads zero JS. Bundle analysis (webpack `--json` stats) identified these optimization opportunities, roughly ordered by savings:
 
--   **Tree-shake CSL locales.** `@citation-js/plugin-csl/locales.json` ships all CSL locale translations (~97KB). Extracting only `en-US` (or a small user-configurable set) would save ~80KB.
 -   **Drop `buffer` polyfill.** The Node.js `Buffer` polyfill (`buffer/index.js`, ~49KB) is pulled in by citation-js internals. If citation-js can be patched or forked to use `Uint8Array`, this polyfill can be eliminated.
 -   **Drop `fetch-ponyfill`.** The fetch polyfill (~22KB) is unnecessary in all modern browsers. citation-js could use native `fetch` directly.
 -   **Cherry-pick `@wordpress/icons`.** The full barrel import (`@wordpress/icons/build-module/library/index.mjs`, ~28KB) is included even though only ~10 icons are used. Switching to direct imports from `@wordpress/icons/build-module/library/<icon>.js` would tree-shake the rest.
--   **Lazy-load citeproc.** The `citeproc` CSL engine (~945KB unminified, ~350KB in the minified bundle) is the largest single module. It is currently in the main chunk because `citation-js/plugin-csl` imports it synchronously. A deeper code-split — wrapping the first citeproc invocation behind a dynamic `import()` — would defer this cost to first citation format, but requires patching citation-js internals or using a custom wrapper.
--   **Strip unused `styles.json`.** `@citation-js/plugin-csl` bundles a default CSL styles map (~68KB). The plugin already bundles its own style XMLs as separate chunks. The default map may be eliminable with a webpack `IgnorePlugin` or `NormalModuleReplacementPlugin`.
 
 None of these are blocking for 1.0. The frontend is zero-JS and the editor bundle is comparable to other Gutenberg blocks that include rich processing (e.g., the core Table block with sorting). Revisit if users report slow editor load times.
 
@@ -963,9 +959,9 @@ None of these are blocking for 1.0. The frontend is zero-JS and the editor bundl
 
 ## Technical Notes & Decisions Log
 
-### Why `citation-js` over citeproc-js?
+### Why `citation-js` plus `citeproc-php` over bundled citeproc-js?
 
-`citeproc-js` is the reference implementation of the CSL processor and is what Academic Blogger's Toolkit used. It's powerful but has a complex API and heavy setup. `citation-js` wraps CSL processing (it uses `citeproc-js` internally for formatting) but adds a unified, modern API for parsing multiple input formats (DOI, BibTeX, RIS, Wikidata, etc.). For a block plugin that needs parsing + formatting in one pipeline, `citation-js` is the better developer experience.
+`citation-js` remains the best fit for DOI resolution and BibTeX parsing in the editor. Formatting is handled by `citeproc-php` on a local WordPress REST endpoint so the editor bundle does not include citeproc-js and the WordPress.org package can avoid non-GPL-compatible CSL/citeproc-js licensing concerns. The block still saves static plain-text output in post content; PHP formatting is an editor-time service, not a frontend render callback.
 
 ### Why the editor uses wrapped `@wordpress/icons` imports
 

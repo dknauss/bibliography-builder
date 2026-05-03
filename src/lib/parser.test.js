@@ -8,9 +8,6 @@ jest.mock('@citation-js/plugin-doi', () =>
 jest.mock('@citation-js/plugin-bibtex', () =>
 	require('../__test-utils__/citation-js-mocks').citationJsPluginMock()
 );
-jest.mock('@citation-js/plugin-csl', () =>
-	require('../__test-utils__/citation-js-mocks').citationJsPluginMock()
-);
 jest.mock('./formatting/csl', () =>
 	require('../__test-utils__/citation-js-mocks').stubFormattingFactory()
 );

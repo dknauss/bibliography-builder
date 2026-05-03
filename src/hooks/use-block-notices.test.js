@@ -51,6 +51,16 @@ function NoticeHarness() {
 			</button>
 			<button
 				type="button"
+				onClick={() =>
+					announce('success', 'Success notice', {
+						type: 'snackbar',
+					})
+				}
+			>
+				Show success snackbar
+			</button>
+			<button
+				type="button"
 				onClick={() => announce('warning', 'Warning notice')}
 			>
 				Show warning
@@ -71,7 +81,7 @@ describe('useBlockNotices', () => {
 		});
 	});
 
-	it('auto-dismisses info notices after five seconds', () => {
+	it('does not auto-dismiss default info notices', () => {
 		render(<NoticeHarness />);
 
 		act(() => {
@@ -83,7 +93,24 @@ describe('useBlockNotices', () => {
 			jest.advanceTimersByTime(5000);
 		});
 
-		expect(screen.queryByText('Info notice')).not.toBeInTheDocument();
+		expect(screen.getByText('Info notice')).toBeInTheDocument();
+	});
+
+	it('auto-dismisses snackbar notices after five seconds', () => {
+		render(<NoticeHarness />);
+
+		act(() => {
+			fireEvent.click(
+				screen.getByRole('button', { name: 'Show success snackbar' })
+			);
+		});
+		expect(screen.getByText('Success notice')).toBeInTheDocument();
+
+		act(() => {
+			jest.advanceTimersByTime(5000);
+		});
+
+		expect(screen.queryByText('Success notice')).not.toBeInTheDocument();
 	});
 
 	it('does not auto-dismiss warning notices', () => {
