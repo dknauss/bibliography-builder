@@ -15,10 +15,10 @@
 <defs
    id="defs1">  <filter
    id="rough-ink"
-   x="-5%"
-   y="-5%"
-   width="110%"
-   height="110%">
+   x="0"
+   y="0"
+   width="1"
+   height="1">
     <!-- Anisotropic noise: more x-variation for pen-direction grain -->
     <feTurbulence
    type="fractalNoise"
@@ -59,32 +59,32 @@
    fill="#f5f3ef"
    id="path1" /><g
    fill="none"
-   opacity=".14"
+   opacity="0.14"
    stroke="#2d3136"
    stroke-width="2"
-   transform="translate(-154.90909 28.363636)"
+   transform="translate(-177.00929,28.363636)"
    id="g12"><path
-     d="m1460 1146h-1000l-500-866 500-866h1000l500 866z"
+     d="M 1460,1146 H 460 L -40,280 460,-586 h 1000 l 500,866 z"
      id="path2" /><path
-     d="m1340 938h-760l-380-658 380-658h760l380 658z"
+     d="M 1340,938 H 580 L 200,280 580,-378 h 760 l 380,658 z"
      id="path3" /><path
-     d="m1240 765h-560l-280-485 280-485h560l280 485z"
+     d="M 1240,765 H 680 L 400,280 680,-205 h 560 l 280,485 z"
      id="path4" /><path
-     d="m1160 626h-400l-200-346 200-346h400l200 346z"
+     d="M 1160,626 H 760 L 560,280 760,-66 h 400 l 200,346 z"
      id="path5" /><path
-     d="m1100 522h-280l-140-242 140-242h280l140 242z"
+     d="M 1100,522 H 820 L 680,280 820,38 h 280 l 140,242 z"
      id="path6" /><path
-     d="m1055 445h-190l-95-165 95-165h190l95 165z"
+     d="M 1055,445 H 865 L 770,280 865,115 h 190 l 95,165 z"
      id="path7" /><path
-     d="m1024 391h-128l-64-111 64-111h128l64 111z"
+     d="M 1024,391 H 896 L 832,280 896,169 h 128 l 64,111 z"
      id="path8" /><path
-     d="m1003 354h-86l-43-74 43-74h86l43 74z"
+     d="m 1003,354 h -86 l -43,-74 43,-74 h 86 l 43,74 z"
      id="path9" /><path
-     d="m989 330h-58l-29-50 29-50h58l29 50z"
+     d="m 989,330 h -58 l -29,-50 29,-50 h 58 l 29,50 z"
      id="path10" /><path
-     d="m980 315h-40l-20-35 20-35h40l20 35z"
+     d="m 980,315 h -40 l -20,-35 20,-35 h 40 l 20,35 z"
      id="path11" /><path
-     d="m974 304h-28l-14-24 14-24h28l14 24z"
+     d="m 974,304 h -28 l -14,-24 14,-24 h 28 l 14,24 z"
      id="path12" /></g><g
    transform="matrix(1.6366285,0.11444421,-0.11444421,1.6366285,53.429342,139.09345)"
    id="g14"><rect
@@ -200,7 +200,7 @@
    height="1.5"
    fill="#c4973e"
    id="rect2" /><!-- Feature list --><text
-   x="1241.6401"
+   x="1223.7406"
    y="215.13925"
    font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
    font-size="25px"
@@ -208,7 +208,7 @@
    id="text3"><tspan
    style="font-weight:bold"
    id="tspan24">Paste DOIs:</tspan> Citations resolved instantly</text><text
-   x="1241.6401"
+   x="1223.7406"
    y="252.13925"
    font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
    font-size="25px"
@@ -216,7 +216,7 @@
    id="text5"><tspan
    style="font-weight:bold"
    id="tspan25">Nine styles:</tspan> Chicago, APA 7, MLA 9, IEEE</text><text
-   x="1241.6401"
+   x="1223.7406"
    y="289.13925"
    font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
    font-size="25px"
@@ -224,7 +224,7 @@
    id="text7"><tspan
    style="font-weight:bold"
    id="tspan26">Zotero-ready:</tspan> COinS &amp; JSON-LD</text><text
-   x="1241.6401"
+   x="1223.7406"
    y="326.13925"
    font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
    font-size="25px"
@@ -232,7 +232,7 @@
    id="text9"><tspan
    style="font-weight:bold"
    id="tspan27">Export:</tspan> BibTeX, CSL-JSON, or RIS</text><text
-   x="1241.6401"
+   x="1223.7406"
    y="363.13925"
    font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
    font-size="25px"
