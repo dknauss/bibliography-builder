@@ -131,6 +131,7 @@ npm run test:e2e             # Playwright smoke suite against local site
 npm run test:e2e:playground  # Playground-based Playwright smoke suite
 npm run test:e2e:lifecycle   # Plugin lifecycle e2e tests (activate/deactivate/delete)
 npm run test:runtime:local   # Docker-based runtime smoke environment
+npm run test:interop:zotero  # Zotero + citation format interoperability checks
 composer test:php            # PHPUnit REST and bootstrap tests
 composer test:php:coverage   # PHP coverage for Codecov
 composer analyze:php         # Psalm static analysis

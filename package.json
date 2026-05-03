@@ -20,6 +20,7 @@
 		"test:e2e:playground": "sh ./scripts/test-playground-e2e.sh",
 		"test:e2e:lifecycle": "sh ./scripts/test-lifecycle-e2e.sh",
 		"test:runtime:local": "sh ./scripts/runtime-matrix/smoke.sh",
+		"test:interop:zotero": "sh ./scripts/test-zotero-interop.sh",
 		"test:a11y": "node scripts/a11y-audit.js",
 		"assets:screenshots": "node scripts/capture-screenshots.js",
 		"assets:icons": "node scripts/generate-icons.js",
