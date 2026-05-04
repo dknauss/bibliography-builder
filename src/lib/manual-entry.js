@@ -1,4 +1,4 @@
-import { validateAndSanitizeCsl } from './parser';
+import { validateAndSanitizeCsl } from './csl-sanitize';
 import { createCitationId } from './citation-id';
 
 export const MANUAL_ENTRY_TYPE_OPTIONS = [
@@ -196,16 +196,25 @@ export function buildManualCsl(fields) {
 	return validateAndSanitizeCsl(csl);
 }
 
-export async function createManualCitation(fields, styleKey) {
-	const csl = buildManualCsl(fields);
+export async function createManualCitationFromCsl(csl, styleKey, options = {}) {
 	const { formatBibliographyEntry } = await import('./formatting/csl');
 
 	return {
 		id: createCitationId(),
 		csl,
-		formattedText: await formatBibliographyEntry(csl, styleKey),
+		formattedText: await formatBibliographyEntry(csl, styleKey, {
+			onFallback: options.onFormatFallback,
+		}),
 		displayOverride: null,
 		inputFormat: 'manual',
 		parseWarnings: [],
 	};
+}
+
+export async function createManualCitation(fields, styleKey, options = {}) {
+	return createManualCitationFromCsl(
+		buildManualCsl(fields),
+		styleKey,
+		options
+	);
 }

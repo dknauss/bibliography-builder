@@ -1,0 +1,7 @@
+{
+  "name": "citation-style-language/locales",
+  "description": "Project-authored GPL-compatible CSL locale fixtures for citeproc-php.",
+  "type": "library",
+  "license": "GPL-2.0-or-later",
+  "version": "0.0.999"
+}

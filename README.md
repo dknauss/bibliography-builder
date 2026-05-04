@@ -35,7 +35,7 @@ WordPress.org branding assets live in [.wordpress-org](./.wordpress-org/), and e
 
 ## Installation
 
-1. Upload the plugin files to `/wp-content/plugins/bibliography-builder/`, or install directly through the WordPress plugin screen.
+1. Upload the plugin files to `/wp-content/plugins/borges-bibliography-builder/`, or install directly through the WordPress plugin screen.
 2. Activate the plugin through the **Plugins** screen in WordPress.
 3. Add the **Bibliography** block to any post or page.
 4. Paste DOI(s), BibTeX entries, or supported citations.

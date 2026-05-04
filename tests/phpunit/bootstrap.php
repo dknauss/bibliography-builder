@@ -9,6 +9,7 @@ $GLOBALS['bibliography_builder_test_parsed_blocks']   = array();
 $GLOBALS['bibliography_builder_test_current_user_id'] = 0;
 $GLOBALS['bibliography_builder_test_user_caps']       = array();
 $GLOBALS['bibliography_builder_test_rest_routes']     = array();
+$GLOBALS['bibliography_builder_test_password_posts']  = array();
 
 function bibliography_builder_test_reset_state() {
 	$GLOBALS['bibliography_builder_test_posts']           = array();
@@ -16,14 +17,19 @@ function bibliography_builder_test_reset_state() {
 	$GLOBALS['bibliography_builder_test_current_user_id'] = 0;
 	$GLOBALS['bibliography_builder_test_user_caps']       = array();
 	$GLOBALS['bibliography_builder_test_rest_routes']     = array();
+	$GLOBALS['bibliography_builder_test_password_posts']  = array();
 }
 
-function bibliography_builder_test_set_post( $post_id, $status, $content ) {
+function bibliography_builder_test_set_post( $post_id, $status, $content, $password_required = false ) {
 	$GLOBALS['bibliography_builder_test_posts'][ $post_id ] = (object) array(
 		'ID'           => $post_id,
 		'post_status'  => $status,
 		'post_content' => $content,
 	);
+
+	if ( $password_required ) {
+		$GLOBALS['bibliography_builder_test_password_posts'][ $post_id ] = true;
+	}
 }
 
 function bibliography_builder_test_set_parsed_blocks( $content, $blocks ) {
@@ -69,6 +75,15 @@ function current_user_can( $capability, $object_id = 0 ) {
 	return ! empty( $GLOBALS['bibliography_builder_test_user_caps'][ $user_id ][ $capability ][ $object_id ] );
 }
 
+function post_password_required( $post = null ) {
+	$post_id = is_object( $post ) ? $post->ID : (int) $post;
+	return ! empty( $GLOBALS['bibliography_builder_test_password_posts'][ $post_id ] );
+}
+
+function is_wp_error( $thing ) {
+	return $thing instanceof WP_Error;
+}
+
 function absint( $value ) {
 	return abs( (int) $value );
 }
@@ -83,6 +98,10 @@ function __( $text ) {
 
 function wp_strip_all_tags( $text ) {
 	return strip_tags( (string) $text );
+}
+
+function wp_json_encode( $data ) {
+	return json_encode( $data );
 }
 
 function rest_ensure_response( $response ) {
@@ -123,6 +142,8 @@ class WP_REST_Request implements ArrayAccess {
 	private $method;
 	private $route;
 	private $params = array();
+	private $json_params = array();
+	private $body = '';
 
 	public function __construct( $method = 'GET', $route = '/' ) {
 		$this->method = $method;
@@ -135,6 +156,20 @@ class WP_REST_Request implements ArrayAccess {
 
 	public function get_param( $key ) {
 		return $this->params[ $key ] ?? null;
+	}
+
+	public function set_body_params( $params ) {
+		$this->json_params = $params;
+		$this->params      = array_merge( $this->params, $params );
+		$this->body        = json_encode( $params );
+	}
+
+	public function get_json_params() {
+		return $this->json_params;
+	}
+
+	public function get_body() {
+		return $this->body;
 	}
 
 	public function get_route() {
@@ -188,6 +223,7 @@ class WP_REST_Response {
 
 class WP_REST_Server {
 	const READABLE = 'GET';
+	const CREATABLE = 'POST';
 
 	public $sent_headers = array();
 

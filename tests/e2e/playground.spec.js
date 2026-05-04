@@ -4,7 +4,7 @@ const { test, expect } = require('@playwright/test');
 function getPluginRow(page) {
 	return page
 		.locator(
-			'tr[data-slug="bibliography-builder"], tr[data-plugin="bibliography-builder/bibliography-builder.php"]'
+			'tr[data-slug="borges-bibliography-builder"], tr[data-plugin="borges-bibliography-builder/bibliography-builder.php"]'
 		)
 		.first()
 		.or(
@@ -110,15 +110,15 @@ test('bibliography block is discoverable in the editor inserter', async ({
 }) => {
 	await ensurePluginActivated(page);
 	await page.goto('/wp-admin/post-new.php');
-	const editorFrame = page.frameLocator(
-		'iframe[name="editor-canvas"], iframe'
-	);
+	await page.waitForLoadState('domcontentloaded');
 
 	await dismissEditorOverlay(page);
 
 	await expect(
-		editorFrame.getByRole('textbox', { name: /Add title/i })
-	).toBeVisible();
+		page.getByRole('button', {
+			name: /Block Inserter|Toggle block inserter/i,
+		})
+	).toBeVisible({ timeout: 20_000 });
 	await openInserterAndSearch(page, 'Bibliography');
 	await expect(page.getByText('Bibliography').first()).toBeVisible();
 });

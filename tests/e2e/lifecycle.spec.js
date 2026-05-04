@@ -281,7 +281,7 @@ async function installPluginFromZip(page) {
 
 	const zipPath = path.resolve(
 		__dirname,
-		'../../output/release/bibliography-builder.zip'
+		'../../output/release/borges-bibliography-builder.zip'
 	);
 
 	const fileInput = page.locator('input[type="file"]');

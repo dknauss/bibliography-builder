@@ -22,8 +22,10 @@
 			margin: 0.75rem 0 1rem;
 		}
 
-		&:focus {
-			outline: none;
+		&.has-notice:focus {
+			outline: 2px solid #3858e9;
+			outline-offset: 2px;
+			border-radius: 2px;
 		}
 	}
 
@@ -158,6 +160,11 @@
 			outline-offset: 2px;
 			border-radius: 2px;
 		}
+	}
+
+	.bibliography-builder-entry-main {
+		display: block;
+		min-width: 0;
 	}
 
 	.bibliography-builder-entry-text {

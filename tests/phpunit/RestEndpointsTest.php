@@ -52,10 +52,11 @@ final class RestEndpointsTest extends TestCase {
 		bibliography_builder_register_rest_routes();
 		$routes = $GLOBALS['bibliography_builder_test_rest_routes'];
 
-		$this->assertCount( 2, $routes );
+		$this->assertCount( 3, $routes );
 		$this->assertSame( 'bibliography/v1', $routes[0]['namespace'] );
-		$this->assertSame( '/posts/(?P<post_id>\d+)/bibliographies', $routes[0]['route'] );
-		$this->assertSame( '/posts/(?P<post_id>\d+)/bibliographies/(?P<index>\d+)', $routes[1]['route'] );
+		$this->assertSame( '/format', $routes[0]['route'] );
+		$this->assertSame( '/posts/(?P<post_id>\d+)/bibliographies', $routes[1]['route'] );
+		$this->assertSame( '/posts/(?P<post_id>\d+)/bibliographies/(?P<index>\d+)', $routes[2]['route'] );
 	}
 
 	public function test_published_posts_are_publicly_readable(): void {
@@ -77,6 +78,108 @@ final class RestEndpointsTest extends TestCase {
 		bibliography_builder_test_set_current_user( 7 );
 
 		$this->assertTrue( bibliography_builder_rest_permissions_check( $request ) );
+	}
+
+	public function test_password_protected_published_posts_require_edit_capability(): void {
+		$post_id       = 103;
+		$block_content = '<!-- wp:bibliography-builder/bibliography {} /-->';
+		bibliography_builder_test_set_post( $post_id, 'publish', $block_content, true );
+
+		$request            = new WP_REST_Request( 'GET', '/bibliography/v1/posts/103/bibliographies' );
+		$request['post_id'] = $post_id;
+
+		$forbidden = bibliography_builder_rest_permissions_check( $request );
+		$this->assertInstanceOf( WP_Error::class, $forbidden );
+		$this->assertSame( 403, $forbidden->get_error_data()['status'] );
+
+		bibliography_builder_test_grant_cap( 7, 'edit_post', $post_id );
+		bibliography_builder_test_set_current_user( 7 );
+
+		$this->assertTrue( bibliography_builder_rest_permissions_check( $request ) );
+	}
+
+	public function test_formatter_endpoint_requires_editor_capability(): void {
+		$forbidden = bibliography_builder_rest_format_permissions_check();
+
+		$this->assertInstanceOf( WP_Error::class, $forbidden );
+		$this->assertSame( 403, $forbidden->get_error_data()['status'] );
+
+		bibliography_builder_test_grant_cap( 7, 'edit_posts', 0 );
+		bibliography_builder_test_set_current_user( 7 );
+
+		$this->assertTrue( bibliography_builder_rest_format_permissions_check() );
+	}
+
+	public function test_formatter_endpoint_returns_plain_text_entries(): void {
+		bibliography_builder_test_grant_cap( 7, 'edit_posts', 0 );
+		bibliography_builder_test_set_current_user( 7 );
+
+		$request = new WP_REST_Request( 'POST', '/bibliography/v1/format' );
+		$request->set_body_params(
+			array(
+				'style'    => 'chicago-author-date',
+				'cslItems' => array(
+					array(
+						'type'   => 'book',
+						'title'  => 'Alpha <script>alert(1)</script> Book',
+						'author' => array(
+							array(
+								'family' => 'Alpha',
+								'given'  => 'Ada',
+							),
+						),
+						'issued' => array(
+							'date-parts' => array( array( 2024 ) ),
+						),
+					),
+				),
+			)
+		);
+
+		$response = bibliography_builder_rest_format_citations( $request );
+		$data     = $response->get_data();
+
+		$this->assertSame( 'chicago-author-date', $data['style'] );
+		$this->assertCount( 1, $data['entries'] );
+		$this->assertStringContainsString( 'Alpha', $data['entries'][0]['text'] );
+		$this->assertStringNotContainsString( '<script>', $data['entries'][0]['text'] );
+	}
+
+	public function test_formatter_endpoint_supports_all_registered_styles(): void {
+		bibliography_builder_test_grant_cap( 7, 'edit_posts', 0 );
+		bibliography_builder_test_set_current_user( 7 );
+
+		foreach ( array_keys( bibliography_builder_get_formatter_style_definitions() ) as $style_key ) {
+			$request = new WP_REST_Request( 'POST', '/bibliography/v1/format' );
+			$request->set_body_params(
+				array(
+					'style'    => $style_key,
+					'cslItems' => array(
+						array(
+							'type'   => 'article-journal',
+							'title'  => 'Complete Style Coverage',
+							'author' => array(
+								array(
+									'family' => 'Alpha',
+									'given'  => 'Ada',
+								),
+							),
+							'issued' => array(
+								'date-parts' => array( array( 2024 ) ),
+							),
+						),
+					),
+				)
+			);
+
+			$response = bibliography_builder_rest_format_citations( $request );
+
+			$this->assertInstanceOf( WP_REST_Response::class, $response, $style_key );
+			$data = $response->get_data();
+			$this->assertSame( $style_key, $data['style'] );
+			$this->assertCount( 1, $data['entries'] );
+			$this->assertNotSame( '', $data['entries'][0]['text'], $style_key );
+		}
 	}
 
 	public function test_collection_endpoint_returns_bibliography_data(): void {

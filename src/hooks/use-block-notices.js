@@ -90,12 +90,7 @@ export function useBlockNotices() {
 	}, [currentNotice, removeNotice]);
 
 	useEffect(() => {
-		if (
-			!currentNotice ||
-			currentNotice.type === 'snackbar' ||
-			(currentNotice.status !== 'success' &&
-				currentNotice.status !== 'info')
-		) {
+		if (!currentNotice || currentNotice.type !== 'snackbar') {
 			return undefined;
 		}
 

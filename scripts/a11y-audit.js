@@ -163,8 +163,18 @@ async function safeCheck(desc, fn) {
 		return label && label.length > 0;
 	});
 
-	// Type a DOI and submit
-	await textarea.fill('10.1093/oxfordhb/9780199589449.001.0001');
+	// Use BibTeX instead of a DOI so the release gate does not depend on
+	// CrossRef/network availability while validating the same keyboard flow.
+	await textarea.fill(`@article{a11y2026,
+  author = {Audit, Avery},
+  title = {Keyboard Accessible Bibliographies},
+  journal = {Journal of Block Testing},
+  year = {2026},
+  volume = {1},
+  number = {1},
+  pages = {1--9},
+  url = {https://example.com/a11y}
+}`);
 	await page.waitForTimeout(300);
 
 	const addButton = editorFrame
@@ -172,10 +182,9 @@ async function safeCheck(desc, fn) {
 		.first();
 	await safeCheck('Add button is keyboard-activable', async () => {
 		await addButton.focus();
-		await page.keyboard.press('Enter');
-		await page.waitForTimeout(5000); // DOI resolution
-		// Check if a citation appeared
+		await addButton.press('Enter');
 		const entries = editorFrame.locator('.bibliography-builder-entry');
+		await entries.first().waitFor({ state: 'visible', timeout: 15000 });
 		return (await entries.count()) > 0;
 	});
 

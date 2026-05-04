@@ -39,11 +39,15 @@ import {
 	getSelectableStyles,
 	getStyleDefinition,
 } from './lib/formatting';
-import { partitionDuplicateCitations } from './lib/deduplicate';
+import {
+	findDuplicateCitation,
+	partitionDuplicateCitations,
+} from './lib/deduplicate';
 import { SUPPORTED_INPUT_MESSAGE } from './lib/input-support';
 import {
+	buildManualCsl,
 	createEmptyManualEntryFields,
-	createManualCitation,
+	createManualCitationFromCsl,
 	MANUAL_ENTRY_TYPE_OPTIONS,
 	validateManualEntry,
 } from './lib/manual-entry';
@@ -78,6 +82,10 @@ const MANUAL_ENTRY_TAB_LABEL = __(
 	'Manual Entry',
 	'borges-bibliography-builder'
 );
+const FORMATTER_FALLBACK_MESSAGE = __(
+	'Formatter unavailable; added fallback citation text.',
+	'borges-bibliography-builder'
+);
 
 function pluralize(count, singular, plural = `${singular}s`) {
 	return `${count} ${count === 1 ? singular : plural}`;
@@ -90,6 +98,7 @@ function buildParseResultMessage({
 	reviewWarningCount,
 	truncated,
 	retainedUnparsedItems,
+	formatterFallback,
 }) {
 	const parts = [];
 
@@ -122,6 +131,10 @@ function buildParseResultMessage({
 
 	if (retainedUnparsedItems) {
 		parts.push('Unparsed items remain in the form.');
+	}
+
+	if (formatterFallback) {
+		parts.push(FORMATTER_FALLBACK_MESSAGE);
 	}
 
 	return parts.join(' ');
@@ -249,9 +262,15 @@ export default function Edit({ attributes, setAttributes }) {
 				const { formatBibliographyEntries } = await import(
 					'./lib/formatting/csl'
 				);
+				let formatterFallback = false;
 				const formattedTexts = await formatBibliographyEntries(
 					uniqueEntries.map((citation) => citation.csl),
-					citationStyle
+					citationStyle,
+					{
+						onFallback: () => {
+							formatterFallback = true;
+						},
+					}
 				);
 				const formattedUniqueEntries = uniqueEntries.map(
 					(entry, index) => ({
@@ -282,19 +301,22 @@ export default function Edit({ attributes, setAttributes }) {
 					reviewWarningCount,
 					truncated,
 					retainedUnparsedItems,
+					formatterFallback,
 				});
 				announce(
 					reviewWarningCount > 0 ||
 						duplicateEntries.length > 0 ||
 						errors.length > 0 ||
-						truncated
-						? 'info'
+						truncated ||
+						formatterFallback
+						? 'warning'
 						: 'success',
 					message,
 					reviewWarningCount > 0 ||
 						duplicateEntries.length > 0 ||
 						errors.length > 0 ||
-						truncated
+						truncated ||
+						formatterFallback
 						? {}
 						: { type: 'snackbar' }
 				);
@@ -303,7 +325,8 @@ export default function Edit({ attributes, setAttributes }) {
 					duplicateEntries.length > 0 ||
 					errors.length > 0 ||
 					truncated ||
-					reviewWarningCount > 0
+					reviewWarningCount > 0 ||
+					formatterFallback
 				) {
 					queueFocus({ type: 'notice' });
 				} else if (firstNewEntry) {
@@ -311,7 +334,7 @@ export default function Edit({ attributes, setAttributes }) {
 				}
 			} else if (duplicateEntries.length > 0) {
 				announce(
-					'info',
+					'warning',
 					buildParseResultMessage({
 						addedCount: 0,
 						duplicateCount: duplicateEntries.length,
@@ -323,10 +346,10 @@ export default function Edit({ attributes, setAttributes }) {
 				);
 				queueFocus({ type: 'notice' });
 			} else if (errors.length > 0) {
-				announce('info', errors[0]);
+				announce('warning', errors[0]);
 				queueFocus({ type: 'notice' });
 			} else {
-				announce('info', SUPPORTED_INPUT_MESSAGE);
+				announce('warning', SUPPORTED_INPUT_MESSAGE);
 				queueFocus({ type: 'notice' });
 			}
 
@@ -453,9 +476,33 @@ export default function Edit({ attributes, setAttributes }) {
 		}
 
 		try {
-			const entry = await createManualCitation(
-				manualFields,
-				citationStyle
+			const csl = buildManualCsl(manualFields);
+
+			if (
+				findDuplicateCitation(
+					{
+						csl,
+					},
+					citationsRef.current
+				)
+			) {
+				announce(
+					'warning',
+					'No new citations added. Skipped 1 duplicate.'
+				);
+				queueFocus({ type: 'notice' });
+				return;
+			}
+
+			let formatterFallback = false;
+			const entry = await createManualCitationFromCsl(
+				csl,
+				citationStyle,
+				{
+					onFormatFallback: () => {
+						formatterFallback = true;
+					},
+				}
 			);
 			const updated = sortCitations(
 				[...citationsRef.current, entry],
@@ -465,8 +512,18 @@ export default function Edit({ attributes, setAttributes }) {
 			citationsRef.current = updated;
 			setAttributes({ citations: updated });
 			setManualFields(createEmptyManualEntryFields(manualFields.type));
-			announce('success', 'Added 1 citation.', { type: 'snackbar' });
-			queueFocus({ type: 'entry', id: entry.id });
+			announce(
+				formatterFallback ? 'warning' : 'success',
+				formatterFallback
+					? `Added 1 citation. ${FORMATTER_FALLBACK_MESSAGE}`
+					: 'Added 1 citation.',
+				formatterFallback ? {} : { type: 'snackbar' }
+			);
+			queueFocus(
+				formatterFallback
+					? { type: 'notice' }
+					: { type: 'entry', id: entry.id }
+			);
 		} catch (error) {
 			announce(
 				'error',

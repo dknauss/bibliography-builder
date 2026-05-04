@@ -1,99 +1,10 @@
-import { Cite, plugins } from '@citation-js/core';
-import '@citation-js/plugin-csl';
-import { getStyleDefinition } from './style-registry';
-
 const FORMAT_CACHE = new Map();
 const MAX_FORMAT_CACHE_ENTRIES = 500;
-
-const TEMPLATE_LOADERS = {
-	'chicago-author-date': () =>
-		import('./styles/chicago-author-date').then((m) => m.default),
-	'chicago-notes-bibliography': () =>
-		import('./styles/chicago-notes-bibliography').then((m) => m.default),
-	ieee: () => import('./styles/ieee').then((m) => m.default),
-	'modern-language-association': () =>
-		import('./styles/mla-9').then((m) => m.default),
-	oscola: () => import('./styles/oscola').then((m) => m.default),
-	abnt: () => import('./styles/abnt').then((m) => m.default),
-	apa: () => import('./styles/apa').then((m) => m.default),
-	harvard1: () => import('./styles/harvard1').then((m) => m.default),
-	vancouver: () => import('./styles/vancouver').then((m) => m.default),
-};
+const FORMAT_ENDPOINT = 'bibliography/v1/format';
 
 function emitFormattingWarning(...args) {
 	// eslint-disable-next-line no-console
 	console?.warn?.(...args);
-}
-
-async function ensureTemplateRegistered(templateName) {
-	const cslConfig = plugins.config.get('@csl');
-
-	if (cslConfig.templates.has(templateName)) {
-		return;
-	}
-
-	const loader = TEMPLATE_LOADERS[templateName];
-
-	if (!loader) {
-		emitFormattingWarning(`No template loader for "${templateName}".`);
-		return;
-	}
-
-	const xml = await loader();
-	cslConfig.templates.add(templateName, xml);
-}
-
-function hasTrailingEtAlAuthor(csl) {
-	const authors = csl?.author;
-
-	if (!Array.isArray(authors) || !authors.length) {
-		return false;
-	}
-
-	const lastAuthor = authors.at(-1);
-	return lastAuthor?.literal === 'et al.';
-}
-
-function normalizeEtAlOutput(output, csl) {
-	if (!hasTrailingEtAlAuthor(csl)) {
-		return output;
-	}
-
-	return output.replace(/\band et al\./u, 'et al.');
-}
-
-function normalizeNumericOutput(output, style) {
-	if (style?.family !== 'numeric') {
-		return output;
-	}
-
-	return output.replace(/^(?:\[\d+\]|\d+\.)\s+/u, '');
-}
-
-function normalizeAbntOutput(output, style) {
-	if (style?.key !== 'abnt') {
-		return output;
-	}
-
-	return output
-		.replace(/\bv\.\s+vol\.\s+/gu, 'v. ')
-		.replace(/\bn\.\s+no\.\s+/gu, 'n. ')
-		.replace(/\bp\.\s+p\.p?\.\s+/gu, 'p. ');
-}
-
-function normalizeReviewOutput(output, csl) {
-	if (
-		csl?.type !== 'review-book' ||
-		!csl['reviewed-title'] ||
-		/\bReview of\b/u.test(output)
-	) {
-		return output;
-	}
-
-	return output.replace(
-		csl['reviewed-title'],
-		`Review of ${csl['reviewed-title']}`
-	);
 }
 
 function getFormatCacheKey(csl, styleKey) {
@@ -113,37 +24,62 @@ function setCachedFormat(cacheKey, formatted) {
 	return formatted;
 }
 
-function formatBibliographyEntryUncached(csl, style, cacheKey) {
-	const fallbackText = csl?.title || csl?.['container-title'] || '';
-	let output = fallbackText;
+function getFallbackText(csl) {
+	return csl?.title || csl?.['container-title'] || '';
+}
 
-	try {
-		const cite = new Cite(csl);
-		output = cite.format('bibliography', {
-			format: 'text',
-			template: style.cslTemplate,
-			lang: style.locale || 'en-US',
-		});
-	} catch (error) {
-		emitFormattingWarning(
-			`Falling back to raw citation text for style "${style.key}".`,
-			error
-		);
+function getRestRoot() {
+	const settings = typeof window !== 'undefined' ? window.wpApiSettings : {};
+	const configuredRoot = settings?.root;
+
+	if (typeof configuredRoot === 'string' && configuredRoot) {
+		return configuredRoot.replace(/\/?$/u, '/');
 	}
 
-	return setCachedFormat(
-		cacheKey,
-		normalizeAbntOutput(
-			normalizeNumericOutput(
-				normalizeReviewOutput(
-					normalizeEtAlOutput(output.trim(), csl),
-					csl
-				),
-				style
-			),
-			style
-		)
-	);
+	return '/wp-json/';
+}
+
+function getRestNonce() {
+	const settings = typeof window !== 'undefined' ? window.wpApiSettings : {};
+	const nonce = settings?.nonce;
+	return typeof nonce === 'string' ? nonce : '';
+}
+
+async function requestFormattedEntries(cslItems, styleKey) {
+	if (typeof fetch !== 'function') {
+		throw new Error('Fetch API is unavailable.');
+	}
+
+	const headers = {
+		'Content-Type': 'application/json',
+	};
+	const nonce = getRestNonce();
+
+	if (nonce) {
+		headers['X-WP-Nonce'] = nonce;
+	}
+
+	const response = await fetch(`${getRestRoot()}${FORMAT_ENDPOINT}`, {
+		method: 'POST',
+		credentials: 'same-origin',
+		headers,
+		body: JSON.stringify({
+			style: styleKey,
+			cslItems,
+		}),
+	});
+
+	if (!response.ok) {
+		throw new Error(`Formatter request failed with ${response.status}.`);
+	}
+
+	const data = await response.json();
+
+	if (!Array.isArray(data?.entries)) {
+		throw new Error('Formatter response did not include entries.');
+	}
+
+	return data.entries.map((entry) => String(entry?.text || ''));
 }
 
 /**
@@ -160,24 +96,25 @@ export function clearFormattingCache() {
  *
  * @param {Array}  cslItems Array of CSL-JSON objects.
  * @param {string} styleKey Citation style key.
+ * @param {Object} options  Formatting options.
  * @return {string[]} Array of formatted bibliography strings.
  *
  * @since 0.1.0
  */
-export async function formatBibliographyEntries(cslItems, styleKey) {
+export async function formatBibliographyEntries(
+	cslItems,
+	styleKey,
+	options = {}
+) {
 	if (!Array.isArray(cslItems) || !cslItems.length) {
 		return [];
 	}
 
-	const style = getStyleDefinition(styleKey);
-	const resolvedStyleKey = style.key || styleKey;
 	const results = new Array(cslItems.length);
 	const uncachedItems = new Map();
 
-	await ensureTemplateRegistered(style.cslTemplate);
-
 	cslItems.forEach((csl, index) => {
-		const cacheKey = getFormatCacheKey(csl, resolvedStyleKey);
+		const cacheKey = getFormatCacheKey(csl, styleKey);
 
 		if (FORMAT_CACHE.has(cacheKey)) {
 			results[index] = FORMAT_CACHE.get(cacheKey);
@@ -197,12 +134,37 @@ export async function formatBibliographyEntries(cslItems, styleKey) {
 		});
 	});
 
-	for (const [cacheKey, { csl, indices }] of uncachedItems) {
-		const formatted = formatBibliographyEntryUncached(csl, style, cacheKey);
+	const uncachedEntries = Array.from(uncachedItems.entries());
 
-		for (const index of indices) {
-			results[index] = formatted;
+	if (uncachedEntries.length) {
+		let formattedTexts;
+
+		try {
+			formattedTexts = await requestFormattedEntries(
+				uncachedEntries.map(([, { csl }]) => csl),
+				styleKey
+			);
+		} catch (error) {
+			emitFormattingWarning(
+				`Falling back to raw citation text for style "${styleKey}".`,
+				error
+			);
+			options.onFallback?.(error);
+			formattedTexts = uncachedEntries.map(([, { csl }]) =>
+				getFallbackText(csl)
+			);
 		}
+
+		uncachedEntries.forEach(([cacheKey, { indices }], batchIndex) => {
+			const formatted = setCachedFormat(
+				cacheKey,
+				formattedTexts[batchIndex] || ''
+			);
+
+			for (const index of indices) {
+				results[index] = formatted;
+			}
+		});
 	}
 
 	return results;
@@ -213,12 +175,13 @@ export async function formatBibliographyEntries(cslItems, styleKey) {
  *
  * @param {Object} csl      CSL-JSON object.
  * @param {string} styleKey Citation style key.
+ * @param {Object} options  Formatting options.
  * @return {string} Formatted bibliography string.
  *
  * @since 0.1.0
  */
-export async function formatBibliographyEntry(csl, styleKey) {
-	const results = await formatBibliographyEntries([csl], styleKey);
+export async function formatBibliographyEntry(csl, styleKey, options = {}) {
+	const results = await formatBibliographyEntries([csl], styleKey, options);
 	return results[0];
 }
 

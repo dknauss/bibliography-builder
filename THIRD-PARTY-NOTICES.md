@@ -1,0 +1,12 @@
+# Third-party notices
+
+Borges Bibliography Builder is licensed GPL-2.0-or-later. The release package includes the following GPL-compatible third-party runtime libraries:
+
+- `seboettg/citeproc-php` — MIT License — https://github.com/pkp/citeproc-php
+- `seboettg/collection` — MIT License — https://github.com/seboettg/collection
+- `myclabs/php-enum` — MIT License — https://github.com/myclabs/php-enum
+- `@citation-js/core`, `@citation-js/plugin-doi`, and `@citation-js/plugin-bibtex` are used at build time/editor runtime through the bundled editor script and are MIT licensed — https://citation.js.org/
+
+The Composer path packages named `citation-style-language/styles` and `citation-style-language/locales` in this repository are **not** the official CSL project packages. They contain project-authored, minimal CSL style and locale fixtures licensed GPL-2.0-or-later for this plugin. They are included so the WordPress.org release does not bundle the official CC BY-SA CSL style or locale repositories.
+
+The source tree and release package must not include dependencies or files licensed only as CPAL-1.0, AGPL-1.0, or CC-BY-SA-3.0.

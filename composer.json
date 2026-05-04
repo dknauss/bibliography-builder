@@ -1,5 +1,5 @@
 {
-	"name": "dknauss/bibliography",
+	"name": "dknauss/borges-bibliography-builder",
 	"description": "WordPress scholarly bibliography block plugin PHP tooling",
 	"type": "project",
 	"license": "GPL-2.0-or-later",
@@ -26,5 +26,24 @@
 			"composer/package-versions-deprecated": true,
 			"dealerdirect/phpcodesniffer-composer-installer": true
 		}
-	}
+	},
+	"require": {
+		"seboettg/citeproc-php": "^2.7"
+	},
+	"repositories": [
+		{
+			"type": "path",
+			"url": "packages/citation-style-language-styles",
+			"options": {
+				"symlink": false
+			}
+		},
+		{
+			"type": "path",
+			"url": "packages/citation-style-language-locales",
+			"options": {
+				"symlink": false
+			}
+		}
+	]
 }

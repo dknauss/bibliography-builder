@@ -13,9 +13,6 @@ jest.mock('@citation-js/plugin-doi', () =>
 jest.mock('@citation-js/plugin-bibtex', () =>
 	require('./__test-utils__/citation-js-mocks').citationJsPluginMock()
 );
-jest.mock('@citation-js/plugin-csl', () =>
-	require('./__test-utils__/citation-js-mocks').citationJsPluginMock()
-);
 jest.mock('./lib/formatting/csl', () =>
 	require('./__test-utils__/citation-js-mocks').descriptiveFormattingFactory()
 );

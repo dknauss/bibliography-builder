@@ -3,7 +3,7 @@ Contributors: dpknauss
 Donate link: https://www.paypal.com/paypalme/DanKnauss
 Tags: bibliography, citation, doi, bibtex, academic
 Requires at least: 6.4
-Tested up to: 7.0
+Tested up to: 6.9
 Stable tag: 1.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -27,7 +27,7 @@ The **Borges Bibliography Builder**, a block plugin for WordPress, transforms pa
 
 == Installation ==
 
-1. Upload the plugin files to `/wp-content/plugins/bibliography-builder/`, or install directly through the WordPress plugin screen.
+1. Upload the plugin files to `/wp-content/plugins/borges-bibliography-builder/`, or install directly through the WordPress plugin screen.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Add the "Bibliography" block to any post or page.
 4. Paste DOI(s), BibTeX entries, or supported citations for books, articles, chapters, and webpages.
