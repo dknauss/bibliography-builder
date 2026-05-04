@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/paypalme/DanKnauss
 Tags: bibliography, citation, doi, bibtex, academic
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,10 @@ This plugin connects to the **CrossRef REST API** (https://api.crossref.org/) wh
 
 == Changelog ==
 
+= 1.0.1 =
+* Fix Playground/editor bibliography formatting by using the WordPress REST API fetch helper for formatter requests.
+* Add the WordPress.org Preview blueprint at the documented assets path with the required PHP extension bundle for citation formatting.
+
 = 1.0.0 =
 * Initial public release as Borges Bibliography Builder.
 * Add references from DOIs, DOI URLs, BibTeX entries, supported formatted citations, or manual entry.
@@ -120,6 +124,9 @@ This plugin connects to the **CrossRef REST API** (https://api.crossref.org/) wh
 * Confirm compatibility wording through WordPress 7.0 testing.
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Fixes WordPress.org Playground preview and editor formatter fallback behavior.
 
 = 1.0.0 =
 Initial public release of Borges Bibliography Builder.
