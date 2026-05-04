@@ -601,6 +601,56 @@ describe('Edit focus management', () => {
 		);
 	});
 
+	it('keeps fallback and truncation details in the parse result notice', async () => {
+		parsePastedInput.mockResolvedValue({
+			entries: [
+				createCitation({
+					id: 'entry-fallback',
+					family: 'Fallback',
+					year: 2026,
+					title: 'Fallback citation',
+				}),
+			],
+			errors: [],
+			truncated: true,
+			remainingInput: '',
+		});
+		formatBibliographyEntries.mockImplementationOnce(
+			(cslItems, style, options) => {
+				options.onFallback();
+				return cslItems.map(() => 'Fallback formatted citation');
+			}
+		);
+
+		render(<EditHarness />);
+
+		await userEvent.type(
+			screen.getByLabelText('Add citations'),
+			'10.1234/fallback'
+		);
+		await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+
+		expect(await screen.findByRole('status')).toHaveTextContent(
+			'Added 1 citation. Only the first 50 items were processed. Formatter unavailable; added fallback citation text.'
+		);
+	});
+
+	it('shows a persistent error notice when parsing throws', async () => {
+		parsePastedInput.mockRejectedValueOnce(new Error('parser failed'));
+
+		render(<EditHarness />);
+
+		await userEvent.type(
+			screen.getByLabelText('Add citations'),
+			'10.1234/parser-failure'
+		);
+		await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+
+		expect(await screen.findByRole('status')).toHaveTextContent(
+			'Something went wrong while parsing. Please try again.'
+		);
+	});
+
 	it('moves focus to the first newly added entry after a successful parse', async () => {
 		parsePastedInput.mockResolvedValue({
 			entries: [
@@ -739,6 +789,34 @@ describe('Edit focus management', () => {
 		).toBeDisabled();
 	});
 
+	it('reports a CSL-JSON download failure without clearing citations', async () => {
+		downloadCslJsonExport.mockImplementationOnce(() => {
+			throw new Error('download failed');
+		});
+
+		render(
+			<EditHarness
+				initialCitations={[
+					createCitation({
+						id: 'citation-1',
+						family: 'Alpha',
+						year: 2024,
+						title: 'Alpha citation',
+					}),
+				]}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', { name: 'Download CSL-JSON' })
+		);
+
+		expect(await screen.findByRole('status')).toHaveTextContent(
+			'Could not download CSL-JSON export in this browser.'
+		);
+		expect(screen.getByText('Alpha citation')).toBeInTheDocument();
+	});
+
 	it('downloads a BibTeX export from the inspector when citations are present', async () => {
 		downloadBibtexExport.mockResolvedValue('blob:bib');
 
@@ -780,6 +858,33 @@ describe('Edit focus management', () => {
 		).toBeDisabled();
 	});
 
+	it('reports a BibTeX download failure', async () => {
+		downloadBibtexExport.mockRejectedValueOnce(
+			new Error('download failed')
+		);
+
+		render(
+			<EditHarness
+				initialCitations={[
+					createCitation({
+						id: 'citation-1',
+						family: 'Alpha',
+						year: 2024,
+						title: 'Alpha citation',
+					}),
+				]}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', { name: 'Download BibTeX' })
+		);
+
+		expect(await screen.findByRole('status')).toHaveTextContent(
+			'Could not download BibTeX export in this browser.'
+		);
+	});
+
 	it('downloads an RIS export from the inspector when citations are present', async () => {
 		render(
 			<EditHarness
@@ -817,6 +922,92 @@ describe('Edit focus management', () => {
 		).toBeDisabled();
 	});
 
+	it('reports an RIS download failure', async () => {
+		downloadRisExport.mockImplementationOnce(() => {
+			throw new Error('download failed');
+		});
+
+		render(
+			<EditHarness
+				initialCitations={[
+					createCitation({
+						id: 'citation-1',
+						family: 'Alpha',
+						year: 2024,
+						title: 'Alpha citation',
+					}),
+				]}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', { name: 'Download RIS' })
+		);
+
+		expect(await screen.findByRole('status')).toHaveTextContent(
+			'Could not download RIS export in this browser.'
+		);
+	});
+
+	it('copies the full bibliography from the inspector export controls', async () => {
+		copyTextToClipboard.mockResolvedValue(true);
+
+		render(
+			<EditHarness
+				initialCitations={[
+					createCitation({
+						id: 'citation-1',
+						family: 'Alpha',
+						year: 2024,
+						title: 'Alpha citation',
+					}),
+				]}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', { name: 'Copy bibliography' })
+		);
+
+		expect(buildPlainTextBibliographyContent).toHaveBeenCalledWith(
+			expect.arrayContaining([
+				expect.objectContaining({ id: 'citation-1' }),
+			]),
+			'chicago-notes-bibliography'
+		);
+		expect(copyTextToClipboard).toHaveBeenCalledWith(
+			'Alpha citation\nBeta citation'
+		);
+		expect(await screen.findByRole('status')).toHaveTextContent(
+			'Copied bibliography.'
+		);
+	});
+
+	it('reports a full-bibliography copy failure', async () => {
+		copyTextToClipboard.mockRejectedValueOnce(new Error('copy failed'));
+
+		render(
+			<EditHarness
+				initialCitations={[
+					createCitation({
+						id: 'citation-1',
+						family: 'Alpha',
+						year: 2024,
+						title: 'Alpha citation',
+					}),
+				]}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', { name: 'Copy bibliography' })
+		);
+
+		expect(await screen.findByRole('status')).toHaveTextContent(
+			'Could not copy bibliography in this browser.'
+		);
+	});
+
 	it('copies the visible citation text from the row action', async () => {
 		copyTextToClipboard.mockResolvedValue(true);
 
@@ -845,6 +1036,33 @@ describe('Edit focus management', () => {
 		);
 		expect(await screen.findByRole('status')).toHaveTextContent(
 			'Copied citation.'
+		);
+	});
+
+	it('reports a row-level citation copy failure', async () => {
+		copyTextToClipboard.mockRejectedValueOnce(new Error('copy failed'));
+
+		render(
+			<EditHarness
+				initialCitations={[
+					createCitation({
+						id: 'citation-1',
+						family: 'Alpha',
+						year: 2024,
+						title: 'Alpha citation',
+					}),
+				]}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', {
+				name: 'Copy citation: Alpha 2024',
+			})
+		);
+
+		expect(await screen.findByRole('status')).toHaveTextContent(
+			'Could not copy citation in this browser.'
 		);
 	});
 
@@ -913,6 +1131,35 @@ describe('Edit focus management', () => {
 		).toBeInTheDocument();
 	});
 
+	it('hides and shows the citation form when citations already exist', async () => {
+		render(
+			<EditHarness
+				initialCitations={[
+					createCitation({
+						id: 'citation-1',
+						family: 'Alpha',
+						year: 2024,
+						title: 'Alpha citation',
+					}),
+				]}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', { name: 'Hide citation form' })
+		);
+
+		expect(
+			screen.queryByLabelText('Add citations')
+		).not.toBeInTheDocument();
+
+		await userEvent.click(
+			screen.getByRole('button', { name: 'Show citation form' })
+		);
+
+		expect(screen.getByLabelText('Add citations')).toBeInTheDocument();
+	});
+
 	it('adds a manual citation with only type and title, then focuses the new entry', async () => {
 		render(<EditHarness initialStyle="apa-7" />);
 
@@ -935,6 +1182,53 @@ describe('Edit focus management', () => {
 		);
 		expect(screen.getByLabelText('Publication Type')).toHaveValue('book');
 		expect(screen.getByLabelText('Title')).toHaveValue('');
+	});
+
+	it('keeps a persistent notice when manual citation formatting falls back', async () => {
+		formatBibliographyEntry.mockImplementationOnce(
+			(csl, style, options) => {
+				options.onFallback();
+				return Promise.resolve('Fallback manual citation');
+			}
+		);
+
+		render(<EditHarness />);
+
+		await userEvent.click(
+			screen.getAllByRole('button', { name: 'Manual Entry' })[0]
+		);
+		await userEvent.selectOptions(
+			screen.getByLabelText('Publication Type'),
+			'book'
+		);
+		await userEvent.type(screen.getByLabelText('Title'), 'Manual Book');
+		await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+
+		expect(await screen.findByRole('status')).toHaveTextContent(
+			'Added 1 citation. Formatter unavailable; added fallback citation text.'
+		);
+	});
+
+	it('shows an error notice when manual citation creation fails', async () => {
+		formatBibliographyEntry.mockRejectedValueOnce(
+			new Error('format failed')
+		);
+
+		render(<EditHarness />);
+
+		await userEvent.click(
+			screen.getAllByRole('button', { name: 'Manual Entry' })[0]
+		);
+		await userEvent.selectOptions(
+			screen.getByLabelText('Publication Type'),
+			'book'
+		);
+		await userEvent.type(screen.getByLabelText('Title'), 'Manual Book');
+		await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+
+		expect(await screen.findByRole('status')).toHaveTextContent(
+			'Something went wrong while adding the citation. Please try again.'
+		);
 	});
 
 	it('shows a validation notice for incomplete manual entries and focuses the notice', async () => {
@@ -960,6 +1254,41 @@ describe('Edit focus management', () => {
 					.closest('.bibliography-builder-editor-notices')
 			).toHaveFocus();
 		});
+	});
+
+	it('clears a manual validation notice when the user edits a manual field', async () => {
+		render(<EditHarness />);
+
+		await userEvent.click(
+			screen.getAllByRole('button', { name: 'Manual Entry' })[0]
+		);
+		await userEvent.selectOptions(
+			screen.getByLabelText('Publication Type'),
+			'book'
+		);
+		await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+
+		expect(await screen.findByRole('status')).toHaveTextContent(
+			'Enter a title before adding.'
+		);
+
+		await userEvent.type(screen.getByLabelText('Title'), 'Manual Book');
+
+		await waitFor(() => {
+			expect(screen.queryByRole('status')).not.toBeInTheDocument();
+		});
+	});
+
+	it('clears manual entry fields with the Clear action', async () => {
+		render(<EditHarness />);
+
+		await userEvent.click(
+			screen.getAllByRole('button', { name: 'Manual Entry' })[0]
+		);
+		await userEvent.type(screen.getByLabelText('Title'), 'Manual Book');
+		await userEvent.click(screen.getByRole('button', { name: 'Clear' }));
+
+		expect(screen.getByLabelText('Title')).toHaveValue('');
 	});
 
 	it('skips duplicate manual entries before formatting them', async () => {
@@ -1045,12 +1374,13 @@ describe('Edit focus management', () => {
 	it('allows toggling metadata output layers in block settings', async () => {
 		render(<EditHarness />);
 
+		await userEvent.click(screen.getByLabelText('Output JSON-LD'));
 		await userEvent.click(screen.getByLabelText('Output COinS'));
 		await userEvent.click(screen.getByLabelText('Output CSL-JSON'));
 
 		expect(screen.getByLabelText('Output COinS')).toBeChecked();
 		expect(screen.getByLabelText('Output CSL-JSON')).toBeChecked();
-		expect(screen.getByLabelText('Output JSON-LD')).toBeChecked();
+		expect(screen.getByLabelText('Output JSON-LD')).not.toBeChecked();
 	});
 
 	it('clears the current notice when typing into the add form again', async () => {
