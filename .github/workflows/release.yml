@@ -33,7 +33,9 @@ jobs:
               run: npm run package:release
 
             - name: Create GitHub Release
-              uses: softprops/action-gh-release@v2
+              uses: softprops/action-gh-release@v3
               with:
                   files: output/release/borges-bibliography-builder.zip
                   generate_release_notes: true
+                  fail_on_unmatched_files: true
+                  overwrite_files: true
