@@ -813,3 +813,74 @@ function bibliography_builder_block_init() {
 add_action( 'init', 'bibliography_builder_block_init' );
 add_action( 'rest_api_init', 'bibliography_builder_register_rest_routes' );
 add_filter( 'rest_pre_serve_request', 'bibliography_builder_rest_pre_serve_request', 10, 4 );
+
+/**
+ * Register bibliography block checks with Block Accessibility Checks (BAC).
+ *
+ * Soft dependency: this hook is only fired when Troy Chaplin's BAC plugin is
+ * active. If BAC is not present, this function is never called.
+ *
+ * Registered checks:
+ *   - empty_bibliography (error)   — block has no citations.
+ *   - heading_missing   (warning)  — headingText is blank; no visible heading.
+ *
+ * @param object $registry BAC check registry instance.
+ * @since 1.1.0
+ */
+function bibliography_builder_register_a11y_checks( $registry ) {
+	$registry->register_block_check(
+		'bibliography-builder/bibliography',
+		'empty_bibliography',
+		array(
+			'error_msg'   => __( 'Bibliography block contains no citations.', 'borges-bibliography-builder' ),
+			'warning_msg' => __( 'Bibliography block contains no citations.', 'borges-bibliography-builder' ),
+			'description' => __( 'Add at least one citation before publishing.', 'borges-bibliography-builder' ),
+			'type'        => 'error',
+			'category'    => 'accessibility',
+		)
+	);
+
+	$registry->register_block_check(
+		'bibliography-builder/bibliography',
+		'heading_missing',
+		array(
+			'error_msg'   => '',
+			'warning_msg' => __( 'Bibliography block has no heading. Screen reader users navigating by heading will not find this section.', 'borges-bibliography-builder' ),
+			'description' => __( 'Add a heading in block settings so the bibliography is announced as a document section.', 'borges-bibliography-builder' ),
+			'type'        => 'warning',
+			'category'    => 'accessibility',
+		)
+	);
+}
+add_action( 'ba11yc_ready', 'bibliography_builder_register_a11y_checks' );
+
+/**
+ * Conditionally enqueue the BAC validation script in the block editor.
+ *
+ * The script is only enqueued when BAC's own script handle is already
+ * registered, so there is no hard dependency on Troy's plugin.
+ *
+ * @since 1.1.0
+ */
+function bibliography_builder_enqueue_a11y_validation() {
+	if ( ! wp_script_is( 'block-accessibility-script', 'registered' ) ) {
+		return;
+	}
+
+	$asset_file = BIBLIOGRAPHY_BUILDER_PLUGIN_DIR . 'build/validation.asset.php';
+	if ( ! file_exists( $asset_file ) ) {
+		return;
+	}
+
+	$asset        = require $asset_file;
+	$dependencies = array_merge( $asset['dependencies'], array( 'block-accessibility-script' ) );
+
+	wp_enqueue_script(
+		'borges-bibliography-builder-a11y-validation',
+		plugins_url( 'build/validation.js', __FILE__ ),
+		$dependencies,
+		$asset['version'],
+		true
+	);
+}
+add_action( 'enqueue_block_editor_assets', 'bibliography_builder_enqueue_a11y_validation' );
