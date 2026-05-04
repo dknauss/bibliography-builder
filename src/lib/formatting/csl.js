@@ -1,3 +1,5 @@
+import apiFetch from '@wordpress/api-fetch';
+
 const FORMAT_CACHE = new Map();
 const MAX_FORMAT_CACHE_ENTRIES = 500;
 const FORMAT_ENDPOINT = 'bibliography/v1/format';
@@ -48,52 +50,19 @@ function getFallbackText(csl) {
 	return csl?.title || csl?.['container-title'] || '';
 }
 
-function getRestRoot() {
-	const settings = typeof window !== 'undefined' ? window.wpApiSettings : {};
-	const configuredRoot = settings?.root;
-
-	if (typeof configuredRoot === 'string' && configuredRoot) {
-		return configuredRoot.replace(/\/?$/u, '/');
-	}
-
-	return '/wp-json/';
-}
-
-function getRestNonce() {
-	const settings = typeof window !== 'undefined' ? window.wpApiSettings : {};
-	const nonce = settings?.nonce;
-	return typeof nonce === 'string' ? nonce : '';
-}
-
 async function requestFormattedEntries(cslItems, styleKey) {
-	if (typeof fetch !== 'function') {
-		throw new Error('Fetch API is unavailable.');
+	if (typeof apiFetch !== 'function') {
+		throw new Error('WordPress API fetch is unavailable.');
 	}
 
-	const headers = {
-		'Content-Type': 'application/json',
-	};
-	const nonce = getRestNonce();
-
-	if (nonce) {
-		headers['X-WP-Nonce'] = nonce;
-	}
-
-	const response = await fetch(`${getRestRoot()}${FORMAT_ENDPOINT}`, {
+	const data = await apiFetch({
+		path: `/${FORMAT_ENDPOINT}`,
 		method: 'POST',
-		credentials: 'same-origin',
-		headers,
-		body: JSON.stringify({
+		data: {
 			style: styleKey,
 			cslItems,
-		}),
+		},
 	});
-
-	if (!response.ok) {
-		throw new Error(`Formatter request failed with ${response.status}.`);
-	}
-
-	const data = await response.json();
 
 	if (!Array.isArray(data?.entries)) {
 		throw new Error('Formatter response did not include entries.');

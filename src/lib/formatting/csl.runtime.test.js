@@ -1,27 +1,21 @@
+import apiFetch from '@wordpress/api-fetch';
 import { clearFormattingCache, formatBibliographyEntry } from './csl';
+
+jest.mock('@wordpress/api-fetch', () =>
+	jest.fn(({ data } = {}) =>
+		Promise.resolve({
+			entries: (data?.cslItems || []).map((item, index) => ({
+				index,
+				text: item.title,
+			})),
+		})
+	)
+);
 
 describe('formatting runtime cache behavior', () => {
 	beforeEach(() => {
 		clearFormattingCache();
-		window.wpApiSettings = { root: '/wp-json/' };
-		global.fetch = jest.fn(({ body } = {}) => {
-			const parsed = body ? JSON.parse(body) : { cslItems: [] };
-			return Promise.resolve({
-				ok: true,
-				json: () =>
-					Promise.resolve({
-						entries: parsed.cslItems.map((item, index) => ({
-							index,
-							text: item.title,
-						})),
-					}),
-			});
-		});
-	});
-
-	afterEach(() => {
-		delete window.wpApiSettings;
-		delete global.fetch;
+		apiFetch.mockClear();
 	});
 
 	it('evicts the least recently used cache entry instead of clearing the entire cache', async () => {
@@ -35,7 +29,7 @@ describe('formatting runtime cache behavior', () => {
 			);
 		}
 
-		expect(fetch).toHaveBeenCalledTimes(500);
+		expect(apiFetch).toHaveBeenCalledTimes(500);
 
 		await formatBibliographyEntry(
 			{
@@ -45,7 +39,7 @@ describe('formatting runtime cache behavior', () => {
 			'apa-7'
 		);
 
-		expect(fetch).toHaveBeenCalledTimes(500);
+		expect(apiFetch).toHaveBeenCalledTimes(500);
 
 		await formatBibliographyEntry(
 			{
@@ -55,7 +49,7 @@ describe('formatting runtime cache behavior', () => {
 			'apa-7'
 		);
 
-		expect(fetch).toHaveBeenCalledTimes(501);
+		expect(apiFetch).toHaveBeenCalledTimes(501);
 
 		await formatBibliographyEntry(
 			{
@@ -72,6 +66,6 @@ describe('formatting runtime cache behavior', () => {
 			'apa-7'
 		);
 
-		expect(fetch).toHaveBeenCalledTimes(502);
+		expect(apiFetch).toHaveBeenCalledTimes(502);
 	});
 });
