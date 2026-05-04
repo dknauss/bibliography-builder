@@ -25,15 +25,15 @@ const NAMESPACE = 'borges-bibliography-builder/bac-validation';
  * @param {string} checkName  BAC check identifier.
  * @return {boolean} True if the check passes; false if it fails.
  */
-export function validateBibliographyBlock( attributes, checkName ) {
-	if ( checkName === 'empty_bibliography' ) {
+export function validateBibliographyBlock(attributes, checkName) {
+	if (checkName === 'empty_bibliography') {
 		return (
-			Array.isArray( attributes.citations ) &&
+			Array.isArray(attributes.citations) &&
 			attributes.citations.length > 0
 		);
 	}
 
-	if ( checkName === 'heading_missing' ) {
+	if (checkName === 'heading_missing') {
 		return (
 			typeof attributes.headingText === 'string' &&
 			attributes.headingText.trim().length > 0
@@ -53,12 +53,12 @@ export function validateBibliographyBlock( attributes, checkName ) {
  * @param {string}  checkName  BAC check identifier.
  * @return {boolean} Validity result.
  */
-function bacValidateBlock( isValid, blockType, attributes, checkName ) {
-	if ( blockType !== BLOCK_TYPE ) {
+function bacValidateBlock(isValid, blockType, attributes, checkName) {
+	if (blockType !== BLOCK_TYPE) {
 		return isValid;
 	}
 
-	return validateBibliographyBlock( attributes, checkName );
+	return validateBibliographyBlock(attributes, checkName);
 }
 
-addFilter( 'ba11yc_validate_block', NAMESPACE, bacValidateBlock );
+addFilter('ba11yc_validate_block', NAMESPACE, bacValidateBlock);

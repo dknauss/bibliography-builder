@@ -16,7 +16,7 @@ module.exports = {
 				: defaultEntry;
 		return {
 			...base,
-			validation: path.resolve( __dirname, 'src/validation.js' ),
+			validation: path.resolve(__dirname, 'src/validation.js'),
 		};
 	},
 	resolve: {
