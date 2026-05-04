@@ -72,12 +72,13 @@ Recent work completed in the working tree includes:
 
 ## Pending Todos
 
--   5 pending todos in `.planning/todos/pending`
+-   6 pending todos in `.planning/todos/pending`
     - Restore `main` CI to green after branding update
     - WordPress.org review-response readiness and submission follow-up
     - Add multisite runtime smoke coverage
     - Add frontend Cite and Export affordances
     - Prioritize BibLaTeX and PMID interoperability
+    - Normalize repository and release naming
 
 ## Roadmap Alignment
 
