@@ -24,4 +24,26 @@ describe('Playground blueprints', () => {
 			);
 		}
 	);
+
+	test('GitHub demo blueprint installs from WordPress.org to avoid GitHub asset CORS', () => {
+		const blueprint = JSON.parse(
+			fs.readFileSync(
+				path.join(rootDir, 'playground/blueprint.json'),
+				'utf8'
+			)
+		);
+
+		const installStep = blueprint.steps.find(
+			(step) => step.step === 'installPlugin'
+		);
+
+		expect(installStep).toEqual(
+			expect.objectContaining({
+				pluginData: {
+					resource: 'wordpress.org/plugins',
+					slug: 'borges-bibliography-builder',
+				},
+			})
+		);
+	});
 });

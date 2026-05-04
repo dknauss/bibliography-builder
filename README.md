@@ -20,7 +20,7 @@ Just write out your citations or paste DOIs and BibTeX code, up to 50 at a time.
 
 ## Try it in WordPress Playground
 
-Install the public release from [WordPress.org](https://wordpress.org/plugins/borges-bibliography-builder/) or launch a disposable WordPress instance with the plugin preinstalled: [Try the Borges Bibliography Builder in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/borges-bibliography-builder/main/playground/blueprint.json). Playground installs the plugin from the latest GitHub Release zip artifact. The demo Blueprint explicitly requests PHP `intl` support because editor-time CSL formatting runs through the plugin's local PHP formatter.
+Install the public release from [WordPress.org](https://wordpress.org/plugins/borges-bibliography-builder/) or launch a disposable WordPress instance with the plugin preinstalled: [Try the Borges Bibliography Builder in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/borges-bibliography-builder/main/playground/blueprint.json). The GitHub-hosted demo Blueprint installs the public plugin package from the WordPress.org plugin directory and explicitly requests PHP `intl` support because editor-time CSL formatting runs through the plugin's local PHP formatter.
 
 ![](.wordpress-org/banner-1544x500.png)
 
@@ -233,7 +233,7 @@ WordPress.org branding assets live in [.wordpress-org](./.wordpress-org/), edita
 
 The Playground demo and WordPress.org Preview both rely on the PHP formatter used by the editor REST endpoint. That formatter uses `citeproc-php`, which requires PHP `intl`. Keep both Blueprint files in sync:
 
-- `playground/blueprint.json` powers the GitHub README and WordPress.org readme demo link.
+- `playground/blueprint.json` powers the GitHub README and WordPress.org readme demo link; it installs the plugin via the `wordpress.org/plugins` resource to avoid GitHub Release asset CORS failures in the browser runtime.
 - `.wordpress-org/blueprints/blueprint.json` deploys to WordPress.org SVN as `assets/blueprints/blueprint.json` for the plugin-directory Preview button.
 - Both files intentionally declare `phpExtensionBundles: ["kitchen-sink"]` and `features: { "networking": true, "intl": true }`. The bundle form follows WordPress.org Preview documentation; the `features.intl` flag is required by the live browser Playground runtime so formatter requests do not fall back with `bibliography_builder_formatter_extension_missing`.
 

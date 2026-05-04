@@ -45,7 +45,7 @@ This repository uses Git for development and WordPress.org SVN for release publi
 - **GitHub release zip**: packaged artifact for GitHub Releases and Playground.
 - **WordPress.org SVN `trunk/`**: public release source.
 - **WordPress.org `assets/`**: directory screenshots, banner, and icon assets.
-- **Playground blueprints**: `playground/blueprint.json` powers GitHub/readme demo links; `.wordpress-org/blueprints/blueprint.json` deploys to SVN `assets/blueprints/blueprint.json` for the plugin-directory Preview button.
+- **Playground blueprints**: `playground/blueprint.json` powers GitHub/readme demo links and installs the public plugin package with the `wordpress.org/plugins` resource; `.wordpress-org/blueprints/blueprint.json` deploys to SVN `assets/blueprints/blueprint.json` for the plugin-directory Preview button, where WordPress.org installs the plugin automatically.
 - **WordPress.org `tags/<version>/`**: release snapshot.
 
 ## Playground preview verification
@@ -56,7 +56,7 @@ After editing either Blueprint, run:
 npm run test -- --runTestsByPath src/blueprint.test.js
 ```
 
-For a browser/WASM smoke check, launch the GitHub demo link and add the sample citations. The formatter REST response must not return `bibliography_builder_formatter_extension_missing`; the success notice should say citations were added without the fallback warning.
+For a browser/WASM smoke check, launch the GitHub demo link and add the sample citations. The GitHub demo blueprint should install the plugin through `wordpress.org/plugins` rather than a GitHub Release asset URL, which is blocked by browser CORS in live Playground. The formatter REST response must not return `bibliography_builder_formatter_extension_missing`; the success notice should say citations were added without the fallback warning.
 
 
 ## Translation count and language-pack wording
