@@ -28,10 +28,12 @@ Launch a disposable WordPress instance with the plugin preinstalled: [Try the Bo
 | Editor with citations | Front-end output |
 |---|---|
 | ![](.wordpress-org/screenshot-4.png) | ![](.wordpress-org/screenshot-5.png) |
+| The block in editor view showing a formatted bibliography. Hover over any entry to reveal copy, edit, and delete actions. | The rendered bibliography on the site front end with hanging indents, italic titles, and linked DOIs — all styled by the active theme. |
 
 | Block inserter | Empty-state form | Manual entry |
 |---|---|---|
 | ![](.wordpress-org/screenshot-1.png) | ![](.wordpress-org/screenshot-2.png) | ![](.wordpress-org/screenshot-3.png) |
+| Discover the Bibliography block in the block inserter by searching for "Bibliography." | Paste DOIs, BibTeX entries, or supported citation text into the import form. The sidebar controls citation style, visible heading, and metadata output (JSON-LD, COinS, CSL-JSON). | Switch to Manual Entry to build a citation field by field — Publication Type, Author, Title, Container, Publisher, Year, Pages, DOI, and URL. These fields will be automatically populated from DOIs and pasted input that can be parsed. |
 
 ## Installation
 
