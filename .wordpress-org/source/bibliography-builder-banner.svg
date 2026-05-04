@@ -47,7 +47,7 @@
    inkscape:pagecheckerboard="0"
    inkscape:deskcolor="#d1d1d1"
    inkscape:zoom="0.53854167"
-   inkscape:cx="993.42359"
+   inkscape:cx="997.13732"
    inkscape:cy="362.08897"
    inkscape:window-width="1190"
    inkscape:window-height="661"
@@ -85,8 +85,17 @@
      d="m 980,315 h -40 l -20,-35 20,-35 h 40 l 20,35 z"
      id="path11" /><path
      d="m 974,304 h -28 l -14,-24 14,-24 h 28 l 14,24 z"
-     id="path12" /></g><g
-   transform="matrix(1.6366285,0.11444421,-0.11444421,1.6366285,53.429342,139.09345)"
+     id="path12" /></g><!-- Vertical gold separator --><!-- Feature panel heading --><!-- Gold hairline under heading --><!-- Feature list --><g
+   id="g2"
+   transform="matrix(2.8259277,-0.24290214,0.16033937,1.8653909,299.99145,179.27144)"><rect
+     width="100%"
+     height="100%"
+     fill="none"
+     id="rect1"
+     x="0"
+     y="0" /></g>
+<g
+   transform="matrix(1.6366285,0.11444421,-0.11444421,1.6366285,150.62966,139.09345)"
    id="g14"><rect
      fill="#2d3136"
      height="148"
@@ -112,7 +121,7 @@
      id="rect14" /></g><g
    stroke-width="1.64062"
    id="g21"
-   transform="translate(-135.55126,25.996132)"><rect
+   transform="translate(-38.350977,25.996132)"><rect
      fill="#7b8fa1"
      height="255.9375"
      rx="1.640625"
@@ -168,12 +177,12 @@
    height="7"
    rx="1.0933368"
    width="1692.4855"
-   x="16.448755"
+   x="113.64901"
    y="385.99612"
    id="rect22"
    style="stroke-width:1.04563" /><text
    style="font-style:italic;font-weight:400;font-size:52px;font-family:'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif;text-anchor:end;fill:#3d4a57"
-   x="683.83105"
+   x="781.02917"
    y="458.8143"
    id="text22">The library will endure;</text><text
    fill="#3d4a57"
@@ -181,10 +190,10 @@
    font-size="52px"
    font-style="italic"
    font-weight="400"
-   x="780.04041"
+   x="877.23853"
    y="463.17792"
-   id="text23">it is the universe...</text><!-- Vertical gold separator --><!-- Feature panel heading --><text
-   x="1219.3578"
+   id="text23">it is the universe...</text><text
+   x="1316.5558"
    y="163.99612"
    font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
    font-size="33px"
@@ -193,14 +202,14 @@
    id="text1"
    style="font-weight:700;font-size:33px;font-family:'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif;fill:#2d3136"><tspan
      style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:32px;font-family:'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif;-inkscape-font-specification:'Libre Baskerville, Baskerville, Liberation Serif, Times New Roman, serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
-     id="tspan29">The Bibliography Builder Block</tspan></text><!-- Gold hairline under heading --><rect
-   x="1219.3578"
+     id="tspan29">The Bibliography Builder Block</tspan></text><rect
+   x="1316.5558"
    y="177.99612"
    width="488"
    height="1.5"
    fill="#c4973e"
-   id="rect2" /><!-- Feature list --><text
-   x="1223.7406"
+   id="rect2" /><text
+   x="1320.9386"
    y="215.13925"
    font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
    font-size="25px"
@@ -208,7 +217,7 @@
    id="text3"><tspan
    style="font-weight:bold"
    id="tspan24">Paste DOIs:</tspan> Citations resolved instantly</text><text
-   x="1223.7406"
+   x="1320.9386"
    y="252.13925"
    font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
    font-size="25px"
@@ -216,7 +225,7 @@
    id="text5"><tspan
    style="font-weight:bold"
    id="tspan25">Nine styles:</tspan> Chicago, APA 7, MLA 9, IEEE</text><text
-   x="1223.7406"
+   x="1320.9386"
    y="289.13925"
    font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
    font-size="25px"
@@ -224,7 +233,7 @@
    id="text7"><tspan
    style="font-weight:bold"
    id="tspan26">Zotero-ready:</tspan> COinS &amp; JSON-LD</text><text
-   x="1223.7406"
+   x="1320.9386"
    y="326.13925"
    font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
    font-size="25px"
@@ -232,7 +241,7 @@
    id="text9"><tspan
    style="font-weight:bold"
    id="tspan27">Export:</tspan> BibTeX, CSL-JSON, or RIS</text><text
-   x="1223.7406"
+   x="1320.9386"
    y="363.13925"
    font-family="'Libre Baskerville', Baskerville, 'Liberation Serif', 'Times New Roman', serif"
    font-size="25px"
@@ -240,17 +249,9 @@
    id="text11"><tspan
    style="font-weight:bold"
    id="tspan28">Portable Semantic HTML:</tspan> No Lock-In</text><g
-   id="g2"
-   transform="matrix(2.8259277,-0.24290214,0.16033937,1.8653909,299.99145,179.27144)"><rect
-     width="100%"
-     height="100%"
-     fill="none"
-     id="rect1"
-     x="0"
-     y="0" /></g><g
    id="sig-borges"
    filter="url(#rough-ink)"
-   transform="matrix(0.43812816,0.04054277,-0.04054277,0.43812816,388.67754,156.92733)">
+   transform="matrix(0.43812816,0.04054277,-0.04054277,0.43812816,485.87785,156.92733)">
   <g
    transform="rotate(-4.79,223.83704,1452.0212)"
    id="g16"><g
@@ -269,5 +270,4 @@
    id="path15" />
 </g>
 </g>
-</g>
-</svg>
+</g></svg>
