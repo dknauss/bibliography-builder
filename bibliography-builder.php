@@ -846,7 +846,7 @@ function bibliography_builder_register_a11y_checks( $registry ) {
 		array(
 			'error_msg'   => '',
 			'warning_msg' => __(
-				'Bibliography block has no heading. Screen reader users navigating by heading will not find this section.',
+				'Bibliography block has no heading. Screen reader users who navigate by heading will miss it.',
 				'borges-bibliography-builder'
 			),
 			'description' => __(

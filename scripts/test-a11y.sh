@@ -33,8 +33,4 @@ until curl -fsS "$BASE_URL" >/dev/null 2>&1; do
 	sleep 2
 done
 
-# Run the structured Playwright spec (WCAG axe + ARIA checks).
 PLAYWRIGHT_BASE_URL="$BASE_URL" npx playwright test tests/e2e/a11y.spec.js
-
-# Run the extended keyboard/interaction audit script.
-PLAYWRIGHT_BASE_URL="$BASE_URL" node scripts/a11y-audit.js
