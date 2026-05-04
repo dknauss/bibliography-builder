@@ -242,6 +242,50 @@ describe('sortCitations', () => {
 		);
 	});
 
+	it('sorts notes-bibliography entries with same author and title by year ascending', () => {
+		const citations = [
+			createCitation({ id: 'later', family: 'Smith', title: 'Alpha Study', year: 2024 }),
+			createCitation({ id: 'earlier', family: 'Smith', title: 'Alpha Study', year: 2018 }),
+		];
+
+		expect(sortCitations(citations).map((c) => c.id)).toEqual([
+			'earlier',
+			'later',
+		]);
+	});
+
+	it('treats notes-bibliography entries with identical author, title, and year as equal order', () => {
+		const citations = [
+			createCitation({ id: 'first', family: 'Smith', title: 'Alpha', year: 2024 }),
+			createCitation({ id: 'second', family: 'Smith', title: 'Alpha', year: 2024 }),
+		];
+
+		expect(sortCitations(citations)).toHaveLength(2);
+	});
+
+	it('sorts author-date entries with same author and year by title', () => {
+		const citations = [
+			createCitation({ id: 'z-title', family: 'Jones', year: 2022, title: 'Zebra Study' }),
+			createCitation({ id: 'a-title', family: 'Jones', year: 2022, title: 'Alpha Study' }),
+		];
+
+		expect(
+			sortCitations(citations, 'chicago-author-date').map((c) => c.id)
+		).toEqual(['a-title', 'z-title']);
+	});
+
+	it('sorts citations with no author and no title last using sentinel value', () => {
+		const citations = [
+			createCitation({ id: 'titled', title: 'Something' }),
+			{ id: 'bare', csl: {} },
+		];
+
+		expect(sortCitations(citations).map((c) => c.id)).toEqual([
+			'titled',
+			'bare',
+		]);
+	});
+
 	it('returns single-entry and empty citation arrays unchanged', () => {
 		const single = [
 			createCitation({

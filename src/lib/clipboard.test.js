@@ -40,6 +40,15 @@ describe('copyTextToClipboard', () => {
 		expect(remove).toHaveBeenCalled();
 	});
 
+	it('throws when document API is unavailable', async () => {
+		await expect(
+			copyTextToClipboard('Delta citation', {
+				navigatorRef: {},
+				documentRef: {}, // no createElement or body
+			})
+		).rejects.toThrow('Clipboard API unavailable');
+	});
+
 	it('rejects when the fallback copy command fails', async () => {
 		const remove = jest.fn();
 		const documentRef = {

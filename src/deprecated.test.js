@@ -136,6 +136,25 @@ describe('deprecated block versions', () => {
 		expect(markup).not.toContain('<a href=');
 	});
 
+	it('migrate re-sorts citations into style order', () => {
+		const migrated = deprecated[3].migrate({
+			citationStyle: 'chicago-author-date',
+			citations: [
+				createCitation({ id: 'z', family: 'Zulu', title: 'Zeta Book' }),
+				createCitation({ id: 'a', family: 'Alpha', title: 'Alpha Book' }),
+			],
+		});
+
+		expect(migrated.citations[0].id).toBe('a');
+		expect(migrated.citations[1].id).toBe('z');
+	});
+
+	it('migrate handles missing citations attribute with empty array fallback', () => {
+		const migrated = deprecated[3].migrate({ citationStyle: 'apa-7' });
+
+		expect(migrated.citations).toEqual([]);
+	});
+
 	it('supports the prior unsorted save markup variant', () => {
 		const markup = renderToStaticMarkup(
 			deprecated[3].save({
