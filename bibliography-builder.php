@@ -845,10 +845,14 @@ function bibliography_builder_register_a11y_checks( $registry ) {
 		'heading_missing',
 		array(
 			'error_msg'   => '',
-			// translators: Warning shown in Block Accessibility Checks when headingText is empty.
-			'warning_msg' => __( 'Bibliography block has no heading. Screen reader users navigating by heading will not find this section.', 'borges-bibliography-builder' ), // phpcs:ignore Generic.Files.LineLength.TooLong
-			// translators: Description shown in Block Accessibility Checks for the heading_missing check.
-			'description' => __( 'Add a heading in block settings so the bibliography is announced as a document section.', 'borges-bibliography-builder' ), // phpcs:ignore Generic.Files.LineLength.TooLong
+			'warning_msg' => __(
+				'Bibliography block has no heading. Screen reader users navigating by heading will not find this section.',
+				'borges-bibliography-builder'
+			),
+			'description' => __(
+				'Add a heading in block settings so the bibliography is announced as a document section.',
+				'borges-bibliography-builder'
+			),
 			'type'        => 'warning',
 			'category'    => 'accessibility',
 		)
