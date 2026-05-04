@@ -19,6 +19,9 @@ This repository uses Git for development and WordPress.org SVN for release publi
 
 4. **Keep assets in `/assets/`**
    - Screenshots, banners, and icons belong in `assets/`.
+   - The WordPress.org Preview blueprint belongs at `assets/blueprints/blueprint.json`; in this repository that source file is `.wordpress-org/blueprints/blueprint.json`.
+   - Keep the WordPress.org Preview blueprint aligned with `playground/blueprint.json`.
+   - Both blueprints must request PHP `intl` using `phpExtensionBundles: ["kitchen-sink"]` and `features: { "networking": true, "intl": true }` so the browser Playground runtime can run the `citeproc-php` formatter.
    - Do not commit development-only files there.
 
 5. **Tag releases from `trunk/`**
@@ -42,7 +45,25 @@ This repository uses Git for development and WordPress.org SVN for release publi
 - **GitHub release zip**: packaged artifact for GitHub Releases and Playground.
 - **WordPress.org SVN `trunk/`**: public release source.
 - **WordPress.org `assets/`**: directory screenshots, banner, and icon assets.
+- **Playground blueprints**: `playground/blueprint.json` powers GitHub/readme demo links; `.wordpress-org/blueprints/blueprint.json` deploys to SVN `assets/blueprints/blueprint.json` for the plugin-directory Preview button.
 - **WordPress.org `tags/<version>/`**: release snapshot.
+
+## Playground preview verification
+
+After editing either Blueprint, run:
+
+```bash
+npm run test -- --runTestsByPath src/blueprint.test.js
+```
+
+For a browser/WASM smoke check, launch the GitHub demo link and add the sample citations. The formatter REST response must not return `bibliography_builder_formatter_extension_missing`; the success notice should say citations were added without the fallback warning.
+
+
+## Translation count and language-pack wording
+
+WordPress.org's plugin page treats English (US) as the source language and counts only approved generated language packs as translated locales. If the public sidebar says "Languages: English (US) and Russian" while the Development tab says "translated into 1 locale," that means one translated locale is published and English (US) is the source language.
+
+Do not describe bundled PO/MO seed files as official language availability. WordPress.org may import shipped `.mo` files into translate.wordpress.org, but a locale appears as an official language pack only after the Stable plugin translation reaches the approval threshold and a language pack is generated. The plugin page's live **Languages** list is the canonical public availability signal.
 
 ## Sources
 

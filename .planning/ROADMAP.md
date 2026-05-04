@@ -230,40 +230,47 @@ Remaining non-blocking maintainability items:
 
 ## Backlog / architecture investigations
 
-### Translation backlog
+### Translation and language-pack backlog
 
-Completed interface locale files:
+Current status as of 2026-05-04:
 
--   fr_FR
--   de_DE
--   nl_NL
--   sv_SE
--   es_ES
--   it_IT
--   pt_PT
--   pl_PL
--   ru_RU
--   ja
--   zh_CN
--   ko_KR
--   sr_RS
--   hr
--   pt_BR
--   hi_IN
--   bn_BD
--   ta_IN
--   te
+-   English (US) is the plugin source language and is not counted by WordPress.org as a translated locale.
+-   WordPress.org currently publishes one official generated language pack for the plugin: `ru_RU`.
+-   The repository/package includes seed PO/MO files for translator review and import in `fr_FR`, `de_DE`, `nl_NL`, `sv_SE`, `es_ES`, `it_IT`, `pt_PT`, `pl_PL`, `ru_RU`, `ja`, `zh_CN`, `ko_KR`, `sr_RS`, `hr`, `pt_BR`, `hi_IN`, `bn_BD`, `ta_IN`, and `te`. These are not the same as official WordPress.org language-pack availability.
+-   Official language packs are generated from translate.wordpress.org only after the Stable plugin translations are approved/current for a locale. The first pack for a plugin/theme locale requires the Stable sub-project to reach the WordPress.org approval threshold.
 
-Recommended next locale backlog, prioritizing broad WordPress usage after the current shipped set:
+Planned language-pack work:
 
--   ar
--   tr_TR
--   id_ID
--   he_IL
--   vi
--   uk
--   ro_RO
--   cs_CZ
+1. **Regenerate i18n artifacts from current source** — update the POT from PHP, JS, and block metadata; regenerate local MO files; generate/verify JS JSON translation files if bundled translations remain in the package.
+2. **Decide bundled-vs-official translation policy** — prefer WordPress.org language packs as the public availability signal; keep bundled PO/MO files only as seed/import material unless there is a strong support reason to ship reviewed local translations.
+3. **Prioritize official language-pack expansion** — pick a small first wave rather than trying to complete all 19 seed locales at once.
+4. **Coordinate approval path** — work through locale teams/PTEs, or request the appropriate PTE/CLPTE workflow for professionally reviewed translations. Do not submit unreviewed machine translations.
+5. **Document availability accurately** — keep GitHub and WordPress.org readmes pointing to the live WordPress.org Languages list and translate.wordpress.org project status.
+
+Recommended first-wave official locale candidates, balancing existing seed files, WordPress usage, and likely academic/research audiences:
+
+-   `fr_FR`
+-   `de_DE`
+-   `es_ES`
+-   `pt_BR`
+-   `ja`
+
+Additional backlog candidates after the first wave:
+
+-   `it_IT`
+-   `nl_NL`
+-   `pl_PL`
+-   `zh_CN`
+-   `ko_KR`
+-   `sv_SE`
+-   `ar`
+-   `tr_TR`
+-   `id_ID`
+-   `he_IL`
+-   `vi`
+-   `uk`
+-   `ro_RO`
+-   `cs_CZ`
 
 ### Writable bibliography API and Abilities integration
 

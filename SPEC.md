@@ -968,6 +968,8 @@ Future runtime work should focus on keeping these lanes stable and adding new ca
 
 `citation-js` remains the best fit for DOI resolution and BibTeX parsing in the editor. Formatting is handled by `citeproc-php` on a local WordPress REST endpoint so the editor bundle does not include citeproc-js and the WordPress.org package can avoid non-GPL-compatible CSL/citeproc-js licensing concerns. The block still saves static plain-text output in post content; PHP formatting is an editor-time service, not a frontend render callback.
 
+Because formatter requests depend on `citeproc-php`, any WordPress Playground demo that exercises editor formatting must load PHP `intl`. Keep both `playground/blueprint.json` and `.wordpress-org/blueprints/blueprint.json` configured with both `phpExtensionBundles: ["kitchen-sink"]` and `features: { "networking": true, "intl": true }`. The bundle form matches WordPress.org Preview guidance, while the explicit `features.intl` flag is required by the live browser Playground runtime to avoid `bibliography_builder_formatter_extension_missing` fallback notices.
+
 ### Why the editor uses wrapped `@wordpress/icons` imports
 
 The editor UI now uses standard Gutenberg icons, but it does so through a small local wrapper module instead of importing from the `@wordpress/icons` barrel directly.

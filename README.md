@@ -20,7 +20,7 @@ Just write out your citations or paste DOIs and BibTeX code, up to 50 at a time.
 
 ## Try it in WordPress Playground
 
-Install the public release from [WordPress.org](https://wordpress.org/plugins/borges-bibliography-builder/) or launch a disposable WordPress instance with the plugin preinstalled: [Try the Borges Bibliography Builder in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/borges-bibliography-builder/main/playground/blueprint.json). Playground installs the plugin from the latest GitHub Release zip artifact.
+Install the public release from [WordPress.org](https://wordpress.org/plugins/borges-bibliography-builder/) or launch a disposable WordPress instance with the plugin preinstalled: [Try the Borges Bibliography Builder in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/borges-bibliography-builder/main/playground/blueprint.json). Playground installs the plugin from the latest GitHub Release zip artifact. The demo Blueprint explicitly requests PHP `intl` support because editor-time CSL formatting runs through the plugin's local PHP formatter.
 
 ![](.wordpress-org/banner-1544x500.png)
 
@@ -63,7 +63,7 @@ Developer-facing CI/runtime coverage details are listed in the development secti
 - **Export** — Download the current bibliography as CSL-JSON, UTF-8 BibTeX, or RIS; copy individual citations or the full bibliography as plain text.
 - **Static save** — Bibliography HTML and metadata are baked into post content at save time.
 - **Accessible editor UX** — Focus management, block-local Gutenberg notices, keyboard escape/cancel flows, and row action controls.
-- **Interface locale files included** — 19 bundled locales for plugin UI strings. (See **Language Support** below.)
+- **Translation-ready interface** — strings use the `borges-bibliography-builder` text domain; WordPress.org publishes language packs as community translations are approved. (See **Language Support** below.)
 
 ## Reference Manager Compatibility
 
@@ -79,9 +79,9 @@ Borges is reference-manager-friendly by design. It outputs portable CSL-JSON, Bi
 
 ## Language Support
 
-Current bundled interface translations cover: `fr_FR`, `de_DE`, `nl_NL`, `sv_SE`, `es_ES`, `it_IT`, `pt_PT`, `pl_PL`, `ru_RU`, `ja`, `zh_CN`, `ko_KR`, `sr_RS`, `hr`, `pt_BR`, `hi_IN`, `bn_BD`, `ta_IN`, and `te`.
+WordPress.org language packs are generated from [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/borges-bibliography-builder/) after the Stable translation project reaches the approval threshold for a locale. The live WordPress.org plugin page's **Languages** list is the canonical list of currently published language packs; English (US) is the source language and is not counted as a translated locale.
 
-These locale files only cover plugin interface strings. Citation content remains user-provided or metadata-derived.
+This repository/package currently includes seed PO/MO files for translator review and import in `fr_FR`, `de_DE`, `nl_NL`, `sv_SE`, `es_ES`, `it_IT`, `pt_PT`, `pl_PL`, `ru_RU`, `ja`, `zh_CN`, `ko_KR`, `sr_RS`, `hr`, `pt_BR`, `hi_IN`, `bn_BD`, `ta_IN`, and `te`. These files cover plugin interface strings only, not user-provided citation content. They should not be described as official WordPress.org language-pack availability until the corresponding locale is approved and listed on WordPress.org.
 
 ## Supported Input
 
@@ -220,14 +220,24 @@ SQLite and Multisite runtime smoke coverage are included in CI; future runtime w
 - [Plugin specification](./SPEC.md)
 - [Changelog](./CHANGELOG.md)
 - [WordPress.org plugin listing](https://wordpress.org/plugins/borges-bibliography-builder/)
-- [GitHub release notes (v1.0.0)](https://github.com/dknauss/borges-bibliography-builder/releases/tag/v1.0.0)
+- [GitHub releases](https://github.com/dknauss/borges-bibliography-builder/releases)
 - [Release readiness checklist](./docs/release-readiness-checklist.md)
 - [WordPress.org SVN deploy checklist](./docs/wporg-svn-checklist.md) — maintainer-facing notes
-- [Playground blueprint](./playground/blueprint.json)
+- [Playground blueprint](./playground/blueprint.json) — GitHub demo Blueprint; keep its `features.intl` and `phpExtensionBundles` settings aligned with `.wordpress-org/blueprints/blueprint.json` for WordPress.org previews.
 - [Runtime matrix smoke script](./scripts/runtime-matrix/smoke.sh)
 - [Brand assets](./.wordpress-org/)
 
 WordPress.org branding assets live in [.wordpress-org](./.wordpress-org/), editable source files live in [.wordpress-org/source](./.wordpress-org/source/), and maintainer-facing deploy notes live in [docs/wporg-svn-checklist.md](./docs/wporg-svn-checklist.md).
+
+### Playground Blueprint maintenance
+
+The Playground demo and WordPress.org Preview both rely on the PHP formatter used by the editor REST endpoint. That formatter uses `citeproc-php`, which requires PHP `intl`. Keep both Blueprint files in sync:
+
+- `playground/blueprint.json` powers the GitHub README and WordPress.org readme demo link.
+- `.wordpress-org/blueprints/blueprint.json` deploys to WordPress.org SVN as `assets/blueprints/blueprint.json` for the plugin-directory Preview button.
+- Both files intentionally declare `phpExtensionBundles: ["kitchen-sink"]` and `features: { "networking": true, "intl": true }`. The bundle form follows WordPress.org Preview documentation; the `features.intl` flag is required by the live browser Playground runtime so formatter requests do not fall back with `bibliography_builder_formatter_extension_missing`.
+
+Run `npm run test -- --runTestsByPath src/blueprint.test.js` after editing either Blueprint.
 
 ### Plugin File Structure
 

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/paypalme/DanKnauss
 Tags: bibliography, citation, doi, bibtex, academic
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -27,7 +27,7 @@ The **Borges Bibliography Builder** transforms pasted DOI(s), BibTeX entries, an
 
 **Try it first.** Launch a disposable demo in [WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/borges-bibliography-builder/main/playground/blueprint.json) before installing it on your site.
 
-**Translation-ready.** Interface locale files are currently included for French (`fr_FR`), German (`de_DE`), Dutch (`nl_NL`), Swedish (`sv_SE`), Spanish (`es_ES`), Italian (`it_IT`), Portuguese (`pt_PT`), Polish (`pl_PL`), Russian (`ru_RU`), Japanese (`ja`), Simplified Chinese (`zh_CN`), Korean (`ko_KR`), Serbian (`sr_RS`), Croatian (`hr`), Brazilian Portuguese (`pt_BR`), Hindi (`hi_IN`), Bengali (`bn_BD`), Tamil (`ta_IN`), and Telugu (`te`).
+**Translation-ready.** Plugin interface strings use the `borges-bibliography-builder` text domain, and official WordPress.org language packs are generated as community translations are approved on translate.wordpress.org.
 
 == Installation ==
 
@@ -38,9 +38,11 @@ The **Borges Bibliography Builder** transforms pasted DOI(s), BibTeX entries, an
 
 == Frequently Asked Questions ==
 
-= Which interface languages are currently bundled? =
+= Which translations are available? =
 
-The plugin currently ships interface locale files for French (`fr_FR`), German (`de_DE`), Dutch (`nl_NL`), Swedish (`sv_SE`), Spanish (`es_ES`), Italian (`it_IT`), Portuguese (`pt_PT`), Polish (`pl_PL`), Russian (`ru_RU`), Japanese (`ja`), Simplified Chinese (`zh_CN`), Korean (`ko_KR`), Serbian (`sr_RS`), Croatian (`hr`), Brazilian Portuguese (`pt_BR`), Hindi (`hi_IN`), Bengali (`bn_BD`), Tamil (`ta_IN`), and Telugu (`te`). These translations currently cover the plugin interface only.
+The WordPress.org plugin page's Languages list is the canonical list of currently published language packs. English (US) is the source language and is not counted as a translated locale; other locales appear after their Stable plugin translations are approved on translate.wordpress.org and a language pack is generated.
+
+The package includes seed PO/MO files for translator review and import in French (`fr_FR`), German (`de_DE`), Dutch (`nl_NL`), Swedish (`sv_SE`), Spanish (`es_ES`), Italian (`it_IT`), Portuguese (`pt_PT`), Polish (`pl_PL`), Russian (`ru_RU`), Japanese (`ja`), Simplified Chinese (`zh_CN`), Korean (`ko_KR`), Serbian (`sr_RS`), Croatian (`hr`), Brazilian Portuguese (`pt_BR`), Hindi (`hi_IN`), Bengali (`bn_BD`), Tamil (`ta_IN`), and Telugu (`te`). These files cover plugin interface strings only and should not be read as official WordPress.org language-pack availability.
 
 = What citation input formats does the Borges Bibliography Builder support? =
 
@@ -101,6 +103,11 @@ This plugin connects to the **CrossRef REST API** (https://api.crossref.org/) wh
 
 == Changelog ==
 
+= 1.0.2 =
+* Fix browser-based WordPress Playground demos by explicitly enabling the Playground Intl feature in addition to the kitchen-sink PHP extension bundle.
+* Keep the GitHub demo blueprint and WordPress.org Preview blueprint aligned for Intl-enabled citation formatting, with regression coverage.
+* Clarify translation wording so the readme distinguishes bundled seed PO/MO files from official WordPress.org language packs.
+
 = 1.0.1 =
 * Fix Playground/editor bibliography formatting by using the WordPress REST API fetch helper for formatter requests.
 * Add the WordPress.org Preview blueprint at the documented assets path with the required PHP extension bundle for citation formatting.
@@ -117,13 +124,16 @@ This plugin connects to the **CrossRef REST API** (https://api.crossref.org/) wh
 * Provide reference-manager friendly metadata and exports for Zotero, Mendeley, EndNote, JabRef, BibDesk, LaTeX, and CSL/citeproc workflows.
 * Improve accessibility with keyboard navigation, visible focus, block-local notices, semantic bibliography markup, and no deprecated bibliography-entry ARIA role in newly saved output.
 * Provide read-only REST API endpoints for programmatic bibliography access.
-* Bundle 19 interface locale files.
+* Bundle seed interface locale files for translator review/import while using WordPress.org language packs as the canonical availability signal.
 * Harden the WordPress.org release package with third-party notices and Plugin Check cleanup.
 * Standardize GitHub, Playground, and release-download links on the approved `borges-bibliography-builder` slug and zip name.
 * Add CI/runtime coverage for Multisite network activation and expanded PHP utility behavior.
 * Confirm compatibility wording through WordPress 7.0 testing.
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+Fixes WordPress Playground demo formatting when the browser runtime does not load PHP Intl from the extension bundle alone.
 
 = 1.0.1 =
 Fixes WordPress.org Playground preview and editor formatter fallback behavior.

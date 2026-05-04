@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 No changes yet.
 
+## [1.0.2] - 2026-05-04
+
+### Fixed
+
+- Explicitly enable Playground `features.intl` in both the GitHub demo blueprint and the WordPress.org Preview blueprint while retaining `phpExtensionBundles: ["kitchen-sink"]`, because the live browser Playground runtime requires the feature flag for `citeproc-php` formatter requests to load PHP `intl` reliably.
+
+### Changed
+
+- Clarify translation documentation so bundled seed PO/MO files are not confused with official WordPress.org language packs.
+
+### Tests
+
+- Add regression coverage that requires both Blueprint files to request `intl` through both supported Playground configuration forms.
+
 ## [1.0.1] - 2026-05-04
 
 ### Fixed

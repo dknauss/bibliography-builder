@@ -25,9 +25,10 @@
     - prioritize BibLaTeX support first, then PMID resolution before NBIB
     - keep EndNote XML, NBIB export, and CIW demand-gated; keep ENL out of scope
     - investigate writable bibliography REST routes and WordPress Abilities integration for remote/AI-assisted citation management
-5. Translation expansion backlog
-    - shipped interface locale files: French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu
-    - next recommended backlog locales: Arabic, Turkish, Indonesian, Hebrew, Vietnamese, Ukrainian, Romanian, and Czech
+5. Translation and language-pack expansion backlog
+    - current official WordPress.org language packs: Russian (`ru_RU`); English (US) is the source language and is not counted as a translated locale
+    - bundled PO/MO files are seed/import material for translator review, not official WordPress.org language-pack availability
+    - next recommended official language-pack first wave: French, German, Spanish, Brazilian Portuguese, and Japanese, coordinated through translate.wordpress.org/PTE review
 6. Low-priority UX/documentation polish
     - periodically re-check row-interaction accessibility
     - reconsider global snackbars for pure success-only cases if it ever improves clarity
@@ -66,7 +67,7 @@ Recent work completed or in final verification includes:
 -   a Copy bibliography action now ships in the editor for copying the current bibliography as plain text.
 -   read-only REST endpoints now expose bibliography block data at `/wp-json/bibliography/v1/posts/<post_id>/bibliographies` and `/wp-json/bibliography/v1/posts/<post_id>/bibliographies/<index>`.
 -   GitHub Actions runtime coverage now spans additional Apache/Nginx/PHP/WordPress combinations and includes SQLite and Multisite smoke lanes.
--   interface translation files now ship for French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu.
+-   translation docs now distinguish official WordPress.org language packs from bundled seed PO/MO files; Russian (`ru_RU`) is the current official generated language pack, while the bundled seed files require translate.wordpress.org review before they should be advertised as public language availability.
 -   post-launch cleanup aligned GitHub/WordPress.org links, Playground demo copy, REST API docs, screenshot ordering, SPEC runtime coverage, WordPress 7.0 compatibility wording, manual wp.org deploy triggering, and small code-quality refactors.
 
 ## Active Concerns
@@ -82,11 +83,12 @@ Recent work completed or in final verification includes:
 
 ## Pending Todos
 
--   4 pending todos in `.planning/todos/pending`
+-   5 pending todos in `.planning/todos/pending`
     - WordPress.org launch monitoring and hotfix readiness
     - Add frontend Cite and Export affordances
     - Prioritize BibLaTeX and PMID interoperability
     - Investigate writable bibliography REST API and Abilities integration
+    - Prepare official language-pack expansion and refreshed i18n artifacts
 
 ## Roadmap Alignment
 
@@ -98,7 +100,7 @@ Proposed next-task sequence:
 2. **Keep Dependabot #31/#32 open with rationale** — revisit when upstream WordPress/webpack packages move off the vulnerable transitive versions
 3. **Interoperability enhancements** — frontend Cite/Export controls, then BibLaTeX/PMID
 4. **Writable API / Abilities investigation** — produce a design memo before implementation
-5. **Translation expansion** — Arabic, Turkish, Indonesian, Hebrew, Vietnamese, Ukrainian, Romanian, Czech
+5. **Translation expansion** — refresh i18n artifacts, decide bundled-vs-official policy, then coordinate first-wave official language packs for French, German, Spanish, Brazilian Portuguese, and Japanese
 
 Run `/gsd:progress` when ready to choose between interoperability, automation architecture, or translation expansion.
 
