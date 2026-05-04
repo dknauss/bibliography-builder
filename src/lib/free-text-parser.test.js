@@ -91,6 +91,31 @@ describe('parseFreeTextCitation', () => {
 		});
 	});
 
+	it('parses Chicago journal citations with literal one-name authors and no issue', () => {
+		const citation = parseFreeTextCitation(
+			'Borges, “Labyrinths,” Journal of Examples 5 (1962): 1-9.'
+		);
+
+		expect(citation).toEqual({
+			csl: {
+				type: 'article-journal',
+				title: 'Labyrinths',
+				'container-title': 'Journal of Examples',
+				volume: '5',
+				page: '1-9',
+				issued: {
+					'date-parts': [[1962]],
+				},
+				author: [
+					{
+						literal: 'Borges',
+					},
+				],
+			},
+			confidence: 'medium',
+		});
+	});
+
 	it('parses sentence-style Chicago journal citations with inverted first author and inline DOI', () => {
 		const citation = parseFreeTextCitation(
 			'Dittmar, Emily L., and Douglas W. Schemske. “Temporal Variation in Selection Influences Microgeographic Local Adaptation.” American Naturalist 202, no. 4 (2023): 471–85. https://doi.org/10.1086/725865.'
@@ -225,6 +250,35 @@ describe('parseFreeTextCitation', () => {
 					{
 						family: 'Powell',
 						given: 'D. A',
+					},
+				],
+			},
+			confidence: 'low',
+		});
+	});
+
+	it('falls back from uneven APA author parts to heuristic author parsing', () => {
+		const citation = parseFreeTextCitation(
+			'Ginsberg, J. P., Ayers (2008). Heuristic title. Journal of Examples, 22, 10-11.'
+		);
+
+		expect(citation).toEqual({
+			csl: {
+				type: 'article-journal',
+				title: 'Heuristic title',
+				'container-title': 'Journal of Examples',
+				volume: '22',
+				page: '10-11',
+				issued: {
+					'date-parts': [[2008]],
+				},
+				author: [
+					{
+						family: 'Ginsberg',
+						given: 'J. P',
+					},
+					{
+						literal: 'Ayers',
 					},
 				],
 			},
@@ -461,6 +515,31 @@ describe('parseFreeTextCitation', () => {
 		});
 	});
 
+	it('parses season-based Chicago journal citations', () => {
+		const citation = parseFreeTextCitation(
+			'Ada Smith, “Seasonal Learning,” Journal of Examples, Spring 2024, 12-18.'
+		);
+
+		expect(citation).toEqual({
+			csl: {
+				type: 'article-journal',
+				title: 'Seasonal Learning',
+				'container-title': 'Journal of Examples',
+				page: '12-18',
+				issued: {
+					'date-parts': [[2024]],
+				},
+				author: [
+					{
+						given: 'Ada',
+						family: 'Smith',
+					},
+				],
+			},
+			confidence: 'low',
+		});
+	});
+
 	it('parses Chicago-style review citations', () => {
 		const citation = parseFreeTextCitation(
 			'Jacobs, Alexandra. “The Muchness of Madonna.” Review of Madonna: A Rebel Life, by Mary Gabriel. New York Times, October 8, 2023.'
@@ -580,6 +659,38 @@ describe('parseFreeTextCitation', () => {
 		});
 	});
 
+	it('parses sentence-style chapter citations with trailing page ranges', () => {
+		const citation = parseFreeTextCitation(
+			'Doyle, Kathleen. “The Queen Mary Psalter.” In The Book by Design, edited by P. J. M. Marks. University of Chicago Press, 2023, 21-25.'
+		);
+
+		expect(citation).toEqual({
+			csl: {
+				type: 'chapter',
+				title: 'The Queen Mary Psalter',
+				'container-title': 'The Book by Design',
+				editor: [
+					{
+						given: 'P. J. M.',
+						family: 'Marks',
+					},
+				],
+				publisher: 'University of Chicago Press',
+				page: '21-25',
+				issued: {
+					'date-parts': [[2023]],
+				},
+				author: [
+					{
+						given: 'Kathleen',
+						family: 'Doyle',
+					},
+				],
+			},
+			confidence: 'low',
+		});
+	});
+
 	it('parses sentence-style edited book citations into editor-based CSL', () => {
 		const citation = parseFreeTextCitation(
 			'Marks, P. J. M., and Stephen Parkin, eds. The Book by Design: The Remarkable Story of the World’s Greatest Invention. University of Chicago Press, 2023.'
@@ -603,6 +714,33 @@ describe('parseFreeTextCitation', () => {
 				issued: {
 					'date-parts': [[2023]],
 				},
+			},
+			confidence: 'medium',
+		});
+	});
+
+	it('parses sentence-style books with text editions, page ranges, and URLs', () => {
+		expect(
+			parseFreeTextCitation(
+				'Smith, Ada. Example Title. Revised ed. Example Press, 2026, 12-15. https://example.com/book.'
+			)
+		).toEqual({
+			csl: {
+				type: 'book',
+				title: 'Example Title',
+				edition: 'Revised',
+				publisher: 'Example Press',
+				issued: {
+					'date-parts': [[2026]],
+				},
+				page: '12-15',
+				URL: 'https://example.com/book',
+				author: [
+					{
+						given: 'Ada',
+						family: 'Smith',
+					},
+				],
 			},
 			confidence: 'medium',
 		});

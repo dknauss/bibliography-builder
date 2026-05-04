@@ -244,8 +244,18 @@ describe('sortCitations', () => {
 
 	it('sorts notes-bibliography entries with same author and title by year ascending', () => {
 		const citations = [
-			createCitation({ id: 'later', family: 'Smith', title: 'Alpha Study', year: 2024 }),
-			createCitation({ id: 'earlier', family: 'Smith', title: 'Alpha Study', year: 2018 }),
+			createCitation({
+				id: 'later',
+				family: 'Smith',
+				title: 'Alpha Study',
+				year: 2024,
+			}),
+			createCitation({
+				id: 'earlier',
+				family: 'Smith',
+				title: 'Alpha Study',
+				year: 2018,
+			}),
 		];
 
 		expect(sortCitations(citations).map((c) => c.id)).toEqual([
@@ -256,8 +266,18 @@ describe('sortCitations', () => {
 
 	it('treats notes-bibliography entries with identical author, title, and year as equal order', () => {
 		const citations = [
-			createCitation({ id: 'first', family: 'Smith', title: 'Alpha', year: 2024 }),
-			createCitation({ id: 'second', family: 'Smith', title: 'Alpha', year: 2024 }),
+			createCitation({
+				id: 'first',
+				family: 'Smith',
+				title: 'Alpha',
+				year: 2024,
+			}),
+			createCitation({
+				id: 'second',
+				family: 'Smith',
+				title: 'Alpha',
+				year: 2024,
+			}),
 		];
 
 		expect(sortCitations(citations)).toHaveLength(2);
@@ -265,8 +285,18 @@ describe('sortCitations', () => {
 
 	it('sorts author-date entries with same author and year by title', () => {
 		const citations = [
-			createCitation({ id: 'z-title', family: 'Jones', year: 2022, title: 'Zebra Study' }),
-			createCitation({ id: 'a-title', family: 'Jones', year: 2022, title: 'Alpha Study' }),
+			createCitation({
+				id: 'z-title',
+				family: 'Jones',
+				year: 2022,
+				title: 'Zebra Study',
+			}),
+			createCitation({
+				id: 'a-title',
+				family: 'Jones',
+				year: 2022,
+				title: 'Alpha Study',
+			}),
 		];
 
 		expect(

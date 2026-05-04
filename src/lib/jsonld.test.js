@@ -225,6 +225,114 @@ describe('cslToJsonLd', () => {
 		});
 	});
 
+	it('omits optional properties for sparse records without authors or identifiers', () => {
+		expect(
+			cslToJsonLd({
+				type: 'thesis',
+			})
+		).toEqual({
+			'@context': 'https://schema.org',
+			'@type': 'Thesis',
+			name: '',
+		});
+	});
+
+	it('keeps person authors without family, given, or ORCID metadata minimal', () => {
+		expect(
+			cslToJsonLd({
+				type: 'report',
+				title: 'Literal Person Example',
+				author: [
+					{
+						literal: 'Ada Research Group',
+						family: 'Research Group',
+					},
+					{},
+				],
+			})
+		).toMatchObject({
+			author: [
+				{
+					'@type': 'Person',
+					name: 'Ada Research Group',
+					familyName: 'Research Group',
+				},
+				{
+					'@type': 'Person',
+					name: '',
+				},
+			],
+		});
+	});
+
+	it('preserves already-normalized ORCID URLs', () => {
+		expect(
+			cslToJsonLd({
+				type: 'book',
+				title: 'ORCID URL Example',
+				author: [
+					{
+						given: 'Ada',
+						family: 'Smith',
+						ORCID: 'https://orcid.org/0000-0001-2345-6789',
+					},
+				],
+			})
+		).toMatchObject({
+			author: [
+				{
+					sameAs: 'https://orcid.org/0000-0001-2345-6789',
+				},
+			],
+		});
+	});
+
+	it('uses scalar ISSN values and ignores unsupported container contexts', () => {
+		expect(
+			cslToJsonLd({
+				type: 'article-journal',
+				title: 'Scalar ISSN Example',
+				'container-title': 'Journal of Examples',
+				ISSN: '2049-3630',
+			})
+		).toMatchObject({
+			isPartOf: {
+				issn: '2049-3630',
+			},
+		});
+
+		expect(
+			cslToJsonLd({
+				type: 'book',
+				title: 'Book With Series',
+				'container-title': 'Unsupported Series Context',
+			})
+		).not.toHaveProperty('isPartOf');
+	});
+
+	it('does not let explicit URLs override DOI URLs and ignores empty ISBN arrays', () => {
+		expect(
+			cslToJsonLd({
+				type: 'book',
+				title: 'DOI URL Priority',
+				DOI: '10.5555/url-priority',
+				URL: 'https://example.com/landing-page',
+				ISBN: ['', 42, null],
+			})
+		).toMatchObject({
+			url: 'https://doi.org/10.5555%2Furl-priority',
+		});
+		expect(
+			cslToJsonLd({
+				type: 'book',
+				title: 'DOI URL Priority',
+				DOI: '10.5555/url-priority',
+				URL: 'https://example.com/landing-page',
+				ISBN: ['', 42, null],
+			})
+		).not.toHaveProperty('isbn');
+	});
+
 	it('produces valid JSON-LD for multiple authors and quote-heavy titles', () => {
 		const json = buildJsonLdString([
 			{

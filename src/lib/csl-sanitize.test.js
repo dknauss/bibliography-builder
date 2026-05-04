@@ -323,6 +323,68 @@ describe('validateAndSanitizeCsl', () => {
 		expect(result.ISSN).toBe('2049-3630');
 	});
 
+	it('sanitizes editor and reviewed-author name lists', () => {
+		const result = validateAndSanitizeCsl({
+			type: 'review-book',
+			title: 'Review Example',
+			editor: [{ literal: 'Editorial Board' }],
+			'reviewed-author': [{ family: 'Borges', given: 'Jorge Luis' }],
+		});
+
+		expect(result.editor).toEqual([{ literal: 'Editorial Board' }]);
+		expect(result['reviewed-author']).toEqual([
+			{ family: 'Borges', given: 'Jorge Luis' },
+		]);
+	});
+
+	it('validates all supported string metadata fields when present', () => {
+		const result = validateAndSanitizeCsl({
+			type: 'article-journal',
+			title: '<em>Title</em>',
+			'container-title': '<b>Journal</b>',
+			publisher: '<span>Publisher</span>',
+			page: '<i>10-20</i>',
+			volume: '<strong>12</strong>',
+			issue: '<strong>4</strong>',
+			DOI: '<span>10.1234/example</span>',
+			URL: '<span>https://example.com</span>',
+			language: '<span>en</span>',
+			edition: '<span>2</span>',
+			medium: '<span>Print</span>',
+			genre: '<span>Essay</span>',
+			'publisher-place': '<span>Buenos Aires</span>',
+			'event-place': '<span>Edmonton</span>',
+			'reviewed-title': '<span>Reviewed Book</span>',
+		});
+
+		expect(result).toMatchObject({
+			title: 'Title',
+			'container-title': 'Journal',
+			publisher: 'Publisher',
+			page: '10-20',
+			volume: '12',
+			issue: '4',
+			DOI: '10.1234/example',
+			URL: 'https://example.com',
+			language: 'en',
+			edition: '2',
+			medium: 'Print',
+			genre: 'Essay',
+			'publisher-place': 'Buenos Aires',
+			'event-place': 'Edmonton',
+			'reviewed-title': 'Reviewed Book',
+		});
+	});
+
+	it('accepts valid accessed dates', () => {
+		const result = validateAndSanitizeCsl({
+			...MINIMAL_VALID,
+			accessed: { 'date-parts': [[2026, '05', '04']] },
+		});
+
+		expect(result.accessed['date-parts']).toEqual([[2026, 5, 4]]);
+	});
+
 	// ── passthrough of unknown extra fields ───────────────────────────────────
 
 	it('passes through unknown extra fields after sanitization', () => {

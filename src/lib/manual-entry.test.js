@@ -3,6 +3,9 @@ import {
 	createEmptyManualEntryFields,
 	createManualCitation,
 	MANUAL_ENTRY_TYPE_OPTIONS,
+	normalizeDoiValue,
+	normalizeUrlValue,
+	validateIdentifierFields,
 	validateManualEntry,
 } from './manual-entry';
 
@@ -63,6 +66,49 @@ describe('manual-entry', () => {
 		);
 		expect(
 			validateManualEntry({ type: 'book', title: 'Example' })
+		).toBeNull();
+	});
+
+	it('normalizes DOI values and rejects invalid DOI input', () => {
+		expect(normalizeDoiValue(' doi:10.1234/example. ')).toBe(
+			'10.1234/example'
+		);
+		expect(normalizeDoiValue('https://doi.org/10.1234/example')).toBeNull();
+		expect(normalizeDoiValue('not a doi')).toBeNull();
+		expect(normalizeDoiValue('   ')).toBe('');
+		expect(normalizeDoiValue(10)).toBe('');
+	});
+
+	it('normalizes URL values and rejects non-http URLs', () => {
+		expect(normalizeUrlValue(' https://example.com/page). ')).toBe(
+			'https://example.com/page'
+		);
+		expect(normalizeUrlValue('ftp://example.com')).toBeNull();
+		expect(normalizeUrlValue('example.com')).toBeNull();
+		expect(normalizeUrlValue('')).toBe('');
+		expect(normalizeUrlValue(null)).toBe('');
+	});
+
+	it('reports identifier validation errors before building CSL', () => {
+		expect(
+			validateIdentifierFields({
+				doi: 'invalid-doi',
+				url: 'https://example.com',
+			})
+		).toBe('Enter a valid DOI before adding.');
+		expect(
+			validateIdentifierFields({
+				doi: '10.1234/valid',
+				url: 'example.com',
+			})
+		).toBe(
+			'Enter a valid URL beginning with http:// or https:// before adding.'
+		);
+		expect(
+			validateIdentifierFields({
+				doi: '',
+				url: '',
+			})
 		).toBeNull();
 	});
 
@@ -138,6 +184,45 @@ describe('manual-entry', () => {
 			URL: 'https://example.com',
 		});
 		expect(csl).not.toHaveProperty('issued');
+	});
+
+	it('parses one-name, natural-order, and incomplete comma authors as expected', () => {
+		const csl = buildManualCsl({
+			type: 'book',
+			title: 'Contributor Forms',
+			authors: 'Anonymous; Ada Lovelace; Incomplete, ; Scholar, Jane.; ;',
+		});
+
+		expect(csl.author).toEqual([
+			{ literal: 'Anonymous' },
+			{ given: 'Ada', family: 'Lovelace' },
+			{ literal: 'Incomplete,' },
+			{ family: 'Scholar', given: 'Jane' },
+		]);
+	});
+
+	it('maps optional container, publisher, page, URL, and valid year fields', () => {
+		const csl = buildManualCsl({
+			type: 'chapter',
+			title: 'A Chapter',
+			containerTitle: 'Edited Volume',
+			publisher: 'Example Press',
+			page: '10-20',
+			url: 'https://example.com/chapter),',
+			year: '2026',
+		});
+
+		expect(csl).toMatchObject({
+			type: 'chapter',
+			title: 'A Chapter',
+			'container-title': 'Edited Volume',
+			publisher: 'Example Press',
+			page: '10-20',
+			URL: 'https://example.com/chapter',
+			issued: {
+				'date-parts': [[2026]],
+			},
+		});
 	});
 
 	it('creates a full manual citation entry compatible with the save pipeline', async () => {

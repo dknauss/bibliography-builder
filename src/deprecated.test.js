@@ -141,7 +141,11 @@ describe('deprecated block versions', () => {
 			citationStyle: 'chicago-author-date',
 			citations: [
 				createCitation({ id: 'z', family: 'Zulu', title: 'Zeta Book' }),
-				createCitation({ id: 'a', family: 'Alpha', title: 'Alpha Book' }),
+				createCitation({
+					id: 'a',
+					family: 'Alpha',
+					title: 'Alpha Book',
+				}),
 			],
 		});
 
