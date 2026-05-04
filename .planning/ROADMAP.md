@@ -170,6 +170,7 @@ Low-priority polish:
 
 -   align screenshot order in `README.md` and `readme.txt` so both readmes show the front-end bibliography output first and the editor-with-citations screenshot second
 -   keep later screenshot captions/order consistent between GitHub and WordPress.org whenever screenshots are refreshed
+-   add localized WordPress.org banner variants (`banner-772x250-{locale}.png` and `banner-1544x500-{locale}.png`, including RTL where useful) after localized branding/copy and official language-pack availability justify them
 
 ## Compatibility and runtime coverage backlog
 
