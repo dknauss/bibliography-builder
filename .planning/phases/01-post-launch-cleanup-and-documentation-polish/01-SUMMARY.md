@@ -6,7 +6,7 @@ Completed the post-launch cleanup slice after the public WordPress.org `1.0.0` d
 
 ## Completed
 
-- Updated GitHub README with WordPress.org install link, concise compatibility wording, expanded read-only REST API documentation, and matching screenshot order.
+- Updated GitHub README with WordPress.org install link, concise compatibility wording, expanded read-only REST API documentation, and matching screenshot order, plus a linked WordPress.org SVN deploy checklist in the repo docs.
 - Updated WordPress.org `readme.txt` with WordPress 7.0 compatibility wording, a concise WordPress Playground demo link, GitHub documentation wording, and matching screenshot captions.
 - Reordered `.wordpress-org/screenshot-*.png` so the front-end output screenshot is first and editor-with-citations is second.
 - Updated `SPEC.md` to remove stale Multisite/SQLite testing-gap language and document current runtime smoke coverage.
@@ -15,6 +15,7 @@ Completed the post-launch cleanup slice after the public WordPress.org `1.0.0` d
 - Upgraded the formatter cache from FIFO to simple LRU semantics and added regression coverage.
 - Renamed/documented year helper semantics in export vs. sort paths.
 - Rebuilt the release zip with updated `readme.txt` and plugin header metadata.
+- Added `/docs/wporg-svn-checklist.md` as a short repo deploy checklist grounded in the WordPress.org SVN handbook pages.
 
 ## Verification
 
