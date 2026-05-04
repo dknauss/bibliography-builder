@@ -1,13 +1,13 @@
 # Borges Bibliography Builder for WordPress
 
 [![License: GPL v2+](https://img.shields.io/badge/License-GPLv2%2B-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![WordPress tested](https://img.shields.io/badge/WordPress-6.4%E2%80%93latest-21759b.svg?logo=wordpress&logoColor=white)](https://github.com/dknauss/Bibliography-Builder/actions/workflows/runtime-matrix.yml)
-[![PHP tested](https://img.shields.io/badge/PHP-7.4%E2%80%938.4-777bb4.svg?logo=php&logoColor=white)](https://github.com/dknauss/Bibliography-Builder/actions/workflows/runtime-matrix.yml)
-[![CI](https://github.com/dknauss/Bibliography-Builder/actions/workflows/ci.yml/badge.svg)](https://github.com/dknauss/Bibliography-Builder/actions/workflows/ci.yml)
-[![Runtime matrix](https://github.com/dknauss/Bibliography-Builder/actions/workflows/runtime-matrix.yml/badge.svg)](https://github.com/dknauss/Bibliography-Builder/actions/workflows/runtime-matrix.yml)
-[![CodeQL](https://github.com/dknauss/Bibliography-Builder/actions/workflows/codeql.yml/badge.svg)](https://github.com/dknauss/Bibliography-Builder/actions/workflows/codeql.yml)
-[![Codecov](https://codecov.io/gh/dknauss/Bibliography-Builder/branch/main/graph/badge.svg)](https://codecov.io/gh/dknauss/Bibliography-Builder)
-[![WordPress Playground](https://img.shields.io/badge/WordPress%20Playground-Try%20it-3858e9.svg?logo=wordpress&logoColor=white)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/Bibliography-Builder/main/playground/blueprint.json)
+[![WordPress tested](https://img.shields.io/badge/WordPress-6.4%E2%80%93latest-21759b.svg?logo=wordpress&logoColor=white)](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/runtime-matrix.yml)
+[![PHP tested](https://img.shields.io/badge/PHP-7.4%E2%80%938.4-777bb4.svg?logo=php&logoColor=white)](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/runtime-matrix.yml)
+[![CI](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/ci.yml)
+[![Runtime matrix](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/runtime-matrix.yml/badge.svg)](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/runtime-matrix.yml)
+[![CodeQL](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/codeql.yml/badge.svg)](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/codeql.yml)
+[![Codecov](https://codecov.io/gh/dknauss/borges-bibliography-builder/branch/main/graph/badge.svg)](https://codecov.io/gh/dknauss/borges-bibliography-builder)
+[![WordPress Playground](https://img.shields.io/badge/WordPress%20Playground-Try%20it-3858e9.svg?logo=wordpress&logoColor=white)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/borges-bibliography-builder/main/playground/blueprint.json)
 
 Named for Jorge Luis Borges (1899–1986), the Argentine writer, essayist, poet, and librarian whose work imagined infinite libraries, invented books, and labyrinths of reference, Borges Bibliography Builder brings that bibliographic spirit to WordPress.
 
@@ -19,7 +19,7 @@ Just write out your citations or paste DOIs and BibTeX code, up to 50 at a time.
 
 ## Try it in WordPress Playground
 
-Launch a disposable WordPress instance with the plugin preinstalled: [Try the Borges Bibliography Builder in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/Bibliography-Builder/main/playground/blueprint.json). Playground installs the plugin from the latest GitHub Release zip artifact.
+Launch a disposable WordPress instance with the plugin preinstalled: [Try the Borges Bibliography Builder in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/borges-bibliography-builder/main/playground/blueprint.json). Playground installs the plugin from the latest GitHub Release zip artifact.
 
 ![](.wordpress-org/banner-1544x500.png)
 
@@ -46,9 +46,9 @@ Launch a disposable WordPress instance with the plugin preinstalled: [Try the Bo
 
 - **WordPress** 6.4–7.0 (block.json v3 requires 6.4+)
 - **PHP** 7.4+ (minimal PHP runtime — the plugin registers a block and REST endpoints only)
-- **Multisite** is expected to work (block registration is site-local by default), but dedicated Multisite tests are pending.
+- **Multisite** — covered by the runtime smoke matrix with network activation on an Apache/PHP/latest-WordPress lane.
 
-The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 through the latest core release on both Apache and Nginx. Multisite-specific and SQLite runtime e2e tests are on the backlog.
+The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 through the latest core release on Apache, Nginx, MySQL, SQLite, and one Multisite network-activation lane.
 
 ## Features
 
@@ -168,19 +168,20 @@ The GitHub Actions runtime matrix currently covers:
 - Apache + PHP 8.2 + latest WordPress
 - Apache + PHP 8.3 + latest WordPress
 - Apache + PHP 8.4 + latest WordPress
+- Apache + PHP 8.3 + latest WordPress + Multisite
 - Nginx + PHP 8.1 + WordPress 6.7
 - Nginx + PHP 8.2 + latest WordPress
 - Nginx + PHP 8.3 + latest WordPress
 
 Each runtime smoke job uploads artifacts, including Docker logs, service status, HTTP responses, and environment summaries under `output/runtime-matrix/<matrix-name>`.
 
-SQLite runtime smoke remains a planned follow-up while the CI bootstrap path is stabilized.
+SQLite and Multisite runtime smoke coverage are included in CI; future runtime work should focus on keeping those lanes stable and adding cases only when a compatibility risk justifies them.
 
 ## Project Documentation and Operational Files
 
 - [Plugin specification](./SPEC.md)
 - [Changelog](./CHANGELOG.md)
-- [GitHub release notes (v1.0.0)](https://github.com/dknauss/Bibliography-Builder/releases/tag/v1.0.0)
+- [GitHub release notes (v1.0.0)](https://github.com/dknauss/borges-bibliography-builder/releases/tag/v1.0.0)
 - [Release readiness checklist](./docs/release-readiness-checklist.md)
 - [Playground blueprint](./playground/blueprint.json)
 - [Runtime matrix smoke script](./scripts/runtime-matrix/smoke.sh)

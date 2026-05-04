@@ -172,10 +172,11 @@ Completed:
 
 -   expanded the GitHub Actions runtime matrix across additional Apache/Nginx/PHP/WordPress combinations
 -   added a SQLite single-site runtime smoke lane with the same artifact capture used for MySQL lanes
+-   added an Apache/PHP 8.3/latest-WordPress Multisite runtime smoke lane with network activation and artifact capture
 
 Planned next:
 
--   add multisite runtime smoke coverage so at least one network-install lane is exercised in CI
+-   keep runtime lanes stable and add new coverage only when compatibility risk justifies it
 
 ## wp.org submission status
 
@@ -184,24 +185,29 @@ Completed release-prep work:
 1. **Codecov badge** — badge resolves and CI upload is wired.
 2. **Playground** — the published Playground link installs the plugin from the latest GitHub Release artifact.
 3. **Plugin-directory screenshots** — banner, icon, and screenshots are present in `.wordpress-org/`.
-4. **Release asset** — `bibliography-block.zip` is published on the `v1.0.0` GitHub Release.
+4. **Release asset** — `borges-bibliography-builder.zip` is the canonical first-release asset for the `v1.0.0` GitHub Release.
 
 Submitted 2026-04-11. Awaiting WordPress.org review response.
 
-Current operational note (2026-04-20):
+Current operational note (2026-05-04):
 
-- `main` is ahead of `v1.0.0` and currently has a CI lint failure to clear before taking another release-tag action.
+- `main` CI was restored to green after the branding/changelog cleanup.
+- Repository and release naming are being normalized around `dknauss/borges-bibliography-builder` and `borges-bibliography-builder.zip`.
+- The first public WordPress.org release does not need a transition zip; the canonical release asset should be rebuilt and uploaded fresh after CI is green.
 
-## Immediate next-task priorities (2026-04-20)
+## Immediate next-task priorities (2026-05-04)
 
-1. **Restore `main` CI to green**
-   - fix Prettier lint failures in `src/components/editor-canvas-notices.js`, `src/components/structured-citation-editor.js`, and `src/edit.js`
-   - rerun CI and confirm Node 20/22 quality lanes pass
+1. **Finalize release naming and asset sync**
+   - rename the GitHub repository to `dknauss/borges-bibliography-builder`
+   - ensure the latest `v1.0.0` release carries only `borges-bibliography-builder.zip`
+   - verify the Playground blueprint downloads that canonical asset
 2. **Keep wp.org submission response-ready**
    - plugin submitted 2026-04-11; monitor and respond to reviewer feedback quickly
-3. **Ship multisite runtime smoke coverage**
-   - add at least one multisite lane to runtime matrix
-4. **Then proceed with the deferred code-quality sweep**
+3. **Monitor runtime coverage**
+   - confirm the new Multisite smoke lane stays green on `main`
+4. **Proceed with the deferred code-quality sweep**
+5. **Plan interoperability enhancements**
+   - frontend Cite/Export affordances first, then BibLaTeX and PMID support
 
 ## Code quality backlog
 

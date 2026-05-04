@@ -66,7 +66,7 @@ Yes. The plugin exposes read-only REST endpoints at `/wp-json/bibliography/v1/po
 
 = Does the Borges Bibliography Builder work on WordPress Multisite? =
 
-Expected to work — block registration is site-local by default — but dedicated Multisite tests are pending. If you encounter issues, please report them.
+Yes. CI includes a Multisite runtime smoke lane with network activation. If you encounter issues on a specific network configuration, please report them.
 
 = What PHP and WordPress versions are supported? =
 
@@ -84,7 +84,7 @@ PHP 7.4+ and WordPress 6.4+. The plugin has minimal PHP runtime (block registrat
 
 Source code, issue tracker, and contribution guidelines are on GitHub:
 
-[https://github.com/dknauss/Bibliography-Builder](https://github.com/dknauss/Bibliography-Builder)
+[https://github.com/dknauss/borges-bibliography-builder](https://github.com/dknauss/borges-bibliography-builder)
 
 Bug reports, feature requests, and pull requests are welcome. See CONTRIBUTING.md in the repository for development setup, coding standards, and the PR process.
 
@@ -113,6 +113,8 @@ This plugin connects to the **CrossRef REST API** (https://api.crossref.org/) wh
 * Provide read-only REST API endpoints for programmatic bibliography access.
 * Bundle 19 interface locale files.
 * Harden the WordPress.org release package with third-party notices and Plugin Check cleanup.
+* Standardize GitHub, Playground, and release-download links on the approved `borges-bibliography-builder` slug and zip name.
+* Add CI/runtime coverage for Multisite network activation and expanded PHP utility behavior.
 
 == Upgrade Notice ==
 

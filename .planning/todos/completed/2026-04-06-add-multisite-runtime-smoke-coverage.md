@@ -22,3 +22,7 @@ Add at least one multisite smoke lane to the runtime matrix, verify plugin activ
 - plugin activation and a basic bibliography post smoke test pass on multisite
 - runtime artifacts include enough detail to diagnose multisite bootstrap failures
 - README runtime-matrix notes mention multisite coverage once shipped
+
+## Completed
+
+Completed 2026-05-04.

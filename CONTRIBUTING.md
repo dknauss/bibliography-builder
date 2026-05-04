@@ -8,8 +8,8 @@ Thank you for your interest in contributing! This document explains how to get s
 
 2. **Clone and install:**
    ```bash
-   git clone https://github.com/dknauss/bibliography-builder.git
-   cd bibliography-builder
+   git clone https://github.com/dknauss/borges-bibliography-builder.git
+   cd borges-bibliography-builder
    npm install
    ```
 
@@ -53,7 +53,7 @@ Tests live alongside the source in `src/` or in a `__tests__/` directory. When a
 
 ## Reporting Bugs
 
-Use the [bug report issue template](https://github.com/dknauss/bibliography-builder/issues/new?template=01-bug-report.yml). Include steps to reproduce, expected behavior, and your WordPress/browser versions.
+Use the [bug report issue template](https://github.com/dknauss/borges-bibliography-builder/issues/new?template=01-bug-report.yml). Include steps to reproduce, expected behavior, and your WordPress/browser versions.
 
 ## Security Issues
 

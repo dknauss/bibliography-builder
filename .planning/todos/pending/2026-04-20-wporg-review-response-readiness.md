@@ -18,6 +18,6 @@ Keep release artifacts reproducible, monitor review responses, and prepare rapid
 
 ## Acceptance targets
 
-- ready-to-rebuild `bibliography-block.zip` artifact
+- ready-to-rebuild `borges-bibliography-builder.zip` artifact
 - readme/header metadata stays consistent with reviewer guidance
 - reviewer requests can be addressed and redeployed in one patch cycle

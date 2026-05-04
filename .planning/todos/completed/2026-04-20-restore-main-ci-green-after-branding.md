@@ -22,3 +22,7 @@ Apply formatting fixes, run local lint/tests, and push so all required GitHub ch
 - `npm run lint:js` passes locally
 - `CI` workflow passes on `main`
 - no regression in runtime matrix or CodeQL workflows
+
+## Completed
+
+Completed 2026-05-04.

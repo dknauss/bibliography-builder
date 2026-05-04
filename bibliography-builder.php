@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Borges Bibliography Builder
- * Plugin URI:        https://github.com/dknauss/bibliography-builder/
+ * Plugin URI:        https://github.com/dknauss/borges-bibliography-builder/
  * Description:       Paste a DOI or BibTeX entry to build a formatted, auto-sorted bibliography in any style.
  * Version:           1.0.0
  * Requires at least: 6.4
@@ -312,7 +312,7 @@ function bibliography_builder_normalize_formatted_text( $text, $style ) {
 	if ( isset( $style['template'] ) && 'abnt' === $style['template'] ) {
 		$text = preg_replace( '/\bv\.\s+vol\.\s+/u', 'v. ', $text );
 		$text = preg_replace( '/\bn\.\s+no\.\s+/u', 'n. ', $text );
-		$text = preg_replace( '/\bp\.\s+p\.p?\.\s+/u', 'p. ', $text );
+		$text = preg_replace( '/\bp\.\s+p{1,2}\.\s+/u', 'p. ', $text );
 	}
 
 	return str_replace( 'and et al.', 'et al.', $text );

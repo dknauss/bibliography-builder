@@ -33,6 +33,7 @@ No changes yet.
 - XSS prevention: HTML escaping for citation text, `</` escaping in script blocks, HTML tag stripping from CrossRef metadata.
 - Input caps: 50 entries per paste, 1 MB max input size.
 - GitHub Actions CI: lint, test, build, PHPUnit, Psalm, CodeQL, Codecov, Playwright Playground smoke tests, runtime matrix.
+- Multisite runtime smoke coverage with network activation on an Apache/PHP/latest-WordPress lane.
 - Release workflow with tag-triggered GitHub Release and zip artifact, plus WordPress.org release packaging with third-party notices.
 - WordPress Playground blueprint for instant evaluation.
 - Lifecycle end-to-end tests for activate, deactivate, and delete flows.
@@ -41,6 +42,7 @@ No changes yet.
 - Bundled interface locale files for French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu.
 - 25 additional regression tests covering REST defaults, structured-edit cancellation races, focus helper behavior, manuscript/review italics branches, BibTeX aliases, thesis COinS output, and corrected JSON-LD mappings.
 - New dedicated hook test files for `use-citation-editor-state` and `use-entry-focus`.
+- PHP utility-function tests for REST/export helper behavior, formatter normalization, block collection, and JSON encoding.
 
 ### Changed
 
@@ -53,6 +55,8 @@ No changes yet.
 - Added `focus-visible` outline to bibliography list entries.
 - Removed the redundant `aria-label` from the inline edit input.
 - Aligned WordPress.org-facing package identifiers around the approved `borges-bibliography-builder` slug while preserving the existing block namespace and saved CSS classes for content/theme compatibility.
+- Normalized GitHub, Playground, Plugin URI, security-reporting, and language-header URLs around `dknauss/borges-bibliography-builder`.
+- Standardized the first public release package on `borges-bibliography-builder.zip` with no transition zip.
 - Removed dead exports and branches in the parser and style registry, including the unused `SUPPORTED_INPUT_MESSAGE` re-export and experimental style-picker path.
 - Psalm failures now block CI instead of running with `continue-on-error`.
 - Playwright smoke tests now use configurable frontend and REST paths through `SMOKE_FRONTEND_PATH` and `SMOKE_REST_PATH`.
@@ -68,3 +72,4 @@ No changes yet.
 - The PHPUnit `wp_strip_all_tags()` stub now matches WordPress behavior and no longer collapses whitespace, exposing plain-text rendering bugs more accurately.
 - `jsonld.js` now maps chapter citations with a container title to `isPartOf: { @type: "Book" }`, and maps `review-book` to `Review`.
 - `coins.js` now emits dissertation-specific COinS metadata for thesis citations instead of falling back to the journal format.
+- ABNT formatter normalization now collapses duplicate page markers such as `p. p.` and `p. pp.`.

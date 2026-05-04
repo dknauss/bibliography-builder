@@ -7,10 +7,11 @@ SERVER="${WP_BIBLIO_SERVER:-apache}"
 PHP_VERSION="${WP_BIBLIO_PHP_VERSION:-8.3}"
 WP_VERSION="${WP_BIBLIO_WP_VERSION:-latest}"
 DB_ENGINE="${WP_BIBLIO_DB_ENGINE:-mysql}"
+MULTISITE="${WP_BIBLIO_MULTISITE:-0}"
 HTTP_PORT="${WP_BIBLIO_HTTP_PORT:-8899}"
 DB_PORT="${WP_BIBLIO_DB_PORT:-33069}"
 SITE_URL="http://127.0.0.1:${HTTP_PORT}"
-WORKDIR="${RUNTIME_ROOT}/${SERVER}-php${PHP_VERSION}-wp${WP_VERSION}-${DB_ENGINE}"
+WORKDIR="${RUNTIME_ROOT}/${SERVER}-php${PHP_VERSION}-wp${WP_VERSION}-${DB_ENGINE}$([ "$MULTISITE" = "1" ] && printf '%s' '-multisite' || true)"
 SITE_DIR="${WORKDIR}/site"
 COMPOSE_FILE="${WORKDIR}/docker-compose.yml"
 NGINX_CONF="${WORKDIR}/nginx.conf"
@@ -31,6 +32,7 @@ collect_artifacts() {
 		echo "php_version=$PHP_VERSION"
 		echo "wp_version=$WP_VERSION"
 		echo "db_engine=$DB_ENGINE"
+		echo "multisite=$MULTISITE"
 		echo "site_url=$SITE_URL"
 		echo "http_port=$HTTP_PORT"
 		echo "db_port=$DB_PORT"
@@ -49,6 +51,7 @@ collect_artifacts() {
 	docker version > "$ARTIFACT_DIR/docker-version.txt" 2>&1 || true
 	docker compose version > "$ARTIFACT_DIR/docker-compose-version.txt" 2>&1 || true
 	wp_exec 'wp option get home --allow-root --path=/var/www/html' > "$ARTIFACT_DIR/home-url.txt" 2>&1 || true
+	wp_exec 'wp site list --fields=blog_id,url --format=csv --allow-root --path=/var/www/html' > "$ARTIFACT_DIR/site-list.csv" 2>&1 || true
 }
 
 cleanup() {
@@ -210,7 +213,12 @@ ensure_wp_config_sqlite() {
 bootstrap_mysql_site() {
 	ensure_wp_version
 	ensure_wp_config_mysql
-	wp_exec "wp core is-installed --allow-root --path=/var/www/html || wp core install --allow-root --path=/var/www/html --url=$SITE_URL --title='Bibliography Builder Smoke' --admin_user=admin --admin_password=password --admin_email=admin@example.com"
+	if [ "$MULTISITE" = "1" ]; then
+		wp_exec "wp core is-installed --allow-root --path=/var/www/html || wp core multisite-install --allow-root --path=/var/www/html --url=$SITE_URL --title='Borges Bibliography Builder Smoke Network' --admin_user=admin --admin_password=password --admin_email=admin@example.com"
+		wp_exec 'wp core is-installed --network --allow-root --path=/var/www/html'
+	else
+		wp_exec "wp core is-installed --allow-root --path=/var/www/html || wp core install --allow-root --path=/var/www/html --url=$SITE_URL --title='Borges Bibliography Builder Smoke' --admin_user=admin --admin_password=password --admin_email=admin@example.com"
+	fi
 }
 
 bootstrap_sqlite_site() {
@@ -234,7 +242,12 @@ else
 	bootstrap_mysql_site
 fi
 
-wp_exec 'wp plugin activate bibliography --allow-root --path=/var/www/html'
+if [ "$MULTISITE" = "1" ]; then
+	wp_exec 'wp plugin activate bibliography --network --allow-root --path=/var/www/html'
+	wp_exec 'wp plugin is-active bibliography --network --allow-root --path=/var/www/html'
+else
+	wp_exec 'wp plugin activate bibliography --allow-root --path=/var/www/html'
+fi
 
 BLOCK_CONTENT=$(cat <<'BLOCKEOF'
 <!-- wp:bibliography-builder/bibliography {"citationStyle":"chicago-notes-bibliography","headingText":"References","outputJsonLd":true,"outputCoins":false,"outputCslJson":false,"citations":[{"id":"alpha-1","formattedText":"Alpha citation.","csl":{"type":"book","title":"Alpha Book","author":[{"family":"Alpha","given":"Ada"}],"issued":{"date-parts":[[2024]]}}}]} -->
@@ -260,4 +273,4 @@ if [ "$DB_ENGINE" = "sqlite" ]; then
 	wp_exec 'wp eval '\''echo defined( "DB_ENGINE" ) ? DB_ENGINE : "undefined";'\'' --allow-root --path=/var/www/html' | grep -q '^sqlite$'
 fi
 
-echo "Runtime smoke passed: server=${SERVER} php=${PHP_VERSION} wp=${WP_VERSION} db=${DB_ENGINE}"
+echo "Runtime smoke passed: server=${SERVER} php=${PHP_VERSION} wp=${WP_VERSION} db=${DB_ENGINE} multisite=${MULTISITE}"

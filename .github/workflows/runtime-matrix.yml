@@ -83,6 +83,14 @@ jobs:
             db_engine: mysql
             http_port: '8897'
             db_port: '33077'
+          - name: apache-php83-wplatest-multisite
+            server: apache
+            php: '8.3'
+            wp: latest
+            db_engine: mysql
+            multisite: '1'
+            http_port: '8901'
+            db_port: '33081'
 
     steps:
       - name: Checkout
@@ -108,6 +116,7 @@ jobs:
           WP_BIBLIO_HTTP_PORT: ${{ matrix.http_port }}
           WP_BIBLIO_DB_PORT: ${{ matrix.db_port }}
           WP_BIBLIO_DB_ENGINE: ${{ matrix.db_engine }}
+          WP_BIBLIO_MULTISITE: ${{ matrix.multisite }}
           WP_BIBLIO_ARTIFACT_DIR: ${{ github.workspace }}/output/runtime-matrix/${{ matrix.name }}
         run: sh ./scripts/runtime-matrix/smoke.sh
 
