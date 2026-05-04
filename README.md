@@ -6,7 +6,7 @@
 [![CI](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/ci.yml)
 [![Runtime matrix](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/runtime-matrix.yml/badge.svg)](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/runtime-matrix.yml)
 [![CodeQL](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/codeql.yml/badge.svg)](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/codeql.yml)
-[![Codecov](https://codecov.io/gh/dknauss/borges-bibliography-builder/branch/main/graph/badge.svg)](https://codecov.io/gh/dknauss/borges-bibliography-builder)
+[![codecov](https://codecov.io/gh/dknauss/borges-bibliography-builder/graph/badge.svg?token=2MSXL46VTF)](https://codecov.io/gh/dknauss/borges-bibliography-builder)
 [![WordPress Playground](https://img.shields.io/badge/WordPress%20Playground-Try%20it-3858e9.svg?logo=wordpress&logoColor=white)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/borges-bibliography-builder/main/playground/blueprint.json)
 
 Named for Jorge Luis Borges (1899–1986), the Argentine writer, essayist, poet, and librarian whose work imagined infinite libraries, invented books, and labyrinths of reference, Borges Bibliography Builder brings that bibliographic spirit to WordPress.
