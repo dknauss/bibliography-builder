@@ -1,14 +1,17 @@
 /* eslint-disable no-console, import/no-extraneous-dependencies, @wordpress/no-global-active-element */
 /**
- * Automated accessibility audit: keyboard navigation + screen reader semantics.
+ * Automated accessibility audit: keyboard navigation, screen reader semantics,
+ * and axe-core WCAG scans for editor and saved frontend output.
  * Tests the full add → edit → delete flow using keyboard only.
  *
  * Usage: PLAYWRIGHT_BASE_URL=http://127.0.0.1:9402 node scripts/a11y-audit.js
  */
 
 const { chromium } = require('playwright');
+const AxeBuilder = require('@axe-core/playwright').default;
 
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:9402';
+const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 const results = [];
 
 function pass(desc) {
@@ -32,6 +35,79 @@ async function safeCheck(desc, fn) {
 	} catch (err) {
 		fail(desc, err.message.split('\n')[0]);
 	}
+}
+
+function summarizeAxeViolations(violations) {
+	return violations
+		.map((violation) => {
+			const targets = violation.nodes
+				.slice(0, 3)
+				.map((node) => node.target.join(' '))
+				.join('; ');
+			const more =
+				violation.nodes.length > 3
+					? ` (+${violation.nodes.length - 3} more)`
+					: '';
+			return `${violation.id} (${violation.impact}): ${violation.help} — ${targets}${more}`;
+		})
+		.join(' | ');
+}
+
+async function runAxeScan(desc, page, configureBuilder) {
+	try {
+		let builder = new AxeBuilder({ page }).withTags(WCAG_TAGS);
+		if (configureBuilder) {
+			builder = configureBuilder(builder);
+		}
+		const scanResults = await builder.analyze();
+		if (scanResults.violations.length) {
+			fail(desc, summarizeAxeViolations(scanResults.violations));
+			return;
+		}
+		pass(`${desc} (${WCAG_TAGS.join(', ')})`);
+	} catch (err) {
+		fail(desc, err.message.split('\n')[0]);
+	}
+}
+
+async function publishCurrentPost(page) {
+	return page.evaluate(async () => {
+		const { data } = window.wp || {};
+		if (!data) {
+			throw new Error('Gutenberg editor data store is not available.');
+		}
+
+		const editor = data.dispatch('core/editor');
+		const select = data.select('core/editor');
+		editor.editPost({
+			title: `Accessibility Audit ${Date.now()}`,
+			status: 'publish',
+		});
+		await editor.savePost();
+
+		const currentPost = select.getCurrentPost();
+		if (currentPost?.link) {
+			return currentPost.link;
+		}
+
+		const postId = currentPost?.id || select.getCurrentPostId();
+		if (!postId) {
+			throw new Error('Could not determine saved post ID.');
+		}
+
+		const nonce = window.wpApiSettings?.nonce;
+		const response = await fetch(
+			`/wp-json/wp/v2/posts/${postId}?context=edit`,
+			{
+				headers: nonce ? { 'X-WP-Nonce': nonce } : {},
+			}
+		);
+		if (!response.ok) {
+			throw new Error(`Failed to fetch saved post ${postId}.`);
+		}
+		const post = await response.json();
+		return post?.link || '';
+	});
 }
 
 (async () => {
@@ -287,6 +363,49 @@ async function safeCheck(desc, fn) {
 			return true; // Verified in code review — role="region" only when notice exists
 		}
 	);
+
+	console.log('\n=== 6. Automated Axe Scan ===');
+
+	const blockContext = page
+		.frames()
+		.some((frame) => frame.name() === 'editor-canvas')
+		? [
+				'iframe[name="editor-canvas"]',
+				'.wp-block-bibliography-builder-bibliography',
+		  ]
+		: '.wp-block-bibliography-builder-bibliography';
+
+	await runAxeScan(
+		'Editor bibliography block has no automated WCAG axe violations',
+		page,
+		(builder) => builder.include(blockContext)
+	);
+
+	let frontendUrl = '';
+	await safeCheck('Can publish the accessibility audit post', async () => {
+		frontendUrl = await publishCurrentPost(page);
+		return Boolean(frontendUrl);
+	});
+
+	if (frontendUrl) {
+		await page.goto(frontendUrl);
+		await page.waitForLoadState('networkidle');
+		await safeCheck(
+			'Saved frontend bibliography output is visible',
+			async () => {
+				return await page
+					.locator('.wp-block-bibliography-builder-bibliography')
+					.first()
+					.isVisible({ timeout: 10000 });
+			}
+		);
+		await runAxeScan(
+			'Saved frontend bibliography output has no automated WCAG axe violations',
+			page,
+			(builder) =>
+				builder.include('.wp-block-bibliography-builder-bibliography')
+		);
+	}
 
 	// Summary
 	console.log('\n=== Summary ===');

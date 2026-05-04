@@ -451,6 +451,7 @@ npm run test:js:coverage     # JS coverage for Codecov
 npm run test:e2e             # Playwright smoke suite
 npm run test:e2e:playground  # Playground-based Playwright smoke suite
 npm run test:e2e:lifecycle   # Plugin lifecycle e2e tests
+npm run test:a11y            # Playwright keyboard + axe-core accessibility gate
 npm run test:runtime:local   # Docker-based runtime smoke
 composer test:php            # PHPUnit REST and bootstrap tests
 composer test:php:coverage   # PHP coverage for Codecov
@@ -704,7 +705,8 @@ Current behavior uses immediate deletion without a custom Undo UI. For screen re
 
 Accessibility testing is not optional and should be part of every release:
 
--   **Automated:** Use `@wordpress/scripts` lint rules and `axe-core` in integration tests to catch ARIA violations, missing labels, and color contrast issues.
+-   **Automated:** Use `@wordpress/scripts` lint rules plus `npm run test:a11y`, which drives WordPress Playground with Playwright, verifies keyboard reachability/focus behavior, and runs `@axe-core/playwright` against the editor bibliography block and saved frontend bibliography output for WCAG 2.0/2.1 A/AA plus WCAG 2.2 AA tags.
+-   **Browser-assisted audits:** Use axe DevTools, WAVE, or equivalent Chrome/Firefox tooling as a manual review layer before releases. These tools complement the automated gate; they do not replace keyboard-only and screen-reader testing.
 -   **Keyboard-only navigation:** Manually verify the full workflow (add block → paste → review list → edit entry → delete entry → re-paste) using only Tab, Enter, Space, Escape, and arrow keys. No action should be unreachable.
 -   **Focus-management regression coverage:** Keep automated coverage for the current managed focus flows:
     -   first-new-entry focus after a successful parse

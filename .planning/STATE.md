@@ -31,6 +31,7 @@
     - next recommended official language-pack first wave: French, German, Spanish, Brazilian Portuguese, and Japanese, coordinated through translate.wordpress.org/PTE review
 6. Low-priority UX/documentation polish
     - periodically re-check row-interaction accessibility
+    - add optional Troy Chaplin Block Accessibility Checks compatibility as editor-authoring guidance, not a hard dependency
     - reconsider global snackbars for pure success-only cases if it ever improves clarity
     - align the screenshot order in `README.md` and `readme.txt`: front-end output first, editor-with-citations second
     - add reciprocal GitHub/WordPress.org links and a concise WordPress Playground demo link where appropriate
@@ -83,12 +84,13 @@ Recent work completed or in final verification includes:
 
 ## Pending Todos
 
--   5 pending todos in `.planning/todos/pending`
+-   6 pending todos in `.planning/todos/pending`
     - WordPress.org launch monitoring and hotfix readiness
     - Add frontend Cite and Export affordances
     - Prioritize BibLaTeX and PMID interoperability
     - Investigate writable bibliography REST API and Abilities integration
     - Prepare official language-pack expansion and refreshed i18n artifacts
+    - Add optional Block Accessibility Checks compatibility
 
 ## Roadmap Alignment
 

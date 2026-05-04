@@ -372,6 +372,7 @@ Track the following as non-blocking cleanup / maintainability work:
 -   evaluate a later semantic enhancement to wrap visible bibliography authors individually in HTML; JSON-LD and CSL-JSON already preserve separate author objects, while COinS currently flattens to first-author fields only
 -   keep the current native Gutenberg notification split: block-local inline notices for contextual validation and mixed-result feedback, with block-local snackbars reserved for pure success states
 -   low-priority follow-up: periodically verify accessibility of the citation-row interaction model (click-to-edit, row action reveal, focus recovery) as Gutenberg/editor behavior evolves
+-   low-priority follow-up: add a soft compatibility layer for Troy Chaplin's Block Accessibility Checks framework so bibliography-specific authoring guidance can appear in the editor when that plugin is present, without making it a hard dependency
 -   low-priority follow-up: reconsider global snackbars for pure success-only cases if future UX testing shows they improve clarity without weakening block-local validation feedback
 
 ### Metadata output progress
