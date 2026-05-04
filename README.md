@@ -46,7 +46,7 @@ Launch a disposable WordPress instance with the plugin preinstalled: [Try the Bo
 
 - **WordPress** 6.4–7.0 (block.json v3 requires 6.4+)
 - **PHP** 7.4+ (minimal PHP runtime — the plugin registers a block and REST endpoints only)
-- **Multisite** is expected to work (block registration is site-local by default), but on-depth tests are pending.
+- **Multisite** is expected to work (block registration is site-local by default), but dedicated Multisite tests are pending.
 
 The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 through the latest core release on both Apache and Nginx. Multisite-specific and SQLite runtime e2e tests are on the backlog.
 
@@ -68,7 +68,7 @@ The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 t
 
 Borges is reference-manager-friendly by design. It outputs portable CSL-JSON, BibTeX, RIS, DOI links, Schema.org JSON-LD, and optional COinS metadata so your bibliographies can be imported directly into the most widely used bibliography management and academic publishing software.
 
-| Tool or Workflow | Level of Support |
+| Tool or workflow | How Borges supports it |
 |---|---|
 | **Zotero** | Strong compatibility through DOI links, BibTeX, RIS, CSL-JSON, and optional COinS metadata. |
 | **Mendeley** | Compatible through BibTeX/RIS exports; DOI-backed entries are also browser-importer friendly. Use export/copy actions for non-DOI entries rather than relying on extension autodetection. |
@@ -185,7 +185,7 @@ SQLite runtime smoke remains a planned follow-up while the CI bootstrap path is 
 - [Runtime matrix smoke script](./scripts/runtime-matrix/smoke.sh)
 - [Brand assets](./.wordpress-org/)
 
-WordPress.org branding assets live in [.wordpress-org](./.wordpress-org/), and editable source files live in [.wordpress-org/source](./.wordpress-org/source/)
+WordPress.org branding assets live in [.wordpress-org](./.wordpress-org/), and editable source files live in [.wordpress-org/source](./.wordpress-org/source/).
 
 ### Plugin File Structure
 
