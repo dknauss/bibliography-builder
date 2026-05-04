@@ -2,18 +2,18 @@
 
 ## Current Focus
 
-1. Prepare the approved WordPress.org release/deploy path and keep the GitHub release asset aligned.
-2. Keep `main` green after the repository/release naming cleanup and new Multisite runtime lane.
+1. Execute the post-launch cleanup and documentation polish phase now that `1.0.0` is live on WordPress.org.
+2. Keep `main`, release assets, and WordPress.org SVN output aligned after launch.
 3. Run the v1.1 code-quality sweep and interoperability backlog.
 4. Plan future frontend Cite/Export affordances, BibLaTeX/PMID support, and translation expansion.
 
 ## Current Priority Order
 
-1. WordPress.org approval and deploy readiness
-    - WordPress.org reviewers have approved the plugin; next release work is deployment/publication rather than review response
-    - keep plugin headers, `readme.txt`, GitHub release assets, and Playground download URLs aligned with the approved WordPress.org slug (`borges-bibliography-builder`)
-    - rebuild and validate `output/release/borges-bibliography-builder.zip` after any final release-prep change
-    - keep the `v1.0.0` GitHub Release concise and pointing at the canonical Borges-branded zip asset
+1. Post-launch cleanup and documentation polish
+    - Borges Bibliography Builder `1.0.0` is live on WordPress.org
+    - align GitHub README, WordPress.org `readme.txt`, SPEC, planning state, screenshots, REST API documentation, Playground/demo links, and compatibility wording
+    - keep plugin headers, `readme.txt`, GitHub release assets, and WordPress.org SVN output aligned with the approved slug (`borges-bibliography-builder`)
+    - rebuild and validate `output/release/borges-bibliography-builder.zip` after any release-prep or patch change
 2. CI and runtime compatibility hygiene
     - monitor the `main` workflows after the repo rename/multisite-lane changes land
     - keep the Apache/Nginx, PHP 7.4-8.4, WordPress 6.4-latest, SQLite, and Multisite runtime lanes healthy
@@ -22,16 +22,20 @@
     - upgrade the formatting cache from FIFO to LRU
     - clarify or rename the two `getYear` helpers with different sentinel semantics
     - continue module-scope i18n and prop-drilling cleanup where it buys testability or clarity
-4. Interoperability backlog
+4. Interoperability and automation backlog
     - design optional frontend Cite/Export affordances for readers who need direct BibTeX/RIS/CSL-JSON access
     - prioritize BibLaTeX support first, then PMID resolution before NBIB
     - keep EndNote XML, NBIB export, and CIW demand-gated; keep ENL out of scope
+    - investigate writable bibliography REST routes and WordPress Abilities integration for remote/AI-assisted citation management
 5. Translation expansion backlog
     - shipped interface locale files: French, German, Dutch, Swedish, Spanish, Italian, Portuguese, Polish, Russian, Japanese, Simplified Chinese, Korean, Serbian, Croatian, Brazilian Portuguese, Hindi, Bengali, Tamil, and Telugu
     - next recommended backlog locales: Arabic, Turkish, Indonesian, Hebrew, Vietnamese, Ukrainian, Romanian, and Czech
-6. Low-priority UX follow-up
+6. Low-priority UX/documentation polish
     - periodically re-check row-interaction accessibility
     - reconsider global snackbars for pure success-only cases if it ever improves clarity
+    - align the screenshot order in `README.md` and `readme.txt`: front-end output first, editor-with-citations second
+    - add reciprocal GitHub/WordPress.org links and a concise WordPress Playground demo link where appropriate
+    - harmonize compatibility statements around WordPress 6.4+ and tested up to WordPress 7.0
 
 ## Last activity
 
@@ -68,7 +72,7 @@ Recent work completed or in final verification includes:
 
 ## Active Concerns
 
--   **WordPress.org approval** — reviewers have approved the plugin. Next operational step is the public deploy/SVN release path, while keeping the GitHub `v1.0.0` release asset and WordPress.org package aligned.
+-   **WordPress.org launch** — `1.0.0` is live on WordPress.org. Next operational step is post-launch polish and hotfix readiness while keeping the GitHub `v1.0.0` release asset and WordPress.org package aligned.
 -   **Release baseline vs. head** — `v1.0.0` has been retagged to the current `main` release baseline after the release-action Node 24 update and coverage-test follow-up. Avoid further retagging unless a real release blocker or WordPress.org deployment correction requires it.
 -   **GitHub repository rename fallout** — after the rename to `dknauss/borges-bibliography-builder`, confirm badges, release links, Codecov, Playground, and GitHub Actions redirects resolve from the canonical path.
 -   **Dependabot alerts #31/#32** — leave open for upstream tracking unless the warning noise becomes unacceptable. Both are transitive npm development dependencies only, not bundled in the WordPress.org release zip or static plugin build output, and the plugin does not directly import or execute the vulnerable code paths. `showdown` currently has no patched release and is pulled through `@wordpress/blocks`; `uuid@14` would require upstream WordPress/webpack dependency support because current `@wordpress/*`, `sockjs`, and `webpack-dev-server` dependency ranges still resolve to `uuid@8/9`. If dismissing later, use “vulnerable code is not actually used” with this rationale.
@@ -79,22 +83,31 @@ Recent work completed or in final verification includes:
 
 ## Pending Todos
 
--   3 pending todos in `.planning/todos/pending`
-    - WordPress.org approval/deploy follow-up
+-   5 pending todos in `.planning/todos/pending`
+    - WordPress.org launch monitoring and hotfix readiness
     - Add frontend Cite and Export affordances
     - Prioritize BibLaTeX and PMID interoperability
+    - Align GitHub and WordPress.org readme screenshot order
+    - Investigate writable bibliography REST API and Abilities integration
 
 ## Roadmap Alignment
 
-**1.0.0 shipped 2026-04-08; WordPress.org reviewers have approved the plugin.** The project is in a short publication/deployment window before broader v1.1 work.
+**1.0.0 is live on WordPress.org as of 2026-05-04.** The project is now in a short post-launch cleanup window before broader v1.1 feature work.
 
 Proposed next-task sequence:
 
-1. **Publish the approved WordPress.org release** — complete the deploy/SVN path from the canonical `borges-bibliography-builder.zip` package
-2. **Monitor CI/runtime coverage** — confirm the new Multisite smoke lane stays green on `main`
+1. **Execute Phase 1: Post-launch cleanup and documentation polish** — align planning state, readmes, screenshots, SPEC, compatibility wording, and manual deploy ergonomics
+2. **Monitor CI/runtime coverage** — confirm launch-adjacent workflows stay green on `main`
 3. **Keep Dependabot #31/#32 open with rationale** — revisit when upstream WordPress/webpack packages move off the vulnerable transitive versions
-4. **Code quality sweep** — consolidate helpers/cache semantics cleanup
+4. **Code quality sweep** — complete the small helper/cache semantics cleanup included in Phase 1
 5. **Interoperability enhancements** — frontend Cite/Export controls, then BibLaTeX/PMID
 6. **Translation expansion** — Arabic, Turkish, Indonesian, Hebrew, Vietnamese, Ukrainian, Romanian, Czech
 
-Run `/gsd:new-milestone` when ready to formalize v1.1 once the approved WordPress.org release is publicly deployed and the immediate launch window settles.
+Run `/gsd:execute-phase 1` when ready to make the post-launch cleanup changes.
+
+
+## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 1 added: Post-launch cleanup and documentation polish

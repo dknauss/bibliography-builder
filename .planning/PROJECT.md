@@ -2,7 +2,7 @@
 
 ## Name
 
-Bibliography Builder Block
+Borges Bibliography Builder
 
 ## Summary
 

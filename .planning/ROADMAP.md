@@ -166,6 +166,11 @@ Completed:
 
 -   added WordPress.org plugin-directory screenshots in `.wordpress-org/`
 
+Low-priority polish:
+
+-   align screenshot order in `README.md` and `readme.txt` so both readmes show the front-end bibliography output first and the editor-with-citations screenshot second
+-   keep later screenshot captions/order consistent between GitHub and WordPress.org whenever screenshots are refreshed
+
 ## Compatibility and runtime coverage backlog
 
 Completed:
@@ -273,6 +278,58 @@ Recommended next locale backlog, prioritizing broad WordPress usage after the cu
 -   ro_RO
 -   cs_CZ
 
+### Writable bibliography API and Abilities integration
+
+Explore a future enterprise/automation track for authenticated remote bibliography management across posts, sites, or Multisite networks.
+
+Potential value:
+
+- remote citation cleanup and DOI normalization across a large publication network
+- editorial tooling that can add, update, remove, reorder, or reformat bibliography entries without opening each post manually
+- AI-assisted citation management through discoverable, schema-described WordPress Abilities
+- network-scale auditing of duplicate, incomplete, or malformed citation data
+
+Architecture constraints:
+
+- Borges bibliography data is stored in static block markup inside `post_content`; a write path must update both block attributes and saved static output
+- index-based bibliography targeting is too fragile for mutation; writable routes need stable `bibliographyId` and citation IDs
+- every mutation must parse blocks, validate CSL-JSON, regenerate formatted/static output, serialize blocks, and save via WordPress revision-aware APIs
+- use optimistic locking, such as expected post modified date, content hash, or revision ID, to avoid overwriting concurrent editor changes
+- require `edit_post` or a dedicated capability for all mutations; do not expose public write routes
+- preserve plugin-deactivation resilience: the frontend bibliography remains readable after every remote write
+
+Phased approach:
+
+1. **Read/validate/preview first** — validate citation payloads, preview formatting, return diffs, and export data without writing.
+2. **Controlled writes later** — add authenticated add/update/remove/reorder/reformat endpoints only after static-output regeneration and revision behavior are proven.
+3. **Abilities integration** — feature-detect the WordPress Abilities API and register AI/automation-facing abilities only when available, preserving WordPress 6.4+ compatibility.
+
+Candidate REST routes:
+
+- `POST /bibliography/v1/posts/{post_id}/bibliographies/{bibliography_id}/preview`
+- `PATCH /bibliography/v1/posts/{post_id}/bibliographies/{bibliography_id}`
+- `POST /bibliography/v1/posts/{post_id}/bibliographies/{bibliography_id}/citations`
+- `PATCH /bibliography/v1/posts/{post_id}/bibliographies/{bibliography_id}/citations/{citation_id}`
+- `DELETE /bibliography/v1/posts/{post_id}/bibliographies/{bibliography_id}/citations/{citation_id}`
+
+Candidate Abilities:
+
+- `borges/get-bibliographies`
+- `borges/export-bibliography`
+- `borges/validate-citations`
+- `borges/preview-bibliography-update`
+- `borges/apply-bibliography-update`
+- `borges/add-citation`
+- `borges/update-citation`
+- `borges/remove-citation`
+- `borges/reformat-bibliography`
+
+Status:
+
+- backlog architecture investigation
+- do not include in the current post-launch cleanup phase
+- prefer a design memo before implementation because this changes Borges from read-mostly output tooling into remote content management infrastructure
+
 ### Option B: citation child blocks
 
 Explore a future architecture where each citation becomes a child block instead of an item in a parent `citations` array.
@@ -349,3 +406,13 @@ Completed:
 -   improved batch DOI performance with bounded-concurrency parsing while preserving stable result ordering
 -   tightened CSL field validation for additional scalar and structured fields
 -   improved JSON-LD typing for literal-only corporate/institutional authors so they can emit `Organization`
+
+### Phase 1: Post-launch cleanup and documentation polish
+
+**Goal:** Bring docs, planning state, compatibility wording, release tooling, and small maintainability items into alignment now that `1.0.0` is live on WordPress.org.
+**Requirements**: post-launch status cleanup; reciprocal GitHub/WordPress.org links; Playground demo link evaluation; detailed GitHub REST API docs; screenshot order alignment; SPEC testing-gap cleanup; WordPress 7.0 compatibility wording; manual deploy trigger; small helper/cache refactors.
+**Depends on:** WordPress.org `1.0.0` publication
+**Plans:** 1 plan
+
+Plans:
+- [ ] 01-PLAN.md — post-launch cleanup and documentation polish
