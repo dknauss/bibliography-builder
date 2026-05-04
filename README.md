@@ -157,10 +157,8 @@ GitHub Actions currently runs:
 - PHPUnit across PHP 7.4, 8.1, and 8.3
 - Psalm static analysis
 - CodeQL for JavaScript and PHP
-- Codecov uploads from JS + PHP coverage as an informational quality signal
+- Codecov uploads from JS + PHP coverage
 - Playwright smoke and lifecycle tests against WordPress Playground
-
-Codecov coverage is useful for watching trends and finding untested code, but it is not the only release-readiness signal. For this plugin, coverage should be interpreted alongside parser/output regression tests, PHP tests, Playwright browser gates, accessibility checks, REST smoke tests, runtime-matrix coverage, and release-package validation.
 
 The GitHub Actions runtime matrix currently covers:
 
