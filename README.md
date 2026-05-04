@@ -191,7 +191,7 @@ WordPress.org branding assets live in [.wordpress-org](./.wordpress-org/), and e
 
 ```text
 bibliography-builder/
-├── bibliography-builder.php    # Plugin bootstrap
+├── bibliography-builder.php      # Plugin bootstrap
 ├── block.json                    # Block metadata & attributes
 ├── src/
 │   ├── index.js                  # Block registration
