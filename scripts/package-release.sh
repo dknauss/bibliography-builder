@@ -20,7 +20,7 @@ cp "$ROOT_DIR/bibliography-builder.php" "$STAGING_DIR/"
 cp "$ROOT_DIR/block.json" "$STAGING_DIR/"
 cp "$ROOT_DIR/readme.txt" "$STAGING_DIR/"
 cp "$ROOT_DIR/LICENSE" "$STAGING_DIR/"
-cp "$ROOT_DIR/THIRD-PARTY-NOTICES.md" "$STAGING_DIR/"
+cp "$ROOT_DIR/THIRD-PARTY-NOTICES.txt" "$STAGING_DIR/"
 cp -R "$ROOT_DIR/build" "$STAGING_DIR/build"
 if [ -d "$ROOT_DIR/languages" ]; then
 	cp -R "$ROOT_DIR/languages" "$STAGING_DIR/languages"
@@ -42,7 +42,7 @@ find "$STAGING_DIR/vendor" \
 find "$STAGING_DIR/vendor" \
 	-type f \( -name phpunit.xml -o -name phpunit.xml.dist -o -name phpcs.xml -o -name phpcs.xml.dist -o -name .scrutinizer.yml \) \
 	-delete
-rm -rf "$STAGING_DIR/composer.json" "$STAGING_DIR/composer.lock" "$STAGING_DIR/packages"
+rm -rf "$STAGING_DIR/packages"
 
 if grep -R -E 'CPAL-1\.0|AGPL-1\.0|CC-BY-SA-3\.0|creativecommons\.org/licenses/by-sa|Creative Commons Attribution-ShareAlike 3\.0' "$STAGING_DIR/vendor" "$STAGING_DIR/build" >/dev/null 2>&1; then
 	printf 'Release package contains a non-GPL-compatible license marker.\n' >&2
