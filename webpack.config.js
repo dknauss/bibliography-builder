@@ -4,8 +4,21 @@ const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extract
 
 const wpIconsRequest = '@wordpress/icons';
 
+const defaultEntry = defaultConfig.entry;
+
 module.exports = {
 	...defaultConfig,
+	// Extend the default entry map to include the optional BAC validation script.
+	entry: async () => {
+		const base =
+			typeof defaultEntry === 'function'
+				? await defaultEntry()
+				: defaultEntry;
+		return {
+			...base,
+			validation: path.resolve(__dirname, 'src/validation.js'),
+		};
+	},
 	resolve: {
 		...(defaultConfig.resolve || {}),
 		alias: {

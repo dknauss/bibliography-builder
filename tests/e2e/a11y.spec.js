@@ -125,12 +125,11 @@ async function openInserterAndSearch(page, query) {
 async function insertBibliographyBlock(page) {
 	await openInserterAndSearch(page, 'Bibliography');
 	const blockItem = page
-		.locator('.block-editor-block-types-list__item')
+		.locator('[role="option"], .block-editor-block-types-list__item')
 		.filter({ hasText: 'Bibliography' })
 		.first();
 
 	await expect(blockItem).toBeVisible({ timeout: 10000 });
-	await blockItem.scrollIntoViewIfNeeded();
 	await blockItem.click();
 	await page.waitForTimeout(1000);
 }
