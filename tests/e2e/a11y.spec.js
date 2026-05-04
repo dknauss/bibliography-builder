@@ -130,7 +130,7 @@ async function insertBibliographyBlock(page) {
 		.first();
 
 	await expect(blockItem).toBeVisible({ timeout: 10000 });
-	await blockItem.click();
+	await blockItem.click({ force: true });
 	await page.waitForTimeout(1000);
 }
 
