@@ -360,10 +360,72 @@ describe('parseFreeTextCitation', () => {
 		});
 	});
 
+	it('parses webpage citations with invalid effective dates without an issued date', () => {
+		const citation = parseFreeTextCitation(
+			'Google. “Privacy Policy.” Effective Nonsense. https://policies.google.com/privacy.'
+		);
+
+		expect(citation).toMatchObject({
+			csl: {
+				type: 'webpage',
+				title: 'Privacy Policy',
+				URL: 'https://policies.google.com/privacy',
+				author: [
+					{
+						literal: 'Google',
+					},
+				],
+			},
+			confidence: 'low',
+		});
+		expect(citation.csl.issued).toBeUndefined();
+	});
+
+	it('ignores trailing punctuation-only sentence tails', () => {
+		const citation = parseFreeTextCitation(
+			'Smith, Ada. Example Title. Example Press, 2024. ...'
+		);
+
+		expect(citation).toMatchObject({
+			csl: {
+				type: 'book',
+				title: 'Example Title',
+				publisher: 'Example Press',
+				issued: {
+					'date-parts': [[2024]],
+				},
+				author: [
+					{
+						given: 'Ada',
+						family: 'Smith',
+					},
+				],
+			},
+			confidence: 'medium',
+		});
+		expect(citation.csl).not.toHaveProperty('medium');
+		expect(citation.csl).not.toHaveProperty('URL');
+	});
+
 	it('returns null for unsupported free-text citations', () => {
 		expect(
 			parseFreeTextCitation('This input is not a parseable citation.')
 		).toBeNull();
+	});
+
+	it.each([
+		'., “Broken Chapter,” in Container, ed. Jane Editor (Example Press, 2024).',
+		'Ada Smith. “Broken Chapter.” In Container without an editor.',
+		'Ada Smith. “Broken Chapter.” In Container, edited by Jane Editor without publication.',
+		'. “Broken Chapter.” In Container, edited by Jane Editor. Example Press, 2024.',
+		'., Title (Example Press, 2024).',
+		'., eds. Edited Collection. Example Press, 2024.',
+		'. “A House Is Not a Home.” PhD diss., University of Chicago, 2019.',
+		'. “The Muchness.” Review of Book, by Mary Gabriel. New York Times, October 8, 2023.',
+		'Ada Smith, “Seasonal Learning,” Journal of Examples, Monsoon 2024, 12-18.',
+		'. “Title.” https://example.com/page.',
+	])('returns null for malformed supported-shape citation %#', (input) => {
+		expect(parseFreeTextCitation(input)).toBeNull();
 	});
 
 	it('parses semicolon-delimited journal authors as a lower-confidence heuristic match', () => {

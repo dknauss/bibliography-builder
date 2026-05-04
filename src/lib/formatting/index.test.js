@@ -87,6 +87,27 @@ describe('formatting helpers', () => {
 		]);
 	});
 
+	it('falls back to an earlier unquoted title when the last title match is quoted', () => {
+		const citation = createCitation({
+			csl: {
+				type: 'book',
+				title: 'Data',
+			},
+			formattedText: 'Data “Data”',
+		});
+
+		expect(getDisplaySegments(citation)).toEqual([
+			{
+				text: 'Data',
+				italic: true,
+			},
+			{
+				text: ' “Data”',
+				italic: false,
+			},
+		]);
+	});
+
 	it('treats mixed straight and curly quotes as quoted text', () => {
 		const citation = createCitation({
 			formattedText:
@@ -136,6 +157,35 @@ describe('formatting helpers', () => {
 			},
 			{
 				text: '.',
+				link: false,
+			},
+		]);
+	});
+
+	it('leaves an unmatched closing parenthesis outside linked URLs', () => {
+		expect(
+			splitTextIntoLinkParts('See https://example.com/path).')
+		).toEqual([
+			{
+				text: 'See ',
+				link: false,
+			},
+			{
+				text: 'https://example.com/path',
+				href: 'https://example.com/path',
+				link: true,
+			},
+			{
+				text: ').',
+				link: false,
+			},
+		]);
+	});
+
+	it('returns an empty plain segment for empty link text', () => {
+		expect(splitTextIntoLinkParts('')).toEqual([
+			{
+				text: '',
 				link: false,
 			},
 		]);
