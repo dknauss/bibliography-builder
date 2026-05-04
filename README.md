@@ -70,8 +70,8 @@ Borges is reference-manager-friendly by design. It outputs portable CSL-JSON, Bi
 
 | Tool or workflow | How Borges supports it |
 |---|---|
-| **Zotero** | Strong compatibility through DOI links, BibTeX, RIS, CSL-JSON, and optional COinS metadata. Tested with the @Zotero SaaS, macOS app, and Chrome browser extension from @digitalscholar. |
-| **Mendeley** | Compatible with Elsevier's @Mendeley SaaS, macOS app, and Chrome browser extension through BibTeX/RIS exports; DOI-backed entries are also browser-importer friendly. Use export/copy actions for non-DOI entries rather than relying on extension autodetection. |
+| **Zotero** | Strong compatibility through DOI links, BibTeX, RIS, CSL-JSON, and optional COinS metadata. Tested with the [@zotero](https://github.com/zotero) SaaS, macOS app, and Chrome browser extension from [@digitalscholar](https://github.com/digitalscholar). |
+| **Mendeley** | Compatible with Elsevier's [@Mendeley](https://github.com/Mendeley) SaaS, macOS app, and Chrome browser extension through BibTeX/RIS exports; DOI-backed entries are also browser-importer friendly. Use export/copy actions for non-DOI entries rather than relying on extension autodetection. |
 | **EndNote** | Compatible through RIS and BibTeX imports. EndNote XML is deferred as a Borges export format unless user feedback and/or future testing show a practical gap that RIS and BibTeX do not cover. |
 | **JabRef, BibDesk, LaTeX** | Compatible through UTF-8 BibTeX exports; BibLaTeX support is on the roadmap. |
 | **CSL / citeproc tools** | Compatible through CSL-JSON, which is the plugin's canonical structured data model. |
