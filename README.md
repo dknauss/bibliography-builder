@@ -222,11 +222,12 @@ SQLite and Multisite runtime smoke coverage are included in CI; future runtime w
 - [WordPress.org plugin listing](https://wordpress.org/plugins/borges-bibliography-builder/)
 - [GitHub release notes (v1.0.0)](https://github.com/dknauss/borges-bibliography-builder/releases/tag/v1.0.0)
 - [Release readiness checklist](./docs/release-readiness-checklist.md)
+- [WordPress.org SVN deploy checklist](./docs/wporg-svn-checklist.md) — maintainer-facing notes
 - [Playground blueprint](./playground/blueprint.json)
 - [Runtime matrix smoke script](./scripts/runtime-matrix/smoke.sh)
 - [Brand assets](./.wordpress-org/)
 
-WordPress.org branding assets live in [.wordpress-org](./.wordpress-org/), and editable source files live in [.wordpress-org/source](./.wordpress-org/source/).
+WordPress.org branding assets live in [.wordpress-org](./.wordpress-org/), editable source files live in [.wordpress-org/source](./.wordpress-org/source/), and maintainer-facing deploy notes live in [docs/wporg-svn-checklist.md](./docs/wporg-svn-checklist.md).
 
 ### Plugin File Structure
 
