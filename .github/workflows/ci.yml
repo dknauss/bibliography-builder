@@ -179,6 +179,7 @@ jobs:
         with:
           files: ./coverage/clover.xml,./build/logs/phpunit-clover.xml
           token: ${{ secrets.CODECOV_TOKEN }}
+          slug: dknauss/borges-bibliography-builder
           fail_ci_if_error: false
 
   package-release:
