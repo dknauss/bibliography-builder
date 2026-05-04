@@ -19,11 +19,12 @@ No changes yet.
 - Nine citation styles: Chicago Notes-Bibliography (default), Chicago Author-Date, APA 7, MLA 9, Harvard, Vancouver, IEEE, OSCOLA, and ABNT.
 - Automatic alphabetical sorting per style rules.
 - Duplicate detection across paste and manual entry.
-- Static save with semantic HTML (DPUB-ARIA roles, `<cite>` wrappers, `lang` attributes).
+- Static save with semantic HTML (`role="doc-bibliography"`, `<cite>` wrappers, `lang` attributes, and no deprecated bibliography-entry ARIA role in newly saved output).
 - Schema.org JSON-LD structured data output (on by default).
 - Optional CSL-JSON machine-readable output.
 - Optional COinS metadata for citation manager detection.
-- Export: Download CSL-JSON, BibTeX, RIS; copy per-entry or full bibliography.
+- Reference-manager friendly metadata and exports for Zotero, Mendeley, EndNote, JabRef, BibDesk, LaTeX, and CSL/citeproc workflows.
+- Export: Download CSL-JSON, UTF-8 BibTeX, RIS; copy per-entry or full bibliography.
 - Read-only REST API for programmatic bibliography access.
 - Editor UI with paste zone, manual entry, per-entry edit/delete, and keyboard accessibility.
 - Block-local Gutenberg notices with focus management.
@@ -32,7 +33,7 @@ No changes yet.
 - XSS prevention: HTML escaping for citation text, `</` escaping in script blocks, HTML tag stripping from CrossRef metadata.
 - Input caps: 50 entries per paste, 1 MB max input size.
 - GitHub Actions CI: lint, test, build, PHPUnit, Psalm, CodeQL, Codecov, Playwright Playground smoke tests, runtime matrix.
-- Release workflow with tag-triggered GitHub Release and zip artifact.
+- Release workflow with tag-triggered GitHub Release and zip artifact, plus WordPress.org release packaging with third-party notices.
 - WordPress Playground blueprint for instant evaluation.
 - Lifecycle end-to-end tests for activate, deactivate, and delete flows.
 - Lifecycle CI coverage.
@@ -44,13 +45,14 @@ No changes yet.
 ### Changed
 
 - Improved reset icon from minus to counterclockwise arrow for clarity.
+- BibTeX exports preserve Unicode quotation marks instead of TeX quote ligatures for cleaner Zotero, Mendeley, and BibTeX-family imports.
 - `aria-label` on bibliography section now matches custom heading text when set.
 - Added an accessible name to citation entry buttons.
 - Added `role="region"` and `aria-label` to the editor notice container.
 - Added `prefers-reduced-motion` override for action button transitions.
 - Added `focus-visible` outline to bibliography list entries.
 - Removed the redundant `aria-label` from the inline edit input.
-- Aligned the plugin slug-facing identifiers around `bibliography`, including the text domain, release package folder, Playground install target, export filenames, and REST namespace.
+- Aligned WordPress.org-facing package identifiers around the approved `borges-bibliography-builder` slug while preserving the existing block namespace and saved CSS classes for content/theme compatibility.
 - Removed dead exports and branches in the parser and style registry, including the unused `SUPPORTED_INPUT_MESSAGE` re-export and experimental style-picker path.
 - Psalm failures now block CI instead of running with `continue-on-error`.
 - Playwright smoke tests now use configurable frontend and REST paths through `SMOKE_FRONTEND_PATH` and `SMOKE_REST_PATH`.

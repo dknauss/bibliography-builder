@@ -66,7 +66,7 @@ Yes. The plugin exposes read-only REST endpoints at `/wp-json/bibliography/v1/po
 
 = Does the Borges Bibliography Builder work on WordPress Multisite? =
 
-Expected to work — block registration is site-local by default — but Multisite has not been explicitly tested yet. If you encounter issues, please report them.
+Expected to work — block registration is site-local by default — but dedicated Multisite tests are pending. If you encounter issues, please report them.
 
 = What PHP and WordPress versions are supported? =
 
@@ -100,19 +100,21 @@ This plugin connects to the **CrossRef REST API** (https://api.crossref.org/) wh
 == Changelog ==
 
 = 1.0.0 =
-* Initial release.
-* DOI, BibTeX, and supported formatted citation input.
-* Chicago Notes-Bibliography default formatting.
-* Chicago Author-Date, APA 7, Harvard, Vancouver, IEEE, MLA 9, OSCOLA, and ABNT selectable styles.
-* JSON-LD output by default, with optional COinS and CSL-JSON layers.
-* Accessible editor with keyboard navigation.
-* Manual entry with structured fields and validation.
-* Duplicate detection across paste and manual entry.
-* Export: Download CSL-JSON, BibTeX, RIS; copy per-entry or full bibliography.
-* REST API for programmatic bibliography access.
-* Static HTML output survives plugin deactivation.
+* Initial public release as Borges Bibliography Builder.
+* Add references from DOIs, DOI URLs, BibTeX entries, supported formatted citations, or manual entry.
+* Format bibliographies in Chicago Notes-Bibliography, Chicago Author-Date, APA 7, MLA 9, Harvard, Vancouver, IEEE, OSCOLA, and ABNT.
+* Automatically sort entries per style rules and skip duplicate manual or pasted entries.
+* Save static HTML output so bibliographies remain readable after plugin deactivation.
+* Output Schema.org JSON-LD by default, with optional COinS and CSL-JSON metadata layers.
+* Export CSL-JSON, UTF-8 BibTeX, and RIS; copy individual citations or the full bibliography as plain text.
+* Preserve Unicode quotation marks in BibTeX exports for Zotero, Mendeley, and other citation-manager imports.
+* Provide reference-manager friendly metadata and exports for Zotero, Mendeley, EndNote, JabRef, BibDesk, LaTeX, and CSL/citeproc workflows.
+* Improve accessibility with keyboard navigation, visible focus, block-local notices, semantic bibliography markup, and no deprecated bibliography-entry ARIA role in newly saved output.
+* Provide read-only REST API endpoints for programmatic bibliography access.
+* Bundle 19 interface locale files.
+* Harden the WordPress.org release package with third-party notices and Plugin Check cleanup.
 
 == Upgrade Notice ==
 
 = 1.0.0 =
-Initial release.
+Initial public release of Borges Bibliography Builder.

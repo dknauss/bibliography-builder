@@ -9,13 +9,13 @@
 [![Codecov](https://codecov.io/gh/dknauss/Bibliography-Builder/branch/main/graph/badge.svg)](https://codecov.io/gh/dknauss/Bibliography-Builder)
 [![WordPress Playground](https://img.shields.io/badge/WordPress%20Playground-Try%20it-3858e9.svg?logo=wordpress&logoColor=white)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/Bibliography-Builder/main/playground/blueprint.json)
 
-The Borges Bibliography Builder plugin is named after author Jorge Luis Borges (1899–1986). Borges, the author, was an Argentine writer, essayist, poet, and librarian. His tales imagined infinite libraries, invented books, and labyrinths of reference, like "The Library of Babel." Borges Bibliography Builder brings order to your maze of references with a simple, single-block solution for the WordPress editor.
+Named for Jorge Luis Borges (1899–1986), the Argentine writer, essayist, poet, and librarian whose work imagined infinite libraries, invented books, and labyrinths of reference, Borges Bibliography Builder brings that bibliographic spirit to WordPress.
 
-Borges, the plugin, transforms pasted scholarly references — DOI numbers/URLs, BibTeX entries, and supported formatted citations — into a semantically rich, auto-sorted bibliography with static saved output. Export your work as CSL-JSON, BibTeX, and RIS for Zotero, Mendeley, EndNote, JabRef, BibDesk, and similar tools.
+The plugin transforms pasted scholarly references — DOI numbers/URLs, BibTeX entries, and supported formatted citations — into a semantically rich, auto-sorted bibliography with static saved output. Export your work as CSL-JSON, BibTeX, and RIS for Zotero, Mendeley, EndNote, JabRef, BibDesk, and similar tools.
 
 No shortcodes. No database storage. Static HTML output survives plugin deactivation.
 
-Just write out your citations or paste DOIs and BibTeX code, up to 50 at a time. Easily build a formatted, auto-sorted bibliography in any style. 
+Just write out your citations or paste DOIs and BibTeX code, up to 50 at a time. Easily build a formatted, auto-sorted bibliography in any style.
 
 ## Try it in WordPress Playground
 
@@ -55,11 +55,11 @@ The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 t
 - **Multiple input paths** — add bare DOIs, DOI URLs, BibTeX entries, and supported formatted citations
 - **Nine citation styles** — Chicago Notes-Bibliography by default, with Chicago Author-Date, APA 7, Harvard, Vancouver, IEEE, MLA 9, OSCOLA, and ABNT selectable
 - **Structured editing** — plain-text editing plus per-field editing for heuristic or warning-marked citations
-- **Semantic output** — DPUB-ARIA bibliography roles, `<cite>` wrappers, `lang` attributes, and hanging-indent styling
+- **Semantic output** — `role="doc-bibliography"`, `<cite>` wrappers, `lang` attributes, and hanging-indent styling without deprecated bibliography-entry ARIA roles
 - **JSON-LD** — Schema.org structured data for search engines, AI systems, and semantic consumers (on by default)
 - **COinS** — optional OpenURL spans for browser-based citation manager detection, especially Zotero and legacy OpenURL workflows
 - **CSL-JSON output** — optional machine-readable metadata for citation-manager, citeproc, and scholarly-service interoperability
-- **Export** — download the current bibliography as CSL-JSON, BibTeX, or RIS; copy individual citations or the full bibliography as plain text
+- **Export** — download the current bibliography as CSL-JSON, UTF-8 BibTeX, or RIS; copy individual citations or the full bibliography as plain text
 - **Static save** — bibliography HTML and metadata are baked into post content at save time
 - **Accessible editor UX** — focus management, block-local Gutenberg notices, keyboard escape/cancel flows, and row action controls
 - **Interface locale files included** — 19 bundled locales for plugin UI strings (see **Language Support** below)
@@ -157,8 +157,10 @@ GitHub Actions currently runs:
 - PHPUnit across PHP 7.4, 8.1, and 8.3
 - Psalm static analysis
 - CodeQL for JavaScript and PHP
-- Codecov uploads from JS + PHP coverage
+- Codecov uploads from JS + PHP coverage as an informational quality signal
 - Playwright smoke and lifecycle tests against WordPress Playground
+
+Codecov coverage is useful for watching trends and finding untested code, but it is not the only release-readiness signal. For this plugin, coverage should be interpreted alongside parser/output regression tests, PHP tests, Playwright browser gates, accessibility checks, REST smoke tests, runtime-matrix coverage, and release-package validation.
 
 The GitHub Actions runtime matrix currently covers:
 
@@ -179,7 +181,8 @@ SQLite runtime smoke remains a planned follow-up while the CI bootstrap path is 
 ## Project Documentation and Operational Files
 
 - [Plugin specification](./SPEC.md)
-- [Release notes (v1.0.0)](./docs/release-notes-v1.0.0.md)
+- [Changelog](./CHANGELOG.md)
+- [GitHub release notes (v1.0.0)](https://github.com/dknauss/Bibliography-Builder/releases/tag/v1.0.0)
 - [Release readiness checklist](./docs/release-readiness-checklist.md)
 - [Playground blueprint](./playground/blueprint.json)
 - [Runtime matrix smoke script](./scripts/runtime-matrix/smoke.sh)
@@ -190,7 +193,7 @@ WordPress.org branding assets live in [.wordpress-org](./.wordpress-org/), and e
 ### Plugin File Structure
 
 ```text
-bibliography-builder/
+borges-bibliography-builder/
 ├── bibliography-builder.php      # Plugin bootstrap
 ├── block.json                    # Block metadata & attributes
 ├── src/
