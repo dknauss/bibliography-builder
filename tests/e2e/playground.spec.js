@@ -24,7 +24,7 @@ async function ensurePluginActivated(page) {
 
 	await expect(pluginRow).toBeVisible();
 
-	const activateLink = pluginRow.getByRole('link', { name: 'Activate' });
+	const activateLink = pluginRow.getByRole('link', { name: /^Activate$/i });
 
 	if (await activateLink.count()) {
 		await activateLink.click();
