@@ -15,7 +15,7 @@
     - keep `v1.0.0` release tag unchanged until a deliberate release update decision is made
 2. WordPress.org review-response readiness
     - monitor wp.org plugin-review inbox and respond quickly to reviewer requests
-    - keep release artifact and plugin headers/readme aligned with current approved naming (`bibliography-block`)
+    - keep release artifact and plugin headers/readme aligned with the approved WordPress.org slug (`borges-bibliography-builder`)
 3. Runtime compatibility coverage
     - add a multisite smoke lane to the runtime matrix
     - keep SQLite and existing Apache/Nginx/PHP/WordPress lanes healthy
