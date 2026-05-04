@@ -31,6 +31,6 @@ jobs:
       - name: WordPress.org plugin deploy
         uses: 10up/action-wordpress-plugin-deploy@stable
         env:
-          SVN_USERNAME: ${{ secrets.WP_ORG_SVN_USERNAME }}
-          SVN_PASSWORD: ${{ secrets.WP_ORG_SVN_PASSWORD }}
+          SVN_USERNAME: ${{ secrets.dpknauss }}
+          SVN_PASSWORD: ${{ secrets.svn_fmiKnfLKfuo2KxALInt5KYIA7ehvI4Cv6ae5c29a }}
           SLUG: borges-bibliography-builder
