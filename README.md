@@ -33,7 +33,7 @@ Launch a disposable WordPress instance with the plugin preinstalled: [Try the Bo
 | Block inserter | Empty-state form | Manual entry |
 |---|---|---|
 | ![](.wordpress-org/screenshot-1.png) | ![](.wordpress-org/screenshot-2.png) | ![](.wordpress-org/screenshot-3.png) |
-| Discover the Bibliography block in the block inserter by searching for "Bibliography." | Paste DOIs, BibTeX entries, or supported citation text into the import form. The sidebar controls citation style, visible heading, and metadata output (JSON-LD, COinS, CSL-JSON). | Switch to Manual Entry to build a citation field by field — Publication Type, Author, Title, Container, Publisher, Year, Pages, DOI, and URL. These fields will be automatically populated from DOIs and pasted input that can be parsed. |
+| Discover the Bibliography block in the block inserter by searching for "Bibliography." | Paste DOIs, BibTeX entries, or supported citation text into the import form. The sidebar controls citation style, visible heading, and metadata output (JSON-LD, COinS, CSL-JSON). | Switch to Manual Entry to build a citation field by field: Publication Type, Author, Title, Container, Publisher, Year, Pages, DOI, and URL. These fields will be automatically populated from DOIs and pasted input that can be parsed. |
 
 ## Installation
 
@@ -52,26 +52,26 @@ The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 t
 
 ## Features
 
-- **Multiple input paths** — add bare DOIs, DOI URLs, BibTeX entries, and supported formatted citations
-- **Nine citation styles** — Chicago Notes-Bibliography by default, with Chicago Author-Date, APA 7, Harvard, Vancouver, IEEE, MLA 9, OSCOLA, and ABNT selectable
-- **Structured editing** — plain-text editing plus per-field editing for heuristic or warning-marked citations
-- **Semantic output** — `role="doc-bibliography"`, `<cite>` wrappers, `lang` attributes, and hanging-indent styling without deprecated bibliography-entry ARIA roles
-- **JSON-LD** — Schema.org structured data for search engines, AI systems, and semantic consumers (on by default)
-- **COinS** — optional OpenURL spans for browser-based citation manager detection, especially Zotero and legacy OpenURL workflows
-- **CSL-JSON output** — optional machine-readable metadata for citation-manager, citeproc, and scholarly-service interoperability
-- **Export** — download the current bibliography as CSL-JSON, UTF-8 BibTeX, or RIS; copy individual citations or the full bibliography as plain text
-- **Static save** — bibliography HTML and metadata are baked into post content at save time
-- **Accessible editor UX** — focus management, block-local Gutenberg notices, keyboard escape/cancel flows, and row action controls
-- **Interface locale files included** — 19 bundled locales for plugin UI strings (see **Language Support** below)
+- **Multiple input paths** — Add bare DOIs, DOI URLs, BibTeX entries, and supported formatted citations.
+- **Nine citation styles** — Chicago Notes-Bibliography by default, with Chicago Author-Date, APA 7, Harvard, Vancouver, IEEE, MLA 9, OSCOLA, and ABNT selectable.
+- **Structured editing** — Plain-text editing plus per-field editing for heuristic or warning-marked citations.
+- **Semantic output** — `role="doc-bibliography"`, `<cite>` wrappers, `lang` attributes, and hanging-indent styling without deprecated bibliography-entry ARIA roles.
+- **JSON-LD** — Schema.org structured data for search engines, AI systems, and semantic consumers (on by default).
+- **COinS** — Optional OpenURL spans for browser-based citation manager detection, especially Zotero and legacy OpenURL workflows.
+- **CSL-JSON output** — Optional machine-readable metadata for citation-manager, citeproc, and scholarly-service interoperability.
+- **Export** — Download the current bibliography as CSL-JSON, UTF-8 BibTeX, or RIS; copy individual citations or the full bibliography as plain text.
+- **Static save** — Bibliography HTML and metadata are baked into post content at save time.
+- **Accessible editor UX** — Focus management, block-local Gutenberg notices, keyboard escape/cancel flows, and row action controls.
+- **Interface locale files included** — 19 bundled locales for plugin UI strings. (See **Language Support** below.)
 
-## Reference manager compatibility
+## Reference Manager Compatibility
 
 Borges is reference-manager-friendly by design. It outputs portable CSL-JSON, BibTeX, RIS, DOI links, Schema.org JSON-LD, and optional COinS metadata so your bibliographies can be imported directly into the most widely used bibliography management and academic publishing software.
 
 | Tool or workflow | How Borges supports it |
 |---|---|
-| **Zotero** | Strong compatibility through DOI links, BibTeX, RIS, CSL-JSON, and optional COinS metadata. |
-| **Mendeley** | Compatible through BibTeX/RIS exports; DOI-backed entries are also browser-importer friendly. Use export/copy actions for non-DOI entries rather than relying on extension autodetection. |
+| **Zotero** | Strong compatibility through DOI links, BibTeX, RIS, CSL-JSON, and optional COinS metadata. Tested with the @Zotero SaaS, macOS app, and Chrome browser extension from @digitalscholar. |
+| **Mendeley** | Compatible with Elsevier's @Mendeley SaaS, macOS app, and Chrome browser extension through BibTeX/RIS exports; DOI-backed entries are also browser-importer friendly. Use export/copy actions for non-DOI entries rather than relying on extension autodetection. |
 | **EndNote** | Compatible through RIS and BibTeX imports. EndNote XML is deferred as a Borges export format unless user feedback and/or future testing show a practical gap that RIS and BibTeX do not cover. |
 | **JabRef, BibDesk, LaTeX** | Compatible through UTF-8 BibTeX exports; BibLaTeX support is on the roadmap. |
 | **CSL / citeproc tools** | Compatible through CSL-JSON, which is the plugin's canonical structured data model. |
