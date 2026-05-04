@@ -1,13 +1,14 @@
 # Borges Bibliography Builder for WordPress
 
 [![License: GPL v2+](https://img.shields.io/badge/License-GPLv2%2B-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![WordPress tested](https://img.shields.io/badge/WordPress-6.4%E2%80%93latest-21759b.svg?logo=wordpress&logoColor=white)](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/runtime-matrix.yml)
+[![WordPress tested](https://img.shields.io/badge/WordPress-6.4%E2%80%937.0-21759b.svg?logo=wordpress&logoColor=white)](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/runtime-matrix.yml)
 [![PHP tested](https://img.shields.io/badge/PHP-7.4%E2%80%938.4-777bb4.svg?logo=php&logoColor=white)](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/runtime-matrix.yml)
 [![CI](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/ci.yml)
 [![Runtime matrix](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/runtime-matrix.yml/badge.svg)](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/runtime-matrix.yml)
 [![CodeQL](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/codeql.yml/badge.svg)](https://github.com/dknauss/borges-bibliography-builder/actions/workflows/codeql.yml)
 [![codecov](https://codecov.io/gh/dknauss/borges-bibliography-builder/branch/main/graph/badge.svg?token=2MSXL46VTF)](https://codecov.io/gh/dknauss/borges-bibliography-builder)
 [![WordPress Playground](https://img.shields.io/badge/WordPress%20Playground-Try%20it-3858e9.svg?logo=wordpress&logoColor=white)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/borges-bibliography-builder/main/playground/blueprint.json)
+[![WordPress.org](https://img.shields.io/badge/WordPress.org-Install-21759b.svg?logo=wordpress&logoColor=white)](https://wordpress.org/plugins/borges-bibliography-builder/)
 
 Named for Jorge Luis Borges (1899–1986), the Argentine writer, essayist, poet, and librarian whose work imagined infinite libraries, invented books, and labyrinths of reference, Borges Bibliography Builder brings that bibliographic spirit to WordPress.
 
@@ -19,20 +20,20 @@ Just write out your citations or paste DOIs and BibTeX code, up to 50 at a time.
 
 ## Try it in WordPress Playground
 
-Launch a disposable WordPress instance with the plugin preinstalled: [Try the Borges Bibliography Builder in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/borges-bibliography-builder/main/playground/blueprint.json). Playground installs the plugin from the latest GitHub Release zip artifact.
+Install the public release from [WordPress.org](https://wordpress.org/plugins/borges-bibliography-builder/) or launch a disposable WordPress instance with the plugin preinstalled: [Try the Borges Bibliography Builder in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/borges-bibliography-builder/main/playground/blueprint.json). Playground installs the plugin from the latest GitHub Release zip artifact.
 
 ![](.wordpress-org/banner-1544x500.png)
 
 ## Screenshots
 
-| Editor with citations | Front-end output |
+| Front-end output | Editor with citations |
 |---|---|
-| ![](.wordpress-org/screenshot-4.png) | ![](.wordpress-org/screenshot-5.png) |
-| The block in editor view showing a formatted bibliography. Hover over any entry to reveal copy, edit, and delete actions. | The rendered bibliography on the site front end with hanging indents, italic titles, and linked DOIs — all styled by the active theme. |
+| ![](.wordpress-org/screenshot-1.png) | ![](.wordpress-org/screenshot-2.png) |
+| The rendered bibliography on the site front end with hanging indents, italic titles, and linked DOIs — all styled by the active theme. | The block in editor view showing a formatted bibliography. Hover over any entry to reveal copy, edit, and delete actions. |
 
 | Block inserter | Empty-state form | Manual entry |
 |---|---|---|
-| ![](.wordpress-org/screenshot-1.png) | ![](.wordpress-org/screenshot-2.png) | ![](.wordpress-org/screenshot-3.png) |
+| ![](.wordpress-org/screenshot-3.png) | ![](.wordpress-org/screenshot-4.png) | ![](.wordpress-org/screenshot-5.png) |
 | Discover the Bibliography block in the block inserter by searching for "Bibliography." | Paste DOIs, BibTeX entries, or supported citation text into the import form. The sidebar controls citation style, visible heading, and metadata output (JSON-LD, COinS, CSL-JSON). | Switch to Manual Entry to build a citation field by field: Publication Type, Author, Title, Container, Publisher, Year, Pages, DOI, and URL. These fields will be automatically populated from DOIs and pasted input that can be parsed. |
 
 ## Installation
@@ -44,11 +45,11 @@ Launch a disposable WordPress instance with the plugin preinstalled: [Try the Bo
 
 ## Compatibility
 
-- **WordPress** 6.4–7.0 (block.json v3 requires 6.4+)
-- **PHP** 7.4+ (minimal PHP runtime — the plugin registers a block and REST endpoints only)
-- **Multisite** — covered by the runtime smoke matrix with network activation on an Apache/PHP/latest-WordPress lane.
+- **WordPress** 6.4+; tested up to WordPress 7.0.
+- **PHP** 7.4+.
+- **Multisite** — supported and covered by CI smoke testing.
 
-The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 through the latest core release on Apache, Nginx, MySQL, SQLite, and one Multisite network-activation lane.
+Developer-facing CI/runtime coverage details are listed in the development section below.
 
 ## Features
 
@@ -103,19 +104,56 @@ The free-text parser currently supports a growing set of formatted citations for
 
 Support is heuristic rather than universal. Unsupported inputs fail closed with a block-local inline Gutenberg notice. Manual entry is now available as a fallback for unsupported formats.
 
-## API
+## REST API
 
-The plugin exposes a read-only REST endpoint for bibliography data:
+Borges exposes read-only bibliography data routes under `/wp-json/bibliography/v1` for published content, integrations, and export workflows.
 
-- `GET /wp-json/bibliography/v1/posts/<post_id>/bibliographies`
-- `GET /wp-json/bibliography/v1/posts/<post_id>/bibliographies/<index>`
+### List bibliographies in a post
 
-Behavior:
+```http
+GET /wp-json/bibliography/v1/posts/<post_id>/bibliographies
+```
 
-- Published posts are publicly readable.
-- Non-public posts require permission to edit the post.
-- The collection route returns each bibliography block found in the post, including style settings and citation data.
-- The single-bibliography route supports `?format=json`, `?format=text`, and `?format=csl-json`.
+Returns every Borges Bibliography block found in the post, including nested blocks:
+
+```json
+{
+  "postId": 123,
+  "bibliographies": [
+    {
+      "index": 0,
+      "entryCount": 2,
+      "citationStyle": "chicago-notes-bibliography",
+      "headingText": "References",
+      "outputJsonLd": true,
+      "outputCoins": false,
+      "outputCslJson": false,
+      "citations": []
+    }
+  ]
+}
+```
+
+### Get one bibliography
+
+```http
+GET /wp-json/bibliography/v1/posts/<post_id>/bibliographies/<index>
+```
+
+`<index>` is zero-based within the post. Supported formats:
+
+- `?format=json` — normalized bibliography block data. This is the default.
+- `?format=text` — one visible citation per line, stripped to plain text.
+- `?format=csl-json` — CSL-JSON array with `application/vnd.citationstyles.csl+json` content type.
+
+### Permissions and limitations
+
+- Published, non-password-protected posts are publicly readable.
+- Password-protected, draft, private, or otherwise non-public posts require `edit_post` permission.
+- Missing posts, forbidden posts, and missing bibliography indexes return explicit REST errors.
+- The public bibliography data routes are read-only. They do not add, update, delete, reorder, or persist citations.
+
+The separate editor-only formatter endpoint accepts `POST /wp-json/bibliography/v1/format`, requires `edit_posts`, and returns formatted citation text for submitted CSL-JSON. It does not save changes.
 
 ## External Services
 
@@ -181,6 +219,7 @@ SQLite and Multisite runtime smoke coverage are included in CI; future runtime w
 
 - [Plugin specification](./SPEC.md)
 - [Changelog](./CHANGELOG.md)
+- [WordPress.org plugin listing](https://wordpress.org/plugins/borges-bibliography-builder/)
 - [GitHub release notes (v1.0.0)](https://github.com/dknauss/borges-bibliography-builder/releases/tag/v1.0.0)
 - [Release readiness checklist](./docs/release-readiness-checklist.md)
 - [Playground blueprint](./playground/blueprint.json)

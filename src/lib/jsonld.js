@@ -2,6 +2,8 @@
  * CSL-JSON to Schema.org JSON-LD mapper.
  */
 
+import { getPrimaryIdentifierValue } from './csl-utils';
+
 const TYPE_MAP = {
 	'article-journal': 'ScholarlyArticle',
 	book: 'Book',
@@ -15,14 +17,6 @@ const TYPE_MAP = {
 
 function isLikelyOrganizationAuthor(author) {
 	return Boolean(author?.literal && !author.family && !author.given);
-}
-
-function getPrimaryIdentifierValue(value) {
-	if (Array.isArray(value)) {
-		return value.find((item) => typeof item === 'string' && item) || '';
-	}
-
-	return typeof value === 'string' ? value : '';
 }
 
 /**

@@ -183,63 +183,50 @@ Planned next:
 
 -   keep runtime lanes stable and add new coverage only when compatibility risk justifies it
 
-## wp.org submission status
+## WordPress.org launch status
 
-Completed release-prep work:
+Completed release and launch work:
 
 1. **Codecov badge** — badge resolves and CI upload is wired.
 2. **Playground** — the published Playground link installs the plugin from the latest GitHub Release artifact.
-3. **Plugin-directory screenshots** — banner, icon, and screenshots are present in `.wordpress-org/`.
+3. **Plugin-directory assets** — banner, icon, and screenshots are present in `.wordpress-org/`.
 4. **Release asset** — `borges-bibliography-builder.zip` is the canonical first-release asset for the `v1.0.0` GitHub Release.
+5. **Public WordPress.org deployment** — `1.0.0` is live at `https://wordpress.org/plugins/borges-bibliography-builder/`.
 
-Submitted 2026-04-11. Awaiting WordPress.org review response.
+Submitted 2026-04-11. Approved and deployed 2026-05-04.
 
 Current operational note (2026-05-04):
 
 - `main` CI was restored to green after the branding/changelog cleanup.
-- Repository and release naming are being normalized around `dknauss/borges-bibliography-builder` and `borges-bibliography-builder.zip`.
-- The first public WordPress.org release does not need a transition zip; the canonical release asset should be rebuilt and uploaded fresh after CI is green.
+- Repository and release naming are normalized around `dknauss/borges-bibliography-builder` and `borges-bibliography-builder.zip`.
+- The first public WordPress.org release does not need a transition zip.
+- Post-launch cleanup should keep GitHub README, WordPress.org `readme.txt`, SPEC, release assets, and SVN output aligned.
 
 ## Immediate next-task priorities (2026-05-04)
 
-1. **Finalize release naming and asset sync**
-   - rename the GitHub repository to `dknauss/borges-bibliography-builder`
-   - ensure the latest `v1.0.0` release carries only `borges-bibliography-builder.zip`
-   - verify the Playground blueprint downloads that canonical asset
-2. **Keep wp.org submission response-ready**
-   - plugin submitted 2026-04-11; monitor and respond to reviewer feedback quickly
-3. **Monitor runtime coverage**
-   - confirm the new Multisite smoke lane stays green on `main`
-4. **Proceed with the deferred code-quality sweep**
-5. **Plan interoperability enhancements**
+1. **Finish Phase 1 post-launch cleanup**
+   - align public docs, screenshots, REST API documentation, SPEC, compatibility wording, and deploy ergonomics
+2. **Monitor runtime coverage**
+   - keep launch-adjacent workflows green on `main`
+3. **Keep Dependabot #31/#32 open with rationale**
+   - revisit when upstream WordPress/webpack packages move off the vulnerable transitive versions
+4. **Plan interoperability enhancements**
    - frontend Cite/Export affordances first, then BibLaTeX and PMID support
 
 ## Code quality backlog
 
-Identified in the 2026-04-08 post-release review. All are non-blocking improvements deferred from the 1.0.0 sweep:
+Identified in the 2026-04-08 post-release review.
 
-### Consolidate `getPrimaryIdentifierValue`
+Completed in the 2026-05-04 post-launch cleanup:
 
-Identical implementation is copy-pasted across three files:
+-   consolidated `getPrimaryIdentifierValue` into `src/lib/csl-utils.js` with shared tests
+-   upgraded the formatting cache from FIFO eviction to simple LRU semantics
+-   renamed/documented the export and sorter year helpers so their missing-date semantics are clear at call sites
 
--   `src/lib/coins.js:89`
--   `src/lib/jsonld.js:19`
--   `src/lib/export.js:63`
+Remaining non-blocking maintainability items:
 
-Extract to a shared utility (e.g. `src/lib/csl-utils.js`) and import from there. Add a single test for the shared function.
-
-### Upgrade format cache from FIFO to LRU
-
-`FORMAT_CACHE` in `src/lib/formatting/csl.js` evicts the oldest-inserted entry regardless of access recency. A frequently accessed entry can be evicted while stale entries survive. Replace with a simple LRU eviction policy (track access order on get).
-
-### Reconcile `getYear` sentinel values
-
-Two private `getYear` implementations with different semantics for missing dates:
-
--   `src/lib/sorter.js` returns `Infinity` (correct for sort-last behavior)
--   `src/lib/export.js` returns `undefined` (correct for output suppression)
-
-Same name, different contracts. Document the distinction explicitly or rename one to make the intent clear at the call site.
+-   continue module-scope i18n and prop-drilling cleanup where it buys testability or clarity
+-   review corporate-author sorting behavior for records that include both `family` and `literal`, and add fixture coverage if needed
 
 ## Backlog / architecture investigations
 
@@ -415,4 +402,4 @@ Completed:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 01-PLAN.md — post-launch cleanup and documentation polish
+- [x] 01-PLAN.md — post-launch cleanup and documentation polish

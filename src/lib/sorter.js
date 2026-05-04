@@ -35,12 +35,13 @@ function getAuthorSort(csl) {
 }
 
 /**
- * Get the publication year from a CSL-JSON object.
+ * Get the publication year for sorting. Missing dates intentionally return
+ * Infinity so undated citations sort after dated citations.
  *
  * @param {Object} csl CSL-JSON object.
  * @return {number} Year or Infinity if not present.
  */
-function getYear(csl) {
+function getSortableYear(csl) {
 	if (
 		csl.issued &&
 		csl.issued['date-parts'] &&
@@ -107,8 +108,8 @@ export function sortCitations(citations, styleKey) {
 				return titleCmp;
 			}
 
-			const yearA = getYear(a.csl);
-			const yearB = getYear(b.csl);
+			const yearA = getSortableYear(a.csl);
+			const yearB = getSortableYear(b.csl);
 			if (yearA !== yearB) {
 				return yearA - yearB;
 			}
@@ -117,8 +118,8 @@ export function sortCitations(citations, styleKey) {
 		}
 
 		// Secondary: year ascending.
-		const yearA = getYear(a.csl);
-		const yearB = getYear(b.csl);
+		const yearA = getSortableYear(a.csl);
+		const yearB = getSortableYear(b.csl);
 		if (yearA !== yearB) {
 			return yearA - yearB;
 		}

@@ -5,7 +5,7 @@
  * Description:       Paste a DOI or BibTeX entry to build a formatted, auto-sorted bibliography in any style.
  * Version:           1.0.0
  * Requires at least: 6.4
- * Tested up to:      6.9
+ * Tested up to:      7.0
  * Requires PHP:      7.4
  * Author:            Dan Knauss
  * Author URI:        https://dan.knauss.ca/

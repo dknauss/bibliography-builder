@@ -1,4 +1,5 @@
 import { getDisplayText } from './formatting';
+import { getPrimaryIdentifierValue } from './csl-utils';
 import { sortCitations } from './sorter';
 
 export const CSL_JSON_EXPORT_FILENAME = 'bibliography.csl.json';
@@ -66,7 +67,14 @@ function appendRisLine(lines, tag, value) {
 	lines.push(`${tag}  - ${value}`);
 }
 
-function getYear(csl) {
+/**
+ * Get a publication year for output fields. Missing dates intentionally
+ * return undefined so RIS date tags are omitted instead of sorted last.
+ *
+ * @param {Object} csl CSL-JSON object.
+ * @return {number|undefined} Publication year for export output.
+ */
+function getIssuedYearForExport(csl) {
 	return csl.issued?.['date-parts']?.[0]?.[0];
 }
 
@@ -77,14 +85,6 @@ function splitPageRange(page = '') {
 		start: start || '',
 		end: end || '',
 	};
-}
-
-function getPrimaryIdentifierValue(value) {
-	if (Array.isArray(value)) {
-		return value.find((item) => typeof item === 'string' && item) || '';
-	}
-
-	return value;
 }
 
 function formatRisAuthor(author) {
@@ -120,8 +120,8 @@ function cslToRisEntry(csl) {
 		csl['container-title']
 	);
 	appendRisLine(lines, 'PB', csl.publisher);
-	appendRisLine(lines, 'PY', getYear(csl));
-	appendRisLine(lines, 'DA', getYear(csl));
+	appendRisLine(lines, 'PY', getIssuedYearForExport(csl));
+	appendRisLine(lines, 'DA', getIssuedYearForExport(csl));
 	appendRisLine(lines, 'VL', csl.volume);
 	appendRisLine(lines, 'IS', csl.issue);
 	appendRisLine(lines, 'SP', start);

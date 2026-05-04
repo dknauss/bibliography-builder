@@ -24,8 +24,8 @@ describe('formatting runtime cache behavior', () => {
 		delete global.fetch;
 	});
 
-	it('evicts the oldest cache entry instead of clearing the entire cache', async () => {
-		for (let index = 0; index < 501; index += 1) {
+	it('evicts the least recently used cache entry instead of clearing the entire cache', async () => {
+		for (let index = 0; index < 500; index += 1) {
 			await formatBibliographyEntry(
 				{
 					type: 'book',
@@ -35,7 +35,17 @@ describe('formatting runtime cache behavior', () => {
 			);
 		}
 
-		expect(fetch).toHaveBeenCalledTimes(501);
+		expect(fetch).toHaveBeenCalledTimes(500);
+
+		await formatBibliographyEntry(
+			{
+				type: 'book',
+				title: 'Title 0',
+			},
+			'apa-7'
+		);
+
+		expect(fetch).toHaveBeenCalledTimes(500);
 
 		await formatBibliographyEntry(
 			{
@@ -46,5 +56,22 @@ describe('formatting runtime cache behavior', () => {
 		);
 
 		expect(fetch).toHaveBeenCalledTimes(501);
+
+		await formatBibliographyEntry(
+			{
+				type: 'book',
+				title: 'Title 0',
+			},
+			'apa-7'
+		);
+		await formatBibliographyEntry(
+			{
+				type: 'book',
+				title: 'Title 1',
+			},
+			'apa-7'
+		);
+
+		expect(fetch).toHaveBeenCalledTimes(502);
 	});
 });

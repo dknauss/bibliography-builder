@@ -421,7 +421,7 @@ With static save and no Highwire meta tags in MVP, the PHP side is minimal:
 
 -   `bibliography-builder.php` — standard plugin header, calls `register_block_type()` pointing at `block.json`, enqueues editor and frontend assets.
 -   No custom database tables.
--   Read-only REST API endpoints at `/wp-json/bibliography/v1/posts/<post_id>/bibliographies` and `/wp-json/bibliography/v1/posts/<post_id>/bibliographies/<index>` for programmatic bibliography access.
+-   Read-only REST API endpoints at `/wp-json/bibliography/v1/posts/<post_id>/bibliographies` and `/wp-json/bibliography/v1/posts/<post_id>/bibliographies/<index>` for programmatic bibliography access, including JSON, plain-text, and CSL-JSON response formats.
 -   No `render_callback`.
 -   No `wp_head` hooks.
 
@@ -950,10 +950,15 @@ The editor JS bundle is 759KB minified (248KB zip). The frontend loads zero JS. 
 
 None of these are blocking for 1.0. The frontend is zero-JS and the editor bundle is comparable to other Gutenberg blocks that include rich processing (e.g., the core Table block with sorting). Revisit if users report slow editor load times.
 
-### Future: Testing Gaps
+### Runtime Testing Coverage
 
--   **WordPress Multisite** — expected to work but not yet tested in CI.
--   **SQLite runtime** — Docker-based runtime smoke planned but CI bootstrap path not yet stabilized.
+Multisite and SQLite coverage are no longer future gaps. CI includes runtime smoke coverage for:
+
+-   representative Apache and Nginx environments across supported PHP and WordPress versions
+-   a SQLite single-site runtime lane
+-   an Apache/PHP/latest-WordPress Multisite lane with network activation
+
+Future runtime work should focus on keeping these lanes stable and adding new cases only when a compatibility risk justifies them.
 
 ---
 
@@ -970,12 +975,12 @@ The editor UI now uses standard Gutenberg icons, but it does so through a small 
 In this project, direct barrel imports from `@wordpress/icons` previously triggered webpack resolution failures around the package's ESM modules and `react/jsx-runtime`, which in turn could break block registration in the editor. The current implementation avoids that failure mode by:
 
 1. Importing only the specific icon modules needed from `@wordpress/icons/build-module/library/*.mjs`
-2. Wrapping those icon elements in local React components in `/Users/danknauss/Developer/GitHub/bibliography-builder/src/lib/wp-icons.js`
+2. Wrapping those icon elements in local React components in `/Users/danknauss/Developer/GitHub/wp-bibliography-block/src/lib/wp-icons.js`
 3. Adding a webpack `resolve.alias` for `react/jsx-runtime` and `react/jsx-dev-runtime`
 
 This gives the block standard Gutenberg iconography without relying on a fragile `wp.icons` runtime externalization path.
 
-If a future dependency upgrade makes direct `@wordpress/icons` imports reliable again, the wrapper module can be simplified or removed. Until then, `/Users/danknauss/Developer/GitHub/bibliography-builder/src/lib/wp-icons.js` is the supported integration point for editor icons.
+If a future dependency upgrade makes direct `@wordpress/icons` imports reliable again, the wrapper module can be simplified or removed. Until then, `/Users/danknauss/Developer/GitHub/wp-bibliography-block/src/lib/wp-icons.js` is the supported integration point for editor icons.
 
 ### Why static save over dynamic rendering?
 

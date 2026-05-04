@@ -3,7 +3,7 @@ Contributors: dpknauss
 Donate link: https://www.paypal.com/paypalme/DanKnauss
 Tags: bibliography, citation, doi, bibtex, academic
 Requires at least: 6.4
-Tested up to: 6.9
+Tested up to: 7.0
 Stable tag: 1.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -24,6 +24,8 @@ The **Borges Bibliography Builder** transforms pasted DOI(s), BibTeX entries, an
 **Portable.** Static HTML output survives plugin deactivation. No shortcodes. No database tables.
 
 **Reference-manager friendly.** Export and reuse your bibliography in common research workflows. Borges supports CSL-JSON, BibTeX, RIS, DOI links, JSON-LD, and optional COinS metadata for compatibility with tools such as Zotero, Mendeley, EndNote, JabRef, BibDesk, and other citation managers.
+
+**Try it first.** Launch a disposable demo in [WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/borges-bibliography-builder/main/playground/blueprint.json) before installing it on your site.
 
 **Translation-ready.** Interface locale files are currently included for French (`fr_FR`), German (`de_DE`), Dutch (`nl_NL`), Swedish (`sv_SE`), Spanish (`es_ES`), Italian (`it_IT`), Portuguese (`pt_PT`), Polish (`pl_PL`), Russian (`ru_RU`), Japanese (`ja`), Simplified Chinese (`zh_CN`), Korean (`ko_KR`), Serbian (`sr_RS`), Croatian (`hr`), Brazilian Portuguese (`pt_BR`), Hindi (`hi_IN`), Bengali (`bn_BD`), Tamil (`ta_IN`), and Telugu (`te`).
 
@@ -70,19 +72,19 @@ Yes. CI includes a Multisite runtime smoke lane with network activation. If you 
 
 = What PHP and WordPress versions are supported? =
 
-PHP 7.4+ and WordPress 6.4+. The plugin has minimal PHP runtime (block registration and REST endpoints only). CI tests cover PHP 7.4 through 8.4 and WordPress 6.4 through 7.0.
+PHP 7.4+ and WordPress 6.4+. Borges Bibliography Builder is tested up to WordPress 7.0.
 
 == Screenshots ==
 
-1. Discover the Bibliography block in the block inserter by searching for "Bibliography."
-2. Paste DOIs, BibTeX entries, or supported citation text into the import form; the sidebar controls citation style, visible heading, and metadata output (JSON-LD, COinS, CSL-JSON).
-3. Switch to Manual Entry to build a citation field by field — Publication Type, Author, Title, Container, Publisher, Year, Pages, DOI, and URL.
-4. The block in editor view showing a formatted bibliography; hover any entry to reveal copy, edit, and delete actions.
-5. The rendered bibliography on the site front end — hanging indents, italic titles, and linked DOIs, styled by the active theme.
+1. Front-end bibliography output with hanging indents, italic titles, and linked DOIs, styled by the active theme.
+2. Editor view showing a formatted bibliography; hover any entry to reveal copy, edit, and delete actions.
+3. Discover the Bibliography block in the block inserter by searching for "Bibliography."
+4. Paste DOIs, BibTeX entries, or supported citation text into the import form; the sidebar controls citation style, visible heading, and metadata output (JSON-LD, COinS, CSL-JSON).
+5. Switch to Manual Entry to build a citation field by field — Publication Type, Author, Title, Container, Publisher, Year, Pages, DOI, and URL.
 
 == Development ==
 
-Source code, issue tracker, and contribution guidelines are on GitHub:
+Full developer documentation, source code, issue tracker, and contribution guidelines are on GitHub:
 
 [https://github.com/dknauss/borges-bibliography-builder](https://github.com/dknauss/borges-bibliography-builder)
 
@@ -115,6 +117,7 @@ This plugin connects to the **CrossRef REST API** (https://api.crossref.org/) wh
 * Harden the WordPress.org release package with third-party notices and Plugin Check cleanup.
 * Standardize GitHub, Playground, and release-download links on the approved `borges-bibliography-builder` slug and zip name.
 * Add CI/runtime coverage for Multisite network activation and expanded PHP utility behavior.
+* Confirm compatibility wording through WordPress 7.0 testing.
 
 == Upgrade Notice ==
 

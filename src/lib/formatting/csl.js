@@ -11,13 +11,33 @@ function getFormatCacheKey(csl, styleKey) {
 	return `${styleKey}::${stableStringify(csl)}`;
 }
 
-function setCachedFormat(cacheKey, formatted) {
-	if (FORMAT_CACHE.size >= MAX_FORMAT_CACHE_ENTRIES) {
-		const oldestCacheKey = FORMAT_CACHE.keys().next().value;
+function getCachedFormat(cacheKey) {
+	if (!FORMAT_CACHE.has(cacheKey)) {
+		return undefined;
+	}
 
-		if (oldestCacheKey) {
-			FORMAT_CACHE.delete(oldestCacheKey);
+	const formatted = FORMAT_CACHE.get(cacheKey);
+
+	// Refresh insertion order on access so Map behaves as a simple LRU cache.
+	FORMAT_CACHE.delete(cacheKey);
+	FORMAT_CACHE.set(cacheKey, formatted);
+
+	return formatted;
+}
+
+function setCachedFormat(cacheKey, formatted) {
+	if (FORMAT_CACHE.has(cacheKey)) {
+		FORMAT_CACHE.delete(cacheKey);
+	}
+
+	while (FORMAT_CACHE.size >= MAX_FORMAT_CACHE_ENTRIES) {
+		const leastRecentlyUsedCacheKey = FORMAT_CACHE.keys().next().value;
+
+		if (!leastRecentlyUsedCacheKey) {
+			break;
 		}
+
+		FORMAT_CACHE.delete(leastRecentlyUsedCacheKey);
 	}
 
 	FORMAT_CACHE.set(cacheKey, formatted);
@@ -116,8 +136,10 @@ export async function formatBibliographyEntries(
 	cslItems.forEach((csl, index) => {
 		const cacheKey = getFormatCacheKey(csl, styleKey);
 
-		if (FORMAT_CACHE.has(cacheKey)) {
-			results[index] = FORMAT_CACHE.get(cacheKey);
+		const cachedFormat = getCachedFormat(cacheKey);
+
+		if (cachedFormat !== undefined) {
+			results[index] = cachedFormat;
 			return;
 		}
 

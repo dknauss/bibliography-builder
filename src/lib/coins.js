@@ -2,6 +2,8 @@
  * CSL-JSON to COinS (Context Objects in Spans) OpenURL string builder.
  */
 
+import { getPrimaryIdentifierValue } from './csl-utils';
+
 /**
  * Build a COinS title attribute string from a CSL-JSON object.
  *
@@ -92,14 +94,6 @@ function addParam(params, key, value) {
 	if (value !== undefined && value !== null && value !== '') {
 		params.push(key + '=' + encodeURIComponent(String(value)));
 	}
-}
-
-function getPrimaryIdentifierValue(value) {
-	if (Array.isArray(value)) {
-		return value.find((item) => typeof item === 'string' && item) || '';
-	}
-
-	return value;
 }
 
 function getPageBounds(pageValue) {

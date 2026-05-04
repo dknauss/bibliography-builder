@@ -28,3 +28,7 @@ Keep later screenshots in a consistent order as well, matching the WordPress.org
 - Front-end output screenshot appears first in both readmes.
 - Editor with citations screenshot appears second in both readmes.
 - WordPress.org screenshot captions remain accurate after reordering.
+
+## Completion
+
+Completed in the 2026-05-04 post-launch cleanup. `README.md` and `readme.txt` now use matching screenshot order: front-end output first, editor-with-citations second, then block inserter, empty-state form, and manual entry. `.wordpress-org/screenshot-*.png` files were reordered to keep WordPress.org captions accurate.
