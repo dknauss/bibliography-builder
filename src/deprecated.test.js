@@ -38,9 +38,44 @@ describe('deprecated block versions', () => {
 		);
 	});
 
-	it('supports the prior save markup with linked URLs and static aria-label', () => {
+	it('supports the immediate prior save markup with deprecated entry roles', () => {
 		const markup = renderToStaticMarkup(
 			deprecated[0].save({
+				attributes: {
+					citationStyle: 'chicago-notes-bibliography',
+					headingText: 'References',
+					citations: [
+						{
+							...createCitation({
+								id: 'url-entry',
+								family: 'Smith',
+								title: 'Example Resource',
+							}),
+							csl: {
+								type: 'webpage',
+								title: 'Example Resource',
+								URL: 'https://example.com/resource',
+								author: [{ family: 'Smith' }],
+							},
+							formattedText:
+								'Smith. Example Resource. https://example.com/resource.',
+						},
+					],
+				},
+			})
+		);
+
+		// This deprecated version matches the immediate previous save markup:
+		// linked URLs, heading-derived aria-label, and deprecated
+		// doc-biblioentry roles for existing saved posts.
+		expect(markup).toContain('<a href=');
+		expect(markup).toContain('aria-label="References"');
+		expect(markup).toContain('role="doc-biblioentry"');
+	});
+
+	it('supports the prior save markup with linked URLs and static aria-label', () => {
+		const markup = renderToStaticMarkup(
+			deprecated[1].save({
 				attributes: {
 					citationStyle: 'chicago-notes-bibliography',
 					headingText: 'References',
@@ -73,7 +108,7 @@ describe('deprecated block versions', () => {
 
 	it('supports the prior save markup variant without linked visible URLs', () => {
 		const markup = renderToStaticMarkup(
-			deprecated[1].save({
+			deprecated[2].save({
 				attributes: {
 					citationStyle: 'chicago-notes-bibliography',
 					citations: [
@@ -103,7 +138,7 @@ describe('deprecated block versions', () => {
 
 	it('supports the prior unsorted save markup variant', () => {
 		const markup = renderToStaticMarkup(
-			deprecated[2].save({
+			deprecated[3].save({
 				attributes: {
 					citationStyle: 'chicago-notes-bibliography',
 					citations: [

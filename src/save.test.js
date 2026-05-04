@@ -150,7 +150,7 @@ describe('save', () => {
 		}
 	});
 
-	it('renders semantic bibliography roles and language attributes', () => {
+	it('renders semantic bibliography role and language attributes without deprecated entry roles', () => {
 		const markup = renderToStaticMarkup(
 			save({
 				attributes: {
@@ -185,7 +185,7 @@ describe('save', () => {
 			})
 		);
 		expect(customHeadingMarkup).toContain('aria-label="References"');
-		expect(markup).toContain('role="doc-biblioentry"');
+		expect(markup).not.toContain('role="doc-biblioentry"');
 		expect(markup).toContain('id="ref-citation-7"');
 		expect(markup).toContain('lang="fr"');
 	});
@@ -244,12 +244,8 @@ describe('save', () => {
 			})
 		);
 
-		expect(markup).toContain(
-			'<li role="doc-biblioentry" id="ref-fr-entry" lang="fr">'
-		);
-		expect(markup).toContain(
-			'<li role="doc-biblioentry" id="ref-default-entry">'
-		);
+		expect(markup).toContain('<li id="ref-fr-entry" lang="fr">');
+		expect(markup).toContain('<li id="ref-default-entry">');
 	});
 
 	it('prefers displayOverride over auto-formatted text', () => {

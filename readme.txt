@@ -13,7 +13,9 @@ Paste a DOI or BibTeX entry — get a formatted, auto-sorted bibliography in any
 
 == Description ==
 
-The **Borges Bibliography Builder**, a block plugin for WordPress, transforms pasted DOI(s), BibTeX entries, and citations into a semantically rich, auto-sorted reference list.
+Named for Jorge Luis Borges (1899–1986), the Argentine writer and librarian known for stories about infinite libraries, imaginary books, and labyrinths of knowledge, Borges Bibliography Builder brings order to scholarly references in WordPress.
+
+The **Borges Bibliography Builder** transforms pasted DOI(s), BibTeX entries, and citations into a semantically rich, auto-sorted reference list.
 
 **One-click import.** Paste a DOI, and CrossRef resolves the metadata instantly. Paste BibTeX or formatted citations for books, articles, chapters, webpages, reviews, and theses.
 
@@ -21,7 +23,7 @@ The **Borges Bibliography Builder**, a block plugin for WordPress, transforms pa
 
 **Portable.** Static HTML output survives plugin deactivation. No shortcodes. No database tables.
 
-**Zotero-ready.** Schema.org JSON-LD by default. Optional COinS metadata for citation manager detection. Download CSL-JSON, BibTeX, or RIS for reuse in reference managers and scripts.
+**Reference-manager friendly.** Export and reuse your bibliography in common research workflows. Borges supports CSL-JSON, BibTeX, RIS, DOI links, JSON-LD, and optional COinS metadata for compatibility with tools such as Zotero, Mendeley, EndNote, JabRef, BibDesk, and other citation managers.
 
 **Translation-ready.** Interface locale files are currently included for French (`fr_FR`), German (`de_DE`), Dutch (`nl_NL`), Swedish (`sv_SE`), Spanish (`es_ES`), Italian (`it_IT`), Portuguese (`pt_PT`), Polish (`pl_PL`), Russian (`ru_RU`), Japanese (`ja`), Simplified Chinese (`zh_CN`), Korean (`ko_KR`), Serbian (`sr_RS`), Croatian (`hr`), Brazilian Portuguese (`pt_BR`), Hindi (`hi_IN`), Bengali (`bn_BD`), Tamil (`ta_IN`), and Telugu (`te`).
 
@@ -46,9 +48,9 @@ Bare DOIs, DOI URLs, BibTeX entries, and supported formatted citations for books
 
 Your bibliographies remain fully readable. The block uses static HTML output, so all formatted citations stay in your post content.
 
-= Does the Borges Bibliography Builder work with Zotero? =
+= Does the Borges Bibliography Builder work with Zotero, Mendeley, EndNote, and other citation managers? =
 
-Yes, if you enable the optional COinS output layer. That metadata is intended for Zotero's browser connector and similar tools.
+Yes. Borges is built around portable bibliography formats rather than lock-in. Zotero can use DOI links, BibTeX, RIS, CSL-JSON, and optional COinS metadata. Mendeley and EndNote are best supported through BibTeX/RIS exports, with DOI-backed entries also friendly to browser importers. CSL-JSON is available for citeproc and scholarly data workflows.
 
 = Why would I enable CSL-JSON? =
 
@@ -72,11 +74,11 @@ PHP 7.4+ and WordPress 6.4+. The plugin has minimal PHP runtime (block registrat
 
 == Screenshots ==
 
-1. Discover the Bibliography block in the inserter.
-2. Paste DOI, BibTeX, or supported citation text into the default import form.
-3. Use Manual Entry to build a citation with Publication Type and structured fields.
-4. Configure citation style, metadata output, and export actions in the block settings sidebar.
-5. View the rendered bibliography on the site front end with linked URLs and semantic output.
+1. Discover the Bibliography block in the block inserter by searching for "Bibliography."
+2. Paste DOIs, BibTeX entries, or supported citation text into the import form; the sidebar controls citation style, visible heading, and metadata output (JSON-LD, COinS, CSL-JSON).
+3. Switch to Manual Entry to build a citation field by field — Publication Type, Author, Title, Container, Publisher, Year, Pages, DOI, and URL.
+4. The block in editor view showing a formatted bibliography; hover any entry to reveal copy, edit, and delete actions.
+5. The rendered bibliography on the site front end — hanging indents, italic titles, and linked DOIs, styled by the active theme.
 
 == Development ==
 

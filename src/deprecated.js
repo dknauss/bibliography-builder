@@ -23,7 +23,19 @@ export const deprecated = [
 				headingTag: 'p',
 				entryTag: 'cite',
 				linkVisibleUrls: true,
+				includeDeprecatedBiblioEntryRole: true,
+			}),
+	},
+	{
+		attributes: deprecatedAttributes,
+		save: ({ attributes }) =>
+			renderBibliographySave(attributes, {
+				sortEntries: true,
+				headingTag: 'p',
+				entryTag: 'cite',
+				linkVisibleUrls: true,
 				ariaLabel: 'Bibliography',
+				includeDeprecatedBiblioEntryRole: true,
 			}),
 	},
 	{
@@ -34,6 +46,7 @@ export const deprecated = [
 				headingTag: 'p',
 				entryTag: 'cite',
 				linkVisibleUrls: false,
+				includeDeprecatedBiblioEntryRole: true,
 			}),
 	},
 	{
@@ -45,6 +58,7 @@ export const deprecated = [
 				headingTag: 'p',
 				entryTag: 'cite',
 				linkVisibleUrls: false,
+				includeDeprecatedBiblioEntryRole: true,
 			}),
 	},
 	{
@@ -56,6 +70,7 @@ export const deprecated = [
 				headingTag: 'h2',
 				entryTag: 'span',
 				linkVisibleUrls: false,
+				includeDeprecatedBiblioEntryRole: true,
 			}),
 	},
 ];

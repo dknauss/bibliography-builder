@@ -9,7 +9,9 @@
 [![Codecov](https://codecov.io/gh/dknauss/Bibliography-Builder/branch/main/graph/badge.svg)](https://codecov.io/gh/dknauss/Bibliography-Builder)
 [![WordPress Playground](https://img.shields.io/badge/WordPress%20Playground-Try%20it-3858e9.svg?logo=wordpress&logoColor=white)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/dknauss/Bibliography-Builder/main/playground/blueprint.json)
 
-The only all-in-one bibliography block for the WordPress editor that transforms pasted scholarly references — DOI numbers/URLs, BibTeX entries, and supported formatted citations — into a semantically rich, auto-sorted bibliography with static saved output. Export your work as CSL-JSON, BibTeX, and RIS.
+Named for Jorge Luis Borges (1899–1986), the Argentine writer, essayist, poet, and librarian whose work imagined infinite libraries, invented books, and labyrinths of reference, Borges Bibliography Builder brings that bibliographic spirit to WordPress.
+
+The plugin transforms pasted scholarly references — DOI numbers/URLs, BibTeX entries, and supported formatted citations — into a semantically rich, auto-sorted bibliography with static saved output. Export your work as CSL-JSON, BibTeX, and RIS for Zotero, Mendeley, EndNote, JabRef, BibDesk, and similar tools.
 
 No shortcodes. No database storage. Static HTML output survives plugin deactivation.
 
@@ -55,12 +57,24 @@ The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 t
 - **Structured editing** — plain-text editing plus per-field editing for heuristic or warning-marked citations
 - **Semantic output** — DPUB-ARIA bibliography roles, `<cite>` wrappers, `lang` attributes, and hanging-indent styling
 - **JSON-LD** — Schema.org structured data for search engines, AI systems, and semantic consumers (on by default)
-- **COinS** — optional OpenURL spans for browser-based citation manager detection (useful for Zotero and similar tools)
-- **CSL-JSON output** — optional machine-readable metadata for tool interoperability (useful for scholarly services that consume structured data)
+- **COinS** — optional OpenURL spans for browser-based citation manager detection, especially Zotero and legacy OpenURL workflows
+- **CSL-JSON output** — optional machine-readable metadata for citation-manager, citeproc, and scholarly-service interoperability
 - **Export** — download the current bibliography as CSL-JSON, BibTeX, or RIS; copy individual citations or the full bibliography as plain text
 - **Static save** — bibliography HTML and metadata are baked into post content at save time
 - **Accessible editor UX** — focus management, block-local Gutenberg notices, keyboard escape/cancel flows, and row action controls
 - **Interface locale files included** — 19 bundled locales for plugin UI strings (see **Language Support** below)
+
+## Reference manager compatibility
+
+Borges is reference-manager friendly by design. It outputs portable CSL-JSON, BibTeX, RIS, DOI links, Schema.org JSON-LD, and optional COinS metadata so bibliographies can move into common scholarly tools without scraping formatted citation text.
+
+| Tool or workflow | Supported path |
+|---|---|
+| **Zotero** | Strong compatibility through DOI links, BibTeX, RIS, CSL-JSON, and optional COinS metadata. |
+| **Mendeley** | Compatible through BibTeX/RIS exports; DOI-backed entries are also browser-importer friendly. Use export/copy actions for non-DOI entries rather than relying on extension autodetection. |
+| **EndNote** | Compatible through RIS and BibTeX imports. EndNote XML is deferred unless testing shows a practical gap that RIS/BibTeX do not cover. |
+| **JabRef, BibDesk, LaTeX** | Compatible through UTF-8 BibTeX exports; BibLaTeX support is on the roadmap. |
+| **CSL / citeproc tools** | Compatible through CSL-JSON, which is the plugin's canonical structured data model. |
 
 ## Language Support
 

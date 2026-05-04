@@ -3,6 +3,7 @@ import {
 	buildCslJsonExportContent,
 	buildBibtexExportContent,
 	buildRisExportContent,
+	normalizeBibtexUnicodeQuotes,
 	downloadTextExport,
 	downloadCslJsonExport,
 	downloadBibtexExport,
@@ -211,6 +212,75 @@ describe('export helpers', () => {
 		expect(CiteCtor).toHaveBeenCalled();
 		expect(content).toContain('@book{Alpha2020Alpha');
 		expect(content.endsWith('\n')).toBe(true);
+	});
+
+	it('normalizes citation-js TeX quote ligatures in BibTeX exports to UTF-8 quotes', async () => {
+		const CiteCtor = jest.fn().mockImplementation(() => ({
+			format: jest.fn(
+				() =>
+					'@article{Mallory2015Contagious,\n' +
+					"\ttitle = {``{Contagious} {Air}[s]'': Wordsworth's {Poetics} and {Politics} of {Immunity}},\n" +
+					'}'
+			),
+		}));
+
+		const content = await buildBibtexExportContent(
+			[
+				{
+					id: 'mallory-2015',
+					csl: {
+						type: 'article-journal',
+						title: '“Contagious Air[s]”: Wordsworth’s Poetics and Politics of Immunity',
+						author: [{ family: 'Mallory-Kani', given: 'Amy' }],
+						issued: { 'date-parts': [[2015]] },
+					},
+				},
+			],
+			'chicago-author-date',
+			{ CiteCtor }
+		);
+
+		expect(content).toContain(
+			"title = {“{Contagious} {Air}[s]”: Wordsworth's {Poetics}"
+		);
+		expect(content).not.toContain('``');
+		expect(content).not.toContain("''");
+	});
+
+	it('exports real citation-js BibTeX with Unicode opening quotes for citation managers', async () => {
+		const content = await buildBibtexExportContent(
+			[
+				{
+					id: 'mallory-2015',
+					csl: {
+						type: 'article-journal',
+						title: "“Contagious Air[s]”: Wordsworth's Poetics and Politics of Immunity",
+						author: [{ family: 'Mallory-Kani', given: 'Amy' }],
+						'container-title': 'European Romantic Review',
+						issued: { 'date-parts': [[2015, 11]] },
+						volume: '26',
+						issue: '6',
+						page: '699-717',
+						DOI: '10.1080/10509585.2015.1092083',
+					},
+				},
+			],
+			'chicago-author-date'
+		);
+
+		expect(content).toContain(
+			"title = {“{Contagious} {Air}[s]”: Wordsworth's {Poetics}"
+		);
+		expect(content).not.toContain('``{Contagious}');
+		expect(content).not.toContain("{Air}[s]''");
+	});
+
+	it('normalizes citation-js TeX single quote commands in BibTeX exports', () => {
+		expect(
+			normalizeBibtexUnicodeQuotes(
+				'title = {\\textquoteleft{}{No}.\\textquoteright{} O\\textquoteright{}{Connor}}'
+			)
+		).toBe('title = {‘{No}.’ O’{Connor}}');
 	});
 
 	it('downloads BibTeX with the expected filename and MIME type', async () => {

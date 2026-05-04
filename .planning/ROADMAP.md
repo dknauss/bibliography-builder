@@ -99,13 +99,28 @@ Acceptance goals:
 
 Future export work should prioritize practical download/use cases over additional invisible metadata layers:
 
+Manual Zotero/Mendeley testing confirms this direction. Zotero documents broad translator/import support, including RDF, CSL-JSON, BibTeX, BibLaTeX, RIS, MODS, and COinS-derived web metadata. Mendeley documents a narrower web-importer priority order: DOI and publisher/header metadata first, with COinS treated as a legacy last-resort path. On the Studio sample page, Mendeley imports the DOI-bearing journal article but misses the non-DOI thesis even though COinS, JSON-LD, and CSL-JSON are present in the static bibliography output. Prefer visible export affordances and direct files over adding more hidden body-level metadata. Consider page-head Highwire/`citation_*` metadata only for future single-work pages where page-level metadata is semantically correct; it is not a clean fit for multi-entry bibliography blocks.
+
 Completed:
 
 1. **CSL-JSON export**
 2. **BibTeX export**
 3. **RIS export**
 
-These exports would complement the existing metadata-output toggles by giving users tangible bibliography data files they can download and reuse directly.
+Planned:
+
+4. **Frontend Cite / Export affordances** — add optional Scholar-like controls on the public bibliography output so readers can open/copy/download citation data as BibTeX, RIS, and CSL-JSON. Preserve static save output and keep the no-JS bibliography readable; use progressive enhancement or REST export variants only where they do not undermine plugin-deactivation resilience.
+5. **BibLaTeX export/import** — high priority because `@citation-js/plugin-bibtex` already supports BibLaTeX input/output, and BibLaTeX is valuable for LaTeX/Biber users with better Unicode semantics than legacy BibTeX.
+6. **PMID input/resolution** — prioritize before native NBIB; biomedical users usually need PubMed lookup first, and PMID can resolve into the existing CSL source-of-truth model.
+
+Deferred / demand-gated:
+
+- **EndNote XML** — consider export only if EndNote/Mendeley testing shows RIS/BibTeX are insufficient; treat as medium/low priority because EndNote describes the XML format as proprietary and primarily for EndNote-to-EndNote transfer.
+- **NBIB / MEDLINE** — consider import after PMID support if biomedical users request batch PubMed workflows; defer export unless there is clear demand.
+- **CIW / Web of Science tagged** — defer until bibliometrics/Web of Science users request it; Web of Science already offers RIS/BibTeX paths that the plugin supports.
+- **ENL** — keep unsupported; it is an EndNote library/database format rather than a clean web bibliography interchange format.
+
+These exports complement the existing metadata-output toggles by giving users tangible bibliography data files they can download and reuse directly.
 
 ## Performance hardening track
 

@@ -1,7 +1,7 @@
 /**
  * Static save function for the Bibliography block.
  *
- * Produces semantic HTML with DPUB-ARIA roles, JSON-LD by default,
+ * Produces semantic HTML with a DPUB-ARIA bibliography role, JSON-LD by default,
  * and optional CSL-JSON / COinS layers.
  * All output is baked into post content — no PHP render_callback.
  */

@@ -66,16 +66,18 @@ Recent work completed in the working tree includes:
 -   The benchmark harness makes it easier to watch regression risk in editor-side formatting and deferred citation chunks over time.
 -   Notification behavior is now intentionally split between block-local inline notices for contextual validation and block-local snackbars for pure success messages.
 -   Low-priority backlog: periodically re-check row-interaction accessibility and reconsider snackbar-only handling for pure success states if it improves clarity without losing local validation context.
--   Export-format groundwork is now in place, and copy citation, Copy bibliography, plus the read-only bibliography REST endpoints now provide practical next-layer interoperability.
+-   Export-format groundwork is now in place, and copy citation, Copy bibliography, plus the read-only bibliography REST endpoints now provide practical next-layer interoperability. Follow-up todos now track optional frontend Cite / Export affordances modeled on Google Scholar's visible citation/export workflow. Mendeley testing showed DOI-only auto-detection is likely for non-page-head metadata, so the frontend export path should make RIS/BibTeX/CSL-JSON available to readers without depending on hidden COinS discovery. Format-expansion priority remains: BibLaTeX first, PMID before NBIB, EndNote XML only if testing proves RIS/BibTeX insufficient, CIW demand-gated, and ENL out of scope.
 -   Build remains healthy, with `citation-citeproc.js` now the only oversized deferred asset after the style-template reduction pass.
 -   The citeproc investigation confirmed that `citation-citeproc.js` is effectively `citeproc_commonjs.js`; narrower load responsibility has now landed, so the remaining question is whether future work should target load strategy only or leave citeproc architecture alone.
 
 ## Pending Todos
 
--   3 pending todos in `.planning/todos/pending`
+-   5 pending todos in `.planning/todos/pending`
     - Restore `main` CI to green after branding update
     - WordPress.org review-response readiness and submission follow-up
     - Add multisite runtime smoke coverage
+    - Add frontend Cite and Export affordances
+    - Prioritize BibLaTeX and PMID interoperability
 
 ## Roadmap Alignment
 

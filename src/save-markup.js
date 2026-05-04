@@ -17,6 +17,7 @@ export function renderBibliographySave(
 		entryTag = 'cite',
 		linkVisibleUrls = true,
 		ariaLabel = null,
+		includeDeprecatedBiblioEntryRole = false,
 	} = {}
 ) {
 	const {
@@ -66,7 +67,11 @@ export function renderBibliographySave(
 					return (
 						<li
 							key={citation.id}
-							role="doc-biblioentry"
+							role={
+								includeDeprecatedBiblioEntryRole
+									? 'doc-biblioentry'
+									: undefined
+							}
 							id={`ref-${citation.id}`}
 							lang={citation.csl.language || undefined}
 						>
