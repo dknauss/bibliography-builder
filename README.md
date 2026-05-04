@@ -68,7 +68,7 @@ The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 t
 
 Borges is reference-manager-friendly by design. It outputs portable CSL-JSON, BibTeX, RIS, DOI links, Schema.org JSON-LD, and optional COinS metadata so your bibliographies can be imported directly into the most widely used bibliography management and academic publishing software.
 
-| Tool or Workflow | Supported Oath |
+| Tool or Workflow | Level of Support |
 |---|---|
 | **Zotero** | Strong compatibility through DOI links, BibTeX, RIS, CSL-JSON, and optional COinS metadata. |
 | **Mendeley** | Compatible through BibTeX/RIS exports; DOI-backed entries are also browser-importer friendly. Use export/copy actions for non-DOI entries rather than relying on extension autodetection. |
@@ -131,7 +131,7 @@ This plugin connects to the [CrossRef REST API](https://api.crossref.org/) when 
 Requires Node.js 18+, npm 9+, and Composer.
 
 ```bash
-npm install                    # Install dependencies
+npm install                  # Install dependencies
 composer install             # Install PHP tooling
 npm run build                # Production build
 npm run start                # Development mode with file watching
