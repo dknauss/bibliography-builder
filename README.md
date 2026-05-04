@@ -23,8 +23,6 @@ Launch a disposable WordPress instance with the plugin preinstalled: [Try the Bo
 
 ![](.wordpress-org/banner-1544x500.png)
 
-WordPress.org branding assets live in [.wordpress-org](./.wordpress-org/), and editable source files live in [.wordpress-org/source](./.wordpress-org/source/).
-
 ## Screenshots
 
 | Editor with citations | Front-end output |
@@ -46,9 +44,9 @@ WordPress.org branding assets live in [.wordpress-org](./.wordpress-org/), and e
 
 - **WordPress** 6.4–7.0 (block.json v3 requires 6.4+)
 - **PHP** 7.4+ (minimal PHP runtime — the plugin registers a block and REST endpoints only)
-- **Multisite** — expected to work (block registration is site-local by default), but not yet tested
+- **Multisite** is expected to work (block registration is site-local by default), but on-depth tests are pending.
 
-The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 through latest on both Apache and Nginx. Multisite-specific and SQLite runtime e2e tests are on the backlog.
+The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 through the latest core release on both Apache and Nginx. Multisite-specific and SQLite runtime e2e tests are on the backlog.
 
 ## Features
 
@@ -66,13 +64,13 @@ The GitHub Actions runtime matrix covers PHP 7.4 through 8.4 and WordPress 6.4 t
 
 ## Reference manager compatibility
 
-Borges is reference-manager friendly by design. It outputs portable CSL-JSON, BibTeX, RIS, DOI links, Schema.org JSON-LD, and optional COinS metadata so bibliographies can move into common scholarly tools without scraping formatted citation text.
+Borges is reference-manager-friendly by design. It outputs portable CSL-JSON, BibTeX, RIS, DOI links, Schema.org JSON-LD, and optional COinS metadata so your bibliographies can be imported directly into the most widely used bibliography management and academic publishing software.
 
-| Tool or workflow | Supported path |
+| Tool or Workflow | Supported Oath |
 |---|---|
 | **Zotero** | Strong compatibility through DOI links, BibTeX, RIS, CSL-JSON, and optional COinS metadata. |
 | **Mendeley** | Compatible through BibTeX/RIS exports; DOI-backed entries are also browser-importer friendly. Use export/copy actions for non-DOI entries rather than relying on extension autodetection. |
-| **EndNote** | Compatible through RIS and BibTeX imports. EndNote XML is deferred unless testing shows a practical gap that RIS/BibTeX do not cover. |
+| **EndNote** | Compatible through RIS and BibTeX imports. EndNote XML is deferred as a Borges export format unless user feedback and/or future testing show a practical gap that RIS and BibTeX do not cover. |
 | **JabRef, BibDesk, LaTeX** | Compatible through UTF-8 BibTeX exports; BibLaTeX support is on the roadmap. |
 | **CSL / citeproc tools** | Compatible through CSL-JSON, which is the plugin's canonical structured data model. |
 
@@ -80,17 +78,17 @@ Borges is reference-manager friendly by design. It outputs portable CSL-JSON, Bi
 
 Current bundled interface translations cover: `fr_FR`, `de_DE`, `nl_NL`, `sv_SE`, `es_ES`, `it_IT`, `pt_PT`, `pl_PL`, `ru_RU`, `ja`, `zh_CN`, `ko_KR`, `sr_RS`, `hr`, `pt_BR`, `hi_IN`, `bn_BD`, `ta_IN`, and `te`.
 
-These locale files cover plugin interface strings only. Citation content remains user-provided or metadata-derived.
+These locale files only cover plugin interface strings. Citation content remains user-provided or metadata-derived.
 
 ## Supported Input
 
-### First-class inputs
+### First-Class Inputs
 
 - **Bare DOI** — `10.1000/xyz123`
 - **DOI URL** — `https://doi.org/10.1000/xyz123`
 - **BibTeX** — `@article{key, title={...}, ...}`
 
-### Supported formatted citation coverage
+### Supported Formatted Citation Coverage
 
 The free-text parser currently supports a growing set of formatted citations for:
 
@@ -112,10 +110,10 @@ The plugin exposes a read-only REST endpoint for bibliography data:
 
 Behavior:
 
-- published posts are readable publicly
-- non-public posts require permission to edit the post
-- the collection route returns each bibliography block found in the post, including style settings and citation data
-- the single-bibliography route supports `?format=json`, `?format=text`, and `?format=csl-json`
+- Published posts are publicly readable.
+- Non-public posts require permission to edit the post.
+- The collection route returns each bibliography block found in the post, including style settings and citation data.
+- The single-bibliography route supports `?format=json`, `?format=text`, and `?format=csl-json`.
 
 ## External Services
 
@@ -131,7 +129,7 @@ This plugin connects to the [CrossRef REST API](https://api.crossref.org/) when 
 Requires Node.js 18+, npm 9+, and Composer.
 
 ```bash
-npm install                  # Install dependencies
+npm install                    # Install dependencies
 composer install             # Install PHP tooling
 npm run build                # Production build
 npm run start                # Development mode with file watching
@@ -176,7 +174,7 @@ Each runtime smoke job uploads artifacts, including Docker logs, service status,
 
 SQLite runtime smoke remains a planned follow-up while the CI bootstrap path is stabilized.
 
-## Project docs and operational files
+## Project Documentation and Operational Files
 
 - [Plugin specification](./SPEC.md)
 - [Release notes (v1.0.0)](./docs/release-notes-v1.0.0.md)
@@ -185,7 +183,9 @@ SQLite runtime smoke remains a planned follow-up while the CI bootstrap path is 
 - [Runtime matrix smoke script](./scripts/runtime-matrix/smoke.sh)
 - [Brand assets](./.wordpress-org/)
 
-### File structure
+WordPress.org branding assets live in [.wordpress-org](./.wordpress-org/), and editable source files live in [.wordpress-org/source](./.wordpress-org/source/)
+
+### Plugin File Structure
 
 ```text
 bibliography-builder/
