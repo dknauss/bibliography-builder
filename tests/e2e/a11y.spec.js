@@ -354,6 +354,64 @@ test.describe('Bibliography block accessibility gate', () => {
 			).toBe(true);
 		});
 
+		// Audit plan item 4: focus lands on new entry after keyboard Add.
+		await test.step('focus moves into block after keyboard-activated Add', async () => {
+			const textarea = editorFrame.locator('textarea').first();
+			await textarea.fill(SAMPLE_BIBTEX.replace('a11y2026', 'a11y2026b'));
+			const addButton = editorFrame
+				.getByRole('button', { name: /^Add$/i })
+				.first();
+			await addButton.focus();
+			await addButton.press('Enter');
+			await editorFrame
+				.locator('.bibliography-builder-entry')
+				.nth(1)
+				.waitFor({ state: 'visible', timeout: 15000 });
+
+			// Focus must not be stranded at document root.
+			const focusedTag = await page.evaluate(
+				() => document.activeElement?.tagName?.toLowerCase() ?? ''
+			);
+			expect(['body', 'html']).not.toContain(focusedTag);
+		});
+
+		// Audit plan item 5: focus returns to trigger after collapse.
+		await test.step('focus restores to chevron after citation form collapse', async () => {
+			const chevronButton = page
+				.getByRole('button', {
+					name: /Hide citation form|Show citation form/i,
+				})
+				.first();
+			await chevronButton.focus();
+			await page.keyboard.press('Enter');
+			await expect(editorFrame.locator('textarea')).toHaveCount(0);
+
+			const isChevronFocused = await chevronButton.evaluate(
+				(el) => document.activeElement === el
+			);
+			// Restore for subsequent steps.
+			await page.keyboard.press('Enter');
+			await expect(editorFrame.locator('textarea')).toHaveCount(1);
+			expect(isChevronFocused).toBe(true);
+		});
+
+		// Audit plan item 6: interactive controls have a visible focus ring.
+		await test.step('interactive controls expose a visible focus indicator', async () => {
+			const pasteButton = page
+				.getByRole('button', { name: /Paste.*Import/i })
+				.first();
+			await pasteButton.focus();
+			const hasVisibleRing = await pasteButton.evaluate((el) => {
+				const s = window.getComputedStyle(el);
+				return (
+					(s.outlineStyle !== 'none' &&
+						parseFloat(s.outlineWidth) > 0) ||
+					(s.boxShadow !== 'none' && s.boxShadow !== '')
+				);
+			});
+			expect(hasVisibleRing).toBe(true);
+		});
+
 		await test.step('editor block has no automated WCAG axe violations', async () => {
 			await expectNoAxeViolations(page, getBlockAxeContext(page));
 		});
@@ -374,5 +432,132 @@ test.describe('Bibliography block accessibility gate', () => {
 				'.wp-block-bibliography-builder-bibliography'
 			);
 		});
+	});
+
+	// Audit plan item 7: forced-colors (Windows High Contrast) mode.
+	test('block passes axe scan under forced-colors media', async ({
+		page,
+	}) => {
+		await page.emulateMedia({ forcedColors: 'active' });
+		await page.goto('/wp-admin/post-new.php');
+		await page.waitForLoadState('domcontentloaded');
+		await dismissEditorOverlay(page);
+		await expect(
+			page.getByRole('button', {
+				name: /Block Inserter|Toggle block inserter/i,
+			})
+		).toBeVisible({ timeout: 20000 });
+		await insertBibliographyBlock(page);
+		await dismissEditorOverlay(page);
+		await expectNoAxeViolations(page, getBlockAxeContext(page));
+	});
+
+	// Audit plan item 8: 400% zoom / narrow-viewport reflow.
+	test('published bibliography reflows at 320 px width without horizontal scroll', async ({
+		page,
+	}) => {
+		// Insert block, add citation, publish.
+		await page.goto('/wp-admin/post-new.php');
+		await page.waitForLoadState('domcontentloaded');
+		await dismissEditorOverlay(page);
+		await expect(
+			page.getByRole('button', {
+				name: /Block Inserter|Toggle block inserter/i,
+			})
+		).toBeVisible({ timeout: 20000 });
+		await insertBibliographyBlock(page);
+		await dismissEditorOverlay(page);
+		const editorFrame = await getEditorFrame(page);
+		const textarea = editorFrame.locator('textarea').first();
+		await expect(textarea).toBeVisible({ timeout: 10000 });
+		await textarea.fill(SAMPLE_BIBTEX);
+		await editorFrame
+			.getByRole('button', { name: /^Add$/i })
+			.first()
+			.click();
+		await editorFrame
+			.locator('.bibliography-builder-entry')
+			.first()
+			.waitFor({ state: 'visible', timeout: 15000 });
+
+		const frontendUrl = await publishCurrentPost(page);
+		expect(frontendUrl).toBeTruthy();
+
+		// Navigate at 320 px — equivalent to 400% zoom on a 1280 px display.
+		await page.setViewportSize({ width: 320, height: 600 });
+		await page.goto(frontendUrl);
+		await page.waitForLoadState('networkidle');
+		await expect(
+			page.locator('.wp-block-bibliography-builder-bibliography').first()
+		).toBeVisible({ timeout: 10000 });
+
+		const hasHorizontalScroll = await page.evaluate(
+			() => document.documentElement.scrollWidth > window.innerWidth
+		);
+		expect(hasHorizontalScroll).toBe(false);
+	});
+
+	// Audit plan items 9–10: BAC checks fire when plugin is active.
+	test('BAC error indicator appears on empty block, clears when complete', async ({
+		page,
+	}) => {
+		await page.goto('/wp-admin/post-new.php');
+		await page.waitForLoadState('domcontentloaded');
+		await dismissEditorOverlay(page);
+		await expect(
+			page.getByRole('button', {
+				name: /Block Inserter|Toggle block inserter/i,
+			})
+		).toBeVisible({ timeout: 20000 });
+		await insertBibliographyBlock(page);
+		await dismissEditorOverlay(page);
+
+		// BAC may not be active in all environments; skip gracefully if absent.
+		const bacPresent = await page
+			.locator('[class*="block-a11y"], [data-a11y-check]')
+			.first()
+			.isVisible({ timeout: 5000 })
+			.catch(() => false);
+
+		if (!bacPresent) {
+			test.skip(
+				true,
+				'Block Accessibility Checks plugin not active — skipping BAC integration assertions'
+			);
+			return;
+		}
+
+		// Item 9: empty block should show a BAC error indicator.
+		const errorIndicator = page.locator(
+			'[class*="block-a11y"][class*="error"], [data-a11y-check="error"]'
+		);
+		await expect(errorIndicator).toBeVisible({ timeout: 5000 });
+
+		// Item 10: adding a citation and heading clears the error.
+		const editorFrame = await getEditorFrame(page);
+		const textarea = editorFrame.locator('textarea').first();
+		await expect(textarea).toBeVisible({ timeout: 10000 });
+		await textarea.fill(SAMPLE_BIBTEX);
+		await editorFrame
+			.getByRole('button', { name: /^Add$/i })
+			.first()
+			.click();
+		await editorFrame
+			.locator('.bibliography-builder-entry')
+			.first()
+			.waitFor({ state: 'visible', timeout: 15000 });
+
+		// Set a heading via the block's headingText attribute through the sidebar.
+		// (The exact sidebar control label may vary; adjust if needed.)
+		const headingInput = page
+			.getByRole('textbox', { name: /heading/i })
+			.first();
+		if (
+			await headingInput.isVisible({ timeout: 3000 }).catch(() => false)
+		) {
+			await headingInput.fill('References');
+		}
+
+		await expect(errorIndicator).not.toBeVisible({ timeout: 5000 });
 	});
 });
