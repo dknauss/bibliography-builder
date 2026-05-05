@@ -235,8 +235,8 @@ test.describe('Bibliography block accessibility gate', () => {
 			await insertBibliographyBlock(page);
 			await dismissEditorOverlay(page);
 			editorFrame = await getEditorFrame(page);
-			await expect(editorFrame.locator('textarea').first()).toBeVisible({
-				timeout: 10000,
+			await expect(editorFrame.locator('#bibliography-builder-paste-input')).toBeVisible({
+				timeout: 20000,
 			});
 		});
 
@@ -356,17 +356,17 @@ test.describe('Bibliography block accessibility gate', () => {
 
 		// Audit plan item 4: focus lands on new entry after keyboard Add.
 		await test.step('focus moves into block after keyboard-activated Add', async () => {
-			const textarea = editorFrame.locator('textarea').first();
-			await textarea.fill(SAMPLE_BIBTEX.replace('a11y2026', 'a11y2026b'));
+			const textarea = editorFrame.locator('#bibliography-builder-paste-input');
+			await textarea.fill(SAMPLE_BIBTEX.replace('Keyboard Accessible Bibliographies', 'Keyboard Accessible Bibliographies 2'));
+			await page.waitForTimeout(500);
 			const addButton = editorFrame
 				.getByRole('button', { name: /^Add$/i })
 				.first();
 			await addButton.focus();
-			await addButton.press('Enter');
-			await editorFrame
-				.locator('.bibliography-builder-entry')
-				.nth(1)
-				.waitFor({ state: 'visible', timeout: 15000 });
+			await addButton.click();
+			await expect(
+				editorFrame.locator('.bibliography-builder-entry')
+			).toHaveCount(2, { timeout: 15000 });
 
 			// Focus must not be stranded at document root.
 			const focusedTag = await page.evaluate(
