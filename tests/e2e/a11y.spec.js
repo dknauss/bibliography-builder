@@ -124,14 +124,41 @@ async function openInserterAndSearch(page, query) {
 
 async function insertBibliographyBlock(page) {
 	await openInserterAndSearch(page, 'Bibliography');
+
+	// Wait for results to settle, then pick the most specific match.
+	await page.waitForTimeout(800);
 	const blockItem = page
-		.locator('[role="option"], .block-editor-block-types-list__item')
-		.filter({ hasText: 'Bibliography' })
-		.first();
+		.locator('.block-editor-block-types-list__item-title')
+		.filter({ hasText: /^Bibliography$/ })
+		.first()
+		.or(
+			page
+				.locator('[role="option"]')
+				.filter({ hasText: /^Bibliography$/ })
+				.first()
+		);
 
 	await expect(blockItem).toBeVisible({ timeout: 10000 });
+	await blockItem.scrollIntoViewIfNeeded();
 	await blockItem.click({ force: true });
-	await page.waitForTimeout(1000);
+
+	// Confirm the block appeared in the canvas before returning.
+	// Playwright FrameLocator does not support .or(), so try iframe first.
+	const inIframe = page
+		.frameLocator('iframe[name="editor-canvas"]')
+		.locator('.wp-block-bibliography-builder-bibliography')
+		.first();
+	const iframeVisible = await inIframe
+		.waitFor({ state: 'visible', timeout: 30000 })
+		.then(() => true)
+		.catch(() => false);
+	if (!iframeVisible) {
+		// Fallback for WP installs without the editor-canvas iframe.
+		await page
+			.locator('.wp-block-bibliography-builder-bibliography')
+			.first()
+			.waitFor({ state: 'visible', timeout: 10000 });
+	}
 }
 
 async function publishCurrentPost(page) {
