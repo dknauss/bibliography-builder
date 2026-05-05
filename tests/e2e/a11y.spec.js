@@ -125,18 +125,12 @@ async function openInserterAndSearch(page, query) {
 async function insertBibliographyBlock(page) {
 	await openInserterAndSearch(page, 'Bibliography');
 
-	// Wait for results to settle, then pick the most specific match.
+	// Wait for results to settle, then click the block button by role.
+	// Using getByRole avoids strict-mode violations from nested spans.
 	await page.waitForTimeout(800);
 	const blockItem = page
-		.locator('.block-editor-block-types-list__item-title')
-		.filter({ hasText: /^Bibliography$/ })
-		.first()
-		.or(
-			page
-				.locator('[role="option"]')
-				.filter({ hasText: /^Bibliography$/ })
-				.first()
-		);
+		.getByRole('option', { name: 'Bibliography', exact: true })
+		.first();
 
 	await expect(blockItem).toBeVisible({ timeout: 10000 });
 	await blockItem.scrollIntoViewIfNeeded();
