@@ -571,7 +571,9 @@ test.describe('Bibliography block accessibility gate', () => {
 
 		// Both error (empty_bibliography) and warning (heading_missing) should clear.
 		await expect(errorIndicator).not.toBeVisible({ timeout: 5000 });
-		const warningIndicator = page.locator('.ba11y-block-indicator--warning');
+		const warningIndicator = page.locator(
+			'.ba11y-block-indicator--warning'
+		);
 		await expect(warningIndicator).not.toBeVisible({ timeout: 3000 });
 	});
 });
