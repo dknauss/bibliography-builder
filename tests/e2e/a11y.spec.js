@@ -125,11 +125,11 @@ async function openInserterAndSearch(page, query) {
 async function insertBibliographyBlock(page) {
 	await openInserterAndSearch(page, 'Bibliography');
 
-	// Wait for results to settle, then click the block button by role.
-	// Using getByRole avoids strict-mode violations from nested spans.
+	// Wait for results to settle, then click the block button by its
+	// Gutenberg-generated class (deterministic, unique to this block).
 	await page.waitForTimeout(800);
 	const blockItem = page
-		.getByRole('option', { name: 'Bibliography', exact: true })
+		.locator('button.editor-block-list-item-bibliography-builder-bibliography')
 		.first();
 
 	await expect(blockItem).toBeVisible({ timeout: 10000 });
