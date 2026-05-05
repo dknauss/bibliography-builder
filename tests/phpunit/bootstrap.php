@@ -10,6 +10,9 @@ $GLOBALS['bibliography_builder_test_current_user_id'] = 0;
 $GLOBALS['bibliography_builder_test_user_caps']       = array();
 $GLOBALS['bibliography_builder_test_rest_routes']     = array();
 $GLOBALS['bibliography_builder_test_password_posts']  = array();
+$GLOBALS['bibliography_builder_test_registered_block_types'] = array();
+$GLOBALS['bibliography_builder_test_registered_scripts'] = array();
+$GLOBALS['bibliography_builder_test_enqueued_scripts']   = array();
 
 function bibliography_builder_test_reset_state() {
 	$GLOBALS['bibliography_builder_test_posts']           = array();
@@ -18,6 +21,9 @@ function bibliography_builder_test_reset_state() {
 	$GLOBALS['bibliography_builder_test_user_caps']       = array();
 	$GLOBALS['bibliography_builder_test_rest_routes']     = array();
 	$GLOBALS['bibliography_builder_test_password_posts']  = array();
+	$GLOBALS['bibliography_builder_test_registered_block_types'] = array();
+	$GLOBALS['bibliography_builder_test_registered_scripts'] = array();
+	$GLOBALS['bibliography_builder_test_enqueued_scripts']   = array();
 }
 
 function bibliography_builder_test_set_post( $post_id, $status, $content, $password_required = false ) {
@@ -48,7 +54,26 @@ function add_action() {}
 
 function add_filter() {}
 
-function register_block_type() {}
+function register_block_type( $block_type ) {
+	$GLOBALS['bibliography_builder_test_registered_block_types'][] = $block_type;
+}
+
+function wp_script_is( $handle, $status = 'enqueued' ) {
+	return ! empty( $GLOBALS['bibliography_builder_test_registered_scripts'][ $handle ][ $status ] );
+}
+
+function wp_enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $args = array() ) {
+	$GLOBALS['bibliography_builder_test_enqueued_scripts'][ $handle ] = array(
+		'src'  => $src,
+		'deps' => $deps,
+		'ver'  => $ver,
+		'args' => $args,
+	);
+}
+
+function plugins_url( $path = '', $plugin = '' ) {
+	return 'https://example.org/wp-content/plugins/borges-bibliography-builder/' . ltrim( $path, '/' );
+}
 
 function register_rest_route( $namespace, $route, $args ) {
 	$GLOBALS['bibliography_builder_test_rest_routes'][] = array(
