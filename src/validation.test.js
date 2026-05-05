@@ -1,7 +1,22 @@
 /**
  * Unit tests for the Block Accessibility Checks validation logic.
  */
+import { addFilter } from '@wordpress/hooks';
 import { bacValidateBlock, validateBibliographyBlock } from './validation';
+
+jest.mock('@wordpress/hooks', () => ({
+	addFilter: jest.fn(),
+}));
+
+describe('BAC filter registration', () => {
+	it('registers the documented BAC validation filter', () => {
+		expect(addFilter).toHaveBeenCalledWith(
+			'ba11yc_validate_block',
+			'borges-bibliography-builder/bac-validation',
+			bacValidateBlock
+		);
+	});
+});
 
 describe('validateBibliographyBlock', () => {
 	describe('empty_bibliography check', () => {

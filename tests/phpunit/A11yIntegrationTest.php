@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 final class BibliographyBuilderFakeA11yRegistry {
 	public $checks = array();
 
-	public function register_block_check( $block_name, $check_name, $args ) {
+	public function register_check( $block_name, $check_name, $args ) {
 		$this->checks[] = array(
 			'block_name' => $block_name,
 			'check_name' => $check_name,
