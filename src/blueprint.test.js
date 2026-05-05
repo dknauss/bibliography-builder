@@ -25,7 +25,7 @@ describe('Playground blueprints', () => {
 		}
 	);
 
-	test('GitHub demo blueprint installs from WordPress.org to avoid GitHub asset CORS', () => {
+	test('GitHub demo blueprint installs from the latest GitHub release zip via Playground CORS proxy', () => {
 		const blueprint = JSON.parse(
 			fs.readFileSync(
 				path.join(rootDir, 'playground/blueprint.json'),
@@ -40,8 +40,8 @@ describe('Playground blueprints', () => {
 		expect(installStep).toEqual(
 			expect.objectContaining({
 				pluginData: {
-					resource: 'wordpress.org/plugins',
-					slug: 'borges-bibliography-builder',
+					resource: 'url',
+					url: 'https://wordpress-playground-cors-proxy.net/?https://github.com/dknauss/borges-bibliography-builder/releases/latest/download/borges-bibliography-builder.zip',
 				},
 			})
 		);
