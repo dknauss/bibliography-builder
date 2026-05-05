@@ -2,6 +2,13 @@
  * Editor-only styles for the Bibliography block.
  */
 
+// Ensure toolbar buttons have a visible focus ring for accessibility.
+.components-toolbar-button:focus-visible {
+	outline: 2px solid #3858e9 !important;
+	outline-offset: 2px !important;
+	border-radius: 2px !important;
+}
+
 .wp-block-bibliography-builder-bibliography {
 	cursor: default;
 	// Live region is visually hidden but accessible.
