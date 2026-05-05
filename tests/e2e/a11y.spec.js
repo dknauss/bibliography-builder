@@ -524,10 +524,11 @@ test.describe('Bibliography block accessibility gate', () => {
 		await dismissEditorOverlay(page);
 
 		// BAC may not be active in all environments; skip gracefully if absent.
+		// The plugin exposes a global `window.BlockAccessibilityChecks` when loaded.
 		const bacPresent = await page
-			.locator('[class*="block-a11y"], [data-a11y-check]')
-			.first()
-			.isVisible({ timeout: 5000 })
+			.evaluate(
+				() => typeof window.BlockAccessibilityChecks !== 'undefined'
+			)
 			.catch(() => false);
 
 		if (!bacPresent) {
@@ -539,12 +540,12 @@ test.describe('Bibliography block accessibility gate', () => {
 		}
 
 		// Item 9: empty block should show a BAC error indicator.
-		const errorIndicator = page.locator(
-			'[class*="block-a11y"][class*="error"], [data-a11y-check="error"]'
-		);
+		// BAC wraps each flagged block in .ba11y-block-wrapper and renders
+		// a .ba11y-block-indicator--error badge for error-level checks.
+		const errorIndicator = page.locator('.ba11y-block-indicator--error');
 		await expect(errorIndicator).toBeVisible({ timeout: 5000 });
 
-		// Item 10: adding a citation and heading clears the error.
+		// Item 10: adding a citation and heading clears both the error and warning.
 		const editorFrame = await getEditorFrame(page);
 		const textarea = editorFrame.locator('textarea').first();
 		await expect(textarea).toBeVisible({ timeout: 10000 });
@@ -558,8 +559,7 @@ test.describe('Bibliography block accessibility gate', () => {
 			.first()
 			.waitFor({ state: 'visible', timeout: 15000 });
 
-		// Set a heading via the block's headingText attribute through the sidebar.
-		// (The exact sidebar control label may vary; adjust if needed.)
+		// Satisfy the heading_missing warning via the block sidebar.
 		const headingInput = page
 			.getByRole('textbox', { name: /heading/i })
 			.first();
@@ -569,6 +569,9 @@ test.describe('Bibliography block accessibility gate', () => {
 			await headingInput.fill('References');
 		}
 
+		// Both error (empty_bibliography) and warning (heading_missing) should clear.
 		await expect(errorIndicator).not.toBeVisible({ timeout: 5000 });
+		const warningIndicator = page.locator('.ba11y-block-indicator--warning');
+		await expect(warningIndicator).not.toBeVisible({ timeout: 3000 });
 	});
 });
