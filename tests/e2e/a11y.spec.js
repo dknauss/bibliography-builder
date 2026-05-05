@@ -93,50 +93,29 @@ async function getEditorFrame(page) {
 	return page;
 }
 
-async function openInserterAndSearch(page, query) {
-	await page
-		.getByRole('button', { name: /Block Inserter|Toggle block inserter/i })
-		.click({ force: true });
-
-	const inserterSearch = page
-		.locator(
-			'input[placeholder*="Search" i], input[aria-label*="Search" i], [role="searchbox"], .block-editor-inserter__search input'
-		)
-		.first();
-
-	if (
-		!(await inserterSearch.isVisible({ timeout: 3000 }).catch(() => false))
-	) {
-		const browseAllButton = page
-			.getByRole('button', {
-				name: /Browse all|See all|Open block inserter/i,
-			})
-			.first();
-
-		if (await browseAllButton.isVisible().catch(() => false)) {
-			await browseAllButton.click({ force: true });
-		}
-	}
-
-	await expect(inserterSearch).toBeVisible();
-	await inserterSearch.fill(query);
-}
-
 async function insertBibliographyBlock(page) {
-	await openInserterAndSearch(page, 'Bibliography');
+	// Keep the a11y gate focused on the block UI itself. Inserter behavior is
+	// covered by tests/e2e/playground.spec.js, and the editor's inserter is
+	// intentionally dynamic enough to be flaky on slower CI runners.
+	await page.waitForFunction(
+		() =>
+			window.wp?.blocks?.getBlockType(
+				'bibliography-builder/bibliography'
+			) &&
+			window.wp?.blocks?.createBlock &&
+			window.wp?.data?.dispatch('core/block-editor')?.insertBlock,
+		null,
+		{ timeout: 20000 }
+	);
 
-	// Wait for results to settle, then click the block button by its
-	// Gutenberg-generated class (deterministic, unique to this block).
-	await page.waitForTimeout(800);
-	const blockItem = page
-		.locator(
-			'button.editor-block-list-item-bibliography-builder-bibliography'
-		)
-		.first();
-
-	await expect(blockItem).toBeVisible({ timeout: 10000 });
-	await blockItem.scrollIntoViewIfNeeded();
-	await blockItem.click({ force: true });
+	await page.evaluate(() => {
+		const block = window.wp.blocks.createBlock(
+			'bibliography-builder/bibliography'
+		);
+		const editor = window.wp.data.dispatch('core/block-editor');
+		editor.insertBlock(block);
+		editor.selectBlock(block.clientId);
+	});
 
 	// Confirm the block appeared in the canvas before returning.
 	// Playwright FrameLocator does not support .or(), so try iframe first.
