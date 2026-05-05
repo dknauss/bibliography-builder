@@ -21,8 +21,8 @@
 		{
 			"step": "installPlugin",
 			"pluginData": {
-				"resource": "wordpress.org/plugins",
-				"slug": "borges-bibliography-builder"
+				"resource": "url",
+				"url": "https://github.com/dknauss/borges-bibliography-builder/releases/latest/download/borges-bibliography-builder.zip"
 			},
 			"options": {
 				"activate": true,
