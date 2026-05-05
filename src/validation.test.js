@@ -1,7 +1,7 @@
 /**
  * Unit tests for the Block Accessibility Checks validation logic.
  */
-import { validateBibliographyBlock } from './validation';
+import { bacValidateBlock, validateBibliographyBlock } from './validation';
 
 describe('validateBibliographyBlock', () => {
 	describe('empty_bibliography check', () => {
@@ -89,5 +89,24 @@ describe('validateBibliographyBlock', () => {
 				true
 			);
 		});
+	});
+});
+
+describe('bacValidateBlock', () => {
+	it('passes through validation state for other block types', () => {
+		expect(
+			bacValidateBlock(true, 'core/paragraph', {}, 'empty_bibliography')
+		).toBe(true);
+	});
+
+	it('preserves an earlier failed BAC validation result', () => {
+		expect(
+			bacValidateBlock(
+				false,
+				'bibliography-builder/bibliography',
+				{ citations: [{ id: '1' }] },
+				'empty_bibliography'
+			)
+		).toBe(false);
 	});
 });

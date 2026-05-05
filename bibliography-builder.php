@@ -828,6 +828,10 @@ add_filter( 'rest_pre_serve_request', 'bibliography_builder_rest_pre_serve_reque
  * @since 1.1.0
  */
 function bibliography_builder_register_a11y_checks( $registry ) {
+	if ( ! is_object( $registry ) || ! method_exists( $registry, 'register_block_check' ) ) {
+		return;
+	}
+
 	$registry->register_block_check(
 		'bibliography-builder/bibliography',
 		'empty_bibliography',

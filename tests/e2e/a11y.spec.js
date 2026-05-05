@@ -129,7 +129,9 @@ async function insertBibliographyBlock(page) {
 	// Gutenberg-generated class (deterministic, unique to this block).
 	await page.waitForTimeout(800);
 	const blockItem = page
-		.locator('button.editor-block-list-item-bibliography-builder-bibliography')
+		.locator(
+			'button.editor-block-list-item-bibliography-builder-bibliography'
+		)
 		.first();
 
 	await expect(blockItem).toBeVisible({ timeout: 10000 });

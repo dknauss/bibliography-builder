@@ -53,9 +53,13 @@ export function validateBibliographyBlock(attributes, checkName) {
  * @param {string}  checkName  BAC check identifier.
  * @return {boolean} Validity result.
  */
-function bacValidateBlock(isValid, blockType, attributes, checkName) {
+export function bacValidateBlock(isValid, blockType, attributes, checkName) {
 	if (blockType !== BLOCK_TYPE) {
 		return isValid;
+	}
+
+	if (isValid === false) {
+		return false;
 	}
 
 	return validateBibliographyBlock(attributes, checkName);
