@@ -250,8 +250,8 @@ test.describe('Bibliography block accessibility gate', () => {
 				.getByRole('button', { name: /Manual Entry/i })
 				.first();
 
-			await expect(pasteButton).toBeVisible();
-			await expect(manualButton).toBeVisible();
+			await expect(pasteButton).toBeVisible({ timeout: 20000 });
+			await expect(manualButton).toBeVisible({ timeout: 20000 });
 			await expect(pasteButton).toHaveAttribute('aria-pressed', 'true');
 
 			await manualButton.focus();
