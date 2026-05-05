@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/paypalme/DanKnauss
 Tags: bibliography, citation, doi, bibtex, academic
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.0.2
+Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -102,6 +102,10 @@ This plugin connects to the **CrossRef REST API** (https://api.crossref.org/) wh
 * CrossRef terms of service: https://www.crossref.org/terms/
 
 == Changelog ==
+
+= 1.1.0 =
+* Add optional Block Accessibility Checks (BAC) integration: when Troy Chaplin's Block Accessibility Checks plugin is active, the bibliography block registers two authoring-time checks — an error if no citations have been added, and a warning if no heading is set so screen reader users navigating by heading can find the section.
+* No functional change when BAC is not installed.
 
 = 1.0.2 =
 * Fix browser-based WordPress Playground demos by explicitly enabling the Playground Intl feature in addition to the kitchen-sink PHP extension bundle.
